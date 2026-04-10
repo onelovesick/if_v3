@@ -35,26 +35,28 @@ export default function Hero() {
           "-=0.3"
         );
 
-      // Parallax on scroll — headline lingers, subtitle drifts
+      // Headline sinks downward — disappears behind S2's white background
       gsap.to(`.${styles.headline}`, {
-        y: -50,
+        y: 120,
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
           end: "bottom top",
-          scrub: true,
+          scrub: 0.6,
         },
       });
 
+      // Subtitle drifts down and right — exits the screen
       gsap.to(`.${styles.subtitle}`, {
-        y: -80,
+        y: 180,
+        x: 250,
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
           end: "bottom top",
-          scrub: true,
+          scrub: 0.6,
         },
       });
     },
@@ -65,7 +67,7 @@ export default function Hero() {
     <section ref={sectionRef} className={styles.hero}>
       <video
         className={styles.video}
-        src="/videos/hero.mp4"
+        src="https://sivjrtksrxzakjqj.public.blob.vercel-storage.com/video_1.mp4"
         autoPlay
         muted
         loop
