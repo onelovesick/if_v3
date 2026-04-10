@@ -1,41 +1,10 @@
+import Hero from "@/components/Hero";
+
 export default function Home() {
   return (
     <main>
-      {/* S1 — Hero */}
-      <section className="section-light" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
-        <div className="page-container">
-          <p className="text-mono-label" style={{ marginBottom: "var(--space-24)" }}>
-            Digital Delivery Partner
-          </p>
-          <h1 className="text-hero">
-            Human-Led,<br />
-            Digitally Enabled.
-          </h1>
-          <p className="text-body-lg" style={{ marginTop: "var(--space-24)", maxWidth: "var(--narrow-width)" }}>
-            We bring structured information management to the world&apos;s most
-            complex infrastructure projects.
-          </p>
-          <div style={{ marginTop: "var(--space-32)" }}>
-            <a className="btn btn-primary" href="/solutions">
-              Explore Our Approach →
-            </a>
-          </div>
-          <div style={{ display: "flex", gap: "var(--space-48)", marginTop: "var(--space-48)" }}>
-            <div>
-              <p className="text-mono-data">$50B+ in Assets</p>
-              <p className="text-mono-label" style={{ marginTop: "var(--space-4)" }}>Delivered</p>
-            </div>
-            <div>
-              <p className="text-mono-data">55+ Years Combined</p>
-              <p className="text-mono-label" style={{ marginTop: "var(--space-4)" }}>Experience</p>
-            </div>
-            <div>
-              <p className="text-mono-data">ISO 19650</p>
-              <p className="text-mono-label" style={{ marginTop: "var(--space-4)" }}>Aligned</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* S1 — Hero + Video */}
+      <Hero />
 
       {/* S2 — Problem */}
       <section className="section-light">
