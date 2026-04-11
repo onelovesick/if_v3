@@ -1,0 +1,163 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+}
+
+/* ─── LOGO ─── */
+.logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+/* ─── NAV GROUP (pill + cta) ─── */
+.navGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ─── NAV PILL — dark translucent container ─── */
+.navPill {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(8, 18, 37, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(248, 248, 248, 0.08);
+  border-radius: 100px;
+  padding: 10px 8px;
+}
+
+.navLink {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(248, 248, 248, 0.85);
+  text-decoration: none;
+  padding: 4px 18px;
+  transition: color 0.2s ease;
+}
+
+.navLink:hover {
+  color: var(--white);
+}
+
+/* ─── CTA BUTTON — white pill ─── */
+.cta {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: var(--white);
+  text-decoration: none;
+  padding: 14px 24px;
+  border-radius: 100px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.cta:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+
+/* ─── MOBILE TOGGLE ─── */
+.menuToggle {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.bar {
+  display: block;
+  width: 24px;
+  height: 1.5px;
+  background: var(--white);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.bar:first-child.barOpen {
+  transform: rotate(45deg) translate(2.5px, 2.5px);
+}
+
+.bar:last-child.barOpen {
+  transform: rotate(-45deg) translate(2.5px, -2.5px);
+}
+
+/* ─── MOBILE MENU ─── */
+.mobileMenu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  top: 64px;
+  background: rgba(8, 18, 37, 0.96);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 48px 32px;
+  gap: 32px;
+  z-index: 99;
+}
+
+.mobileLink {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  text-decoration: none;
+}
+
+.mobileCta {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: var(--white);
+  text-decoration: none;
+  padding: 16px 32px;
+  border-radius: 100px;
+  margin-top: 16px;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .header {
+    padding: 16px 20px;
+  }
+
+  .navGroup {
+    display: none;
+  }
+
+  .menuToggle {
+    display: flex;
+  }
+
+  .mobileMenu {
+    display: flex;
+  }
+}
