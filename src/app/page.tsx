@@ -1,6 +1,5 @@
-import Hero from "@/components/Hero";
-import Statement from "@/components/Statement";
 import Pillars from "@/components/Pillars";
+import TopScene from "@/components/TopScene";
 
 const DELIVERY_STAGES = [
   {
@@ -45,8 +44,7 @@ const SECTORS = [
 export default function Home() {
   return (
     <main>
-      <Hero />
-      <Statement />
+      <TopScene />
 
       <section id="delivery-environment" className="section-light">
         <div className="page-container">

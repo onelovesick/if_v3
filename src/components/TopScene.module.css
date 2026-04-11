@@ -1,0 +1,213 @@
+.scene {
+  position: relative;
+  overflow: clip;
+  background: linear-gradient(180deg, #dbe2ea 0%, #eef3f7 46%, #f7f8fa 100%);
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.image {
+  object-fit: cover;
+  object-position: 72% 18%;
+  filter: saturate(0.78) contrast(1.04) brightness(0.92);
+  transform: scale(1.04);
+}
+
+.imageTint {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      108deg,
+      rgba(9, 16, 30, 0.66) 0%,
+      rgba(17, 28, 46, 0.38) 28%,
+      rgba(53, 80, 112, 0.12) 52%,
+      rgba(255, 255, 255, 0) 72%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(214, 223, 232, 0.12) 0%,
+      rgba(214, 223, 232, 0) 44%,
+      rgba(247, 248, 250, 0.22) 74%,
+      rgba(247, 248, 250, 0.72) 100%
+    );
+}
+
+.skyVeil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 22% 22%, rgba(223, 235, 246, 0.16), transparent 34%),
+    radial-gradient(circle at 72% 56%, rgba(255, 255, 255, 0.24), transparent 22%);
+  mix-blend-mode: screen;
+}
+
+.signalSweep {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.08) 48%,
+      rgba(255, 255, 255, 0.16) 100%
+    ),
+    repeating-linear-gradient(
+      102deg,
+      rgba(255, 255, 255, 0) 0 42px,
+      rgba(239, 246, 252, 0.2) 42px 44px,
+      rgba(255, 255, 255, 0) 44px 64px
+    );
+  mix-blend-mode: screen;
+  opacity: 0.52;
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.18) 18%,
+    rgba(0, 0, 0, 0.78) 48%,
+    rgba(0, 0, 0, 0.94) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.18) 18%,
+    rgba(0, 0, 0, 0.78) 48%,
+    rgba(0, 0, 0, 0.94) 100%
+  );
+}
+
+.mesh {
+  position: absolute;
+  left: -18%;
+  right: -18%;
+  bottom: -12%;
+  height: 42%;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(188, 205, 220, 0.12) 1px, transparent 1px);
+  background-size: 88px 88px;
+  opacity: 0.42;
+  transform: perspective(1600px) rotateX(82deg);
+  transform-origin: center top;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.72), transparent 82%);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.72),
+    transparent 82%
+  );
+}
+
+.verticalDatum {
+  position: absolute;
+  top: 20%;
+  bottom: 18%;
+  left: 71.6%;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(232, 242, 250, 0.4) 18%,
+    rgba(244, 247, 250, 0.72) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0.58;
+}
+
+.bottomFade {
+  position: absolute;
+  inset: auto 0 0;
+  height: 42%;
+  background: linear-gradient(
+    180deg,
+    rgba(247, 248, 250, 0) 0%,
+    rgba(247, 248, 250, 0.24) 24%,
+    rgba(247, 248, 250, 0.86) 70%,
+    #f7f8fa 100%
+  );
+}
+
+.callout {
+  position: absolute;
+  display: grid;
+  gap: 4px;
+  padding-left: 16px;
+  color: rgba(246, 249, 252, 0.84);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 10px;
+}
+
+.callout::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.66),
+    rgba(255, 255, 255, 0)
+  );
+}
+
+.callout strong {
+  font-size: 9px;
+  color: rgba(210, 227, 241, 0.72);
+  font-weight: 400;
+}
+
+.calloutUpper {
+  left: 12%;
+  top: 18%;
+}
+
+.calloutCenter {
+  right: 18%;
+  top: 36%;
+}
+
+.calloutLower {
+  left: 12%;
+  bottom: 23%;
+}
+
+@media (max-width: 768px) {
+  .image {
+    object-position: 70% 10%;
+  }
+
+  .signalSweep {
+    opacity: 0.34;
+  }
+
+  .mesh {
+    left: -30%;
+    right: -30%;
+    bottom: -4%;
+    height: 26%;
+    background-size: 52px 52px;
+  }
+
+  .verticalDatum,
+  .calloutCenter {
+    display: none;
+  }
+
+  .calloutUpper {
+    left: 7%;
+    top: 13%;
+  }
+
+  .calloutLower {
+    left: 7%;
+    bottom: 34%;
+  }
+}

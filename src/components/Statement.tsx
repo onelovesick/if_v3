@@ -1,110 +1,75 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import styles from "./Statement.module.css";
 
-const HEADLINE = ["Projects", "don\u2019t", "fail", "from", "lack", "of", "tools.", "They", "fail", "from", "lack", "of", "structure."];
-const PARTICLE_COUNT = 6;
-
-const scrollState = { progress: 0 };
+const HEADLINE = [
+  "Projects",
+  "do",
+  "not",
+  "fail",
+  "from",
+  "lack",
+  "of",
+  "tools.",
+  "They",
+  "fail",
+  "from",
+  "lack",
+  "of",
+  "structure.",
+];
 
 export default function Statement() {
   const sectionRef = useRef<HTMLElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  // Canvas: 6 glowing particles that spiral inward
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let raf: number;
-
-    const particles = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
-      baseAngle: (i / PARTICLE_COUNT) * Math.PI * 2,
-      size: 4 + Math.random() * 2,
-    }));
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth * devicePixelRatio;
-      canvas.height = canvas.offsetHeight * devicePixelRatio;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-      const p = scrollState.progress; // 0 → 1
-
-      const maxRadius = Math.min(canvas.width, canvas.height) * 0.65;
-      const minRadius = Math.min(canvas.width, canvas.height) * 0.32;
-      const radius = maxRadius - (maxRadius - minRadius) * p;
-
-      // Spiral: rotate 180deg as they close in
-      const spiralRotation = p * Math.PI;
-
-      // Fade out in last 20% of scroll
-      const fadeAlpha = p > 0.8 ? 1 - (p - 0.8) / 0.2 : 1;
-
-      particles.forEach((pt) => {
-        const angle = pt.baseAngle + spiralRotation;
-        const x = cx + Math.cos(angle) * radius;
-        const y = cy + Math.sin(angle) * radius;
-        const sz = pt.size * devicePixelRatio;
-
-        // Solid dark navy particle, no glow
-        ctx.beginPath();
-        ctx.arc(x, y, sz, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(8, 18, 37, ${0.7 * fadeAlpha})`;
-        ctx.fill();
-      });
-
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
 
   useGSAP(
     () => {
       const section = sectionRef.current;
-      if (!section) return;
+      if (!section) {
+        return;
+      }
 
-      // Drive scroll progress 0→1 as section enters viewport
-      gsap.to(scrollState, {
-        progress: 1,
-        ease: "none",
+      gsap.from(`.${styles.kicker}`, {
+        y: 20,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
         scrollTrigger: {
           trigger: section,
-          start: "top bottom",
-          end: "top top",
-          scrub: 0.8,
+          start: "top 88%",
         },
       });
 
-      // Word color: light grey → dark, staggered, all done by 100vh
-      const words = section.querySelectorAll(`.${styles.word}`);
+      gsap.from(`.${styles.support}`, {
+        y: 24,
+        opacity: 0,
+        duration: 0.85,
+        ease: "power3.out",
+        delay: 0.08,
+        scrollTrigger: {
+          trigger: section,
+          start: "top 84%",
+        },
+      });
+
+      const words = section.querySelectorAll<HTMLElement>(`.${styles.word}`);
       const total = words.length;
-      words.forEach((word, i) => {
-        const startPct = 75 - (i / total) * 55;
+
+      words.forEach((word, index) => {
+        const startPct = 82 - (index / total) * 46;
         const endPct = startPct - 8;
+
         gsap.to(word, {
-          color: "rgb(8, 8, 8)",
+          color: "rgb(8, 18, 37)",
           ease: "power2.out",
           scrollTrigger: {
             trigger: section,
             start: `top ${startPct}%`,
             end: `top ${endPct}%`,
-            scrub: 0.3,
+            scrub: 0.35,
           },
         });
       });
@@ -114,20 +79,23 @@ export default function Statement() {
 
   return (
     <section ref={sectionRef} className={styles.section}>
-      <canvas ref={canvasRef} className={styles.canvas} />
-      <h2 className={styles.headline}>
-        <span className={styles.line1}>
-          {HEADLINE.slice(0, 7).map((w, i) => (
-            <span key={i} className={styles.word}>{w}</span>
+      <div className={`${styles.inner} page-container`}>
+        <div className={styles.copyRail}>
+          <p className={styles.kicker}>Delivery Principle</p>
+          <p className={styles.support}>
+            The digital thread only matters when it reduces risk on the asset
+            itself, not when it adds another layer of software theatre.
+          </p>
+        </div>
+
+        <h2 className={styles.headline}>
+          {HEADLINE.map((word, index) => (
+            <span key={`${word}-${index}`} className={styles.word}>
+              {word}
+            </span>
           ))}
-        </span>
-        <br />
-        <span className={styles.line2}>
-          {HEADLINE.slice(7).map((w, i) => (
-            <span key={i + 7} className={styles.word}>{w}</span>
-          ))}
-        </span>
-      </h2>
+        </h2>
+      </div>
     </section>
   );
 }
