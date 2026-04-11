@@ -7,38 +7,48 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 32px;
+  padding: 24px 32px;
+  pointer-events: none;
 }
 
-/* ─── LOGO ─── */
+.header > * {
+  pointer-events: auto;
+}
+
 .logo {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 20px;
+  font-size: 18px;
   letter-spacing: -0.02em;
-  color: var(--white);
+  color: var(--navy);
   text-decoration: none;
   text-transform: uppercase;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: rgba(248, 251, 255, 0.72);
+  border: 1px solid rgba(8, 18, 37, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 24px 60px rgba(8, 18, 37, 0.08);
 }
 
-/* ─── NAV GROUP (pill + cta) ─── */
 .navGroup {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* ─── NAV PILL — dark translucent container ─── */
 .navPill {
   display: flex;
   align-items: center;
   gap: 0;
-  background: rgba(8, 18, 37, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(248, 248, 248, 0.08);
+  background: rgba(248, 251, 255, 0.64);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(8, 18, 37, 0.08);
   border-radius: 100px;
   padding: 10px 8px;
+  box-shadow: 0 24px 60px rgba(8, 18, 37, 0.08);
 }
 
 .navLink {
@@ -47,52 +57,56 @@
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(248, 248, 248, 0.85);
+  color: rgba(8, 18, 37, 0.62);
   text-decoration: none;
   padding: 4px 18px;
   transition: color 0.2s ease;
 }
 
 .navLink:hover {
-  color: var(--white);
+  color: var(--navy);
 }
 
-/* ─── CTA BUTTON — white pill ─── */
 .cta {
   font-family: var(--font-mono);
   font-weight: 700;
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--navy);
-  background: var(--white);
+  color: var(--white);
+  background: var(--navy);
   text-decoration: none;
   padding: 14px 24px;
   border-radius: 100px;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 24px 60px rgba(8, 18, 37, 0.12);
 }
 
 .cta:hover {
-  background: var(--blue);
+  background: var(--blue-deep);
   color: var(--white);
+  transform: translateY(-1px);
 }
 
-/* ─── MOBILE TOGGLE ─── */
 .menuToggle {
   display: none;
   flex-direction: column;
   gap: 6px;
-  background: none;
-  border: none;
+  background: rgba(248, 251, 255, 0.72);
+  border: 1px solid rgba(8, 18, 37, 0.08);
+  border-radius: 999px;
   cursor: pointer;
-  padding: 8px;
+  padding: 14px 12px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 24px 60px rgba(8, 18, 37, 0.08);
 }
 
 .bar {
   display: block;
   width: 24px;
   height: 1.5px;
-  background: var(--white);
+  background: var(--navy);
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -104,20 +118,23 @@
   transform: rotate(-45deg) translate(2.5px, -2.5px);
 }
 
-/* ─── MOBILE MENU ─── */
 .mobileMenu {
   display: none;
   position: fixed;
   inset: 0;
-  top: 64px;
-  background: rgba(8, 18, 37, 0.96);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  top: 86px;
+  margin: 0 20px 20px;
+  background: rgba(248, 251, 255, 0.94);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
   flex-direction: column;
   align-items: flex-start;
-  padding: 48px 32px;
-  gap: 32px;
+  padding: 36px 28px;
+  gap: 24px;
   z-index: 99;
+  border-radius: 28px;
+  border: 1px solid rgba(8, 18, 37, 0.08);
+  box-shadow: 0 30px 80px rgba(8, 18, 37, 0.12);
 }
 
 .mobileLink {
@@ -125,7 +142,7 @@
   font-weight: 700;
   font-size: 28px;
   letter-spacing: -0.02em;
-  color: var(--white);
+  color: var(--navy);
   text-decoration: none;
 }
 
@@ -135,18 +152,22 @@
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--navy);
-  background: var(--white);
+  color: var(--white);
+  background: var(--navy);
   text-decoration: none;
   padding: 16px 32px;
   border-radius: 100px;
   margin-top: 16px;
 }
 
-/* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
   .header {
     padding: 16px 20px;
+  }
+
+  .logo {
+    font-size: 16px;
+    padding: 10px 16px;
   }
 
   .navGroup {

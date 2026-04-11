@@ -31,17 +31,17 @@ export default function Header() {
         </a>
       </div>
 
-      {/* Mobile toggle */}
       <button
+        type="button"
         className={styles.menuToggle}
         onClick={() => setMenuOpen(!menuOpen)}
         aria-label="Toggle menu"
+        aria-expanded={menuOpen}
       >
         <span className={`${styles.bar} ${menuOpen ? styles.barOpen : ""}`} />
         <span className={`${styles.bar} ${menuOpen ? styles.barOpen : ""}`} />
       </button>
 
-      {/* Mobile menu */}
       {menuOpen && (
         <div className={styles.mobileMenu}>
           {NAV_LINKS.map((link) => (

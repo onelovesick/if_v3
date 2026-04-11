@@ -22,14 +22,16 @@ export default function SmoothScroll({
 
     lenisRef.current = lenis;
 
-    // Sync Lenis with GSAP ticker for frame-perfect scrolling
-    gsap.ticker.add((time) => {
+    const updateLenis = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+
+    // Sync Lenis with GSAP ticker for frame-perfect scrolling.
+    gsap.ticker.add(updateLenis);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
-      gsap.ticker.remove(lenis.raf as unknown as gsap.TickerCallback);
+      gsap.ticker.remove(updateLenis);
       lenis.destroy();
       lenisRef.current = null;
     };
