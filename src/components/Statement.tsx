@@ -1,127 +1,136 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import styles from "./Statement.module.css";
 
-const FRAGMENTS = {
+const FRAGMENTS: Record<string, string[]> = {
   cost: [
-    "$22.4M", "overrun", "Rev.03", "estimate pending",
-    "$1.2B", "contingency", "unverified", "budget v4",
-    "no baseline", "+34%", "unfunded",
-  ],
-  design: [
-    "clash #0441", "RFI pending", "superseded", "no record",
-    "Rev.F", "model outdated", "coord fail", "v2.1",
-    "unresolved", "detached", "markup lost",
+    "$22.4M", "overrun", "Rev.03", "pending",
+    "+34%", "contingency", "unverified", "unfunded",
+    "no baseline", "budget v4", "variance",
   ],
   schedule: [
-    "14 months", "DELAYED", "baseline v4", "float eroded",
-    "critical path", "no update", "slippage", "resequenced",
-    "TBD", "behind", "0 days float",
+    "14 months", "DELAYED", "float eroded", "resequenced",
+    "critical", "no update", "slippage", "behind",
+    "baseline v4", "TBD", "0d float",
+  ],
+  design: [
+    "clash #0441", "RFI open", "superseded", "no record",
+    "Rev.F", "outdated", "coord fail", "v2.1",
+    "unresolved", "detached", "missing",
   ],
   risk: [
     "HIGH", "unmitigated", "P(0.7)", "no owner",
-    "likelihood 4", "open", "unquantified", "escalated",
-    "residual", "inactive", "tolerance breached",
+    "escalated", "open", "unquantified", "residual",
+    "tolerance", "inactive", "exposure",
   ],
 };
 
-// Generate scattered positions for each corner
-function generatePositions(corner: string, count: number) {
-  const positions: { x: number; y: number; rot: number }[] = [];
-  for (let i = 0; i < count; i++) {
-    const spread = 280;
-    const jitter = () => Math.random() * spread;
-    const rot = (Math.random() - 0.5) * 60;
-    switch (corner) {
-      case "tl": positions.push({ x: jitter() * 0.8, y: jitter() * 0.6, rot }); break;
-      case "tr": positions.push({ x: jitter() * 0.8, y: jitter() * 0.6, rot }); break;
-      case "bl": positions.push({ x: jitter() * 0.8, y: jitter() * 0.6, rot }); break;
-      case "br": positions.push({ x: jitter() * 0.8, y: jitter() * 0.6, rot }); break;
-    }
-  }
-  return positions;
-}
-
-const CORNERS = [
-  { key: "cost", anchor: "tl", label: "Cost", data: FRAGMENTS.cost },
-  { key: "design", anchor: "tr", label: "Design", data: FRAGMENTS.design },
-  { key: "schedule", anchor: "bl", label: "Schedule", data: FRAGMENTS.schedule },
-  { key: "risk", anchor: "br", label: "Risk", data: FRAGMENTS.risk },
+const HEADLINE_WORDS = [
+  { text: "Projects", dim: false },
+  { text: "don\u2019t", dim: false },
+  { text: "fail", dim: false },
+  { text: "from", dim: false },
+  { text: "lack", dim: false },
+  { text: "of", dim: false },
+  { text: "tools.", dim: false },
+  { text: "They", dim: true },
+  { text: "fail", dim: true },
+  { text: "from", dim: true },
+  { text: "lack", dim: true },
+  { text: "of", dim: true },
+  { text: "structure.", dim: true },
 ];
 
-const HEADLINE_WORDS = ["Projects", "don't", "fail", "from", "lack", "of", "tools.", "They", "fail", "from", "lack", "of", "structure."];
+function seededRandom(seed: number) {
+  return function () {
+    seed = (seed * 16807 + 0) % 2147483647;
+    return (seed - 1) / 2147483646;
+  };
+}
 
 export default function Statement() {
   const sectionRef = useRef<HTMLElement>(null);
-  const fragmentsRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLDivElement>(null);
+
+  // Generate circle positions deterministically
+  const fragments = useMemo(() => {
+    const all: { text: string; angle: number; radius: number; rot: number; group: string }[] = [];
+    const groups = Object.entries(FRAGMENTS);
+    const rng = seededRandom(42);
+
+    groups.forEach(([group, words], gi) => {
+      const baseAngle = gi * 90; // cost=0, schedule=90, design=180, risk=270
+      words.forEach((word, wi) => {
+        const angle = baseAngle + (rng() - 0.5) * 70 + (wi - 5) * 6;
+        const radius = 38 + rng() * 14; // % of viewport, large circle
+        const rot = (rng() - 0.5) * 50;
+        all.push({ text: word, angle, radius, rot, group });
+      });
+    });
+    return all;
+  }, []);
 
   useGSAP(
     () => {
       const section = sectionRef.current;
       if (!section) return;
 
-      // Phase 1: fragments drift inward as section enters viewport
-      const fragmentEls = section.querySelectorAll(`.${styles.fragment}`);
-      fragmentEls.forEach((el) => {
-        const corner = (el as HTMLElement).dataset.corner;
-        // Drift direction: toward center
-        let xDrift = 0, yDrift = 0;
-        switch (corner) {
-          case "tl": xDrift = 60; yDrift = 40; break;
-          case "tr": xDrift = -60; yDrift = 40; break;
-          case "bl": xDrift = 60; yDrift = -40; break;
-          case "br": xDrift = -60; yDrift = -40; break;
-        }
-        // Add some randomness to drift
-        xDrift += (Math.random() - 0.5) * 30;
-        yDrift += (Math.random() - 0.5) * 20;
+      const fragEls = section.querySelectorAll(`.${styles.fragment}`);
+      const wordEls = section.querySelectorAll(`.${styles.word}`);
+
+      // Phase 1: circle tightens — fragments move inward
+      fragEls.forEach((el) => {
+        const htmlEl = el as HTMLElement;
+        const currentRadius = parseFloat(htmlEl.dataset.radius || "40");
+        const tighterRadius = currentRadius * 0.55; // tighten to ~55% of original
+        const angle = parseFloat(htmlEl.dataset.angle || "0") * (Math.PI / 180);
+
+        const currentX = Math.cos(angle) * currentRadius;
+        const currentY = Math.sin(angle) * currentRadius;
+        const newX = Math.cos(angle) * tighterRadius;
+        const newY = Math.sin(angle) * tighterRadius;
 
         gsap.to(el, {
-          x: xDrift,
-          y: yDrift,
+          x: `${(newX - currentX)}vmin`,
+          y: `${(newY - currentY)}vmin`,
           ease: "none",
           scrollTrigger: {
             trigger: section,
             start: "top bottom",
-            end: "top 10%",
+            end: "top 15%",
             scrub: 0.8,
           },
         });
       });
 
-      // Phase 2: fragments fade out once section is fully in view
-      gsap.to(fragmentsRef.current, {
+      // Phase 2: fragments fade out
+      gsap.to(`.${styles.fragmentsLayer}`, {
         opacity: 0,
-        duration: 0.01,
         ease: "none",
         scrollTrigger: {
           trigger: section,
-          start: "top 10%",
+          start: "top 15%",
           end: "top top",
           scrub: 0.6,
         },
       });
 
-      // Phase 3: headline words appear one at a time
-      const words = section.querySelectorAll(`.${styles.word}`);
-      words.forEach((word, i) => {
+      // Phase 3: word-by-word reveal (ICOMAT style — opacity + translateY, staggered)
+      wordEls.forEach((word, i) => {
         gsap.fromTo(
           word,
-          { opacity: 0, y: 20 },
+          { opacity: 0, y: 24 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.01,
             ease: "none",
             scrollTrigger: {
               trigger: section,
-              start: `top ${-2 - i * 3}%`,
-              end: `top ${-5 - i * 3}%`,
-              scrub: 0.4,
+              start: `top ${-1 - i * 2.5}%`,
+              end: `top ${-4 - i * 2.5}%`,
+              scrub: 0.3,
             },
           }
         );
@@ -132,40 +141,44 @@ export default function Statement() {
 
   return (
     <section ref={sectionRef} className={styles.section}>
-      {/* Micro-text fragments */}
-      <div ref={fragmentsRef} className={styles.fragmentsLayer}>
-        {CORNERS.map((corner) => {
-          const positions = generatePositions(corner.anchor, corner.data.length);
+      {/* Orbiting micro-text fragments */}
+      <div className={styles.fragmentsLayer}>
+        {fragments.map((f, i) => {
+          const rad = f.angle * (Math.PI / 180);
+          const x = Math.cos(rad) * f.radius;
+          const y = Math.sin(rad) * f.radius;
           return (
-            <div
-              key={corner.key}
-              className={`${styles.cornerCluster} ${styles[corner.anchor]}`}
+            <span
+              key={i}
+              className={styles.fragment}
+              data-radius={f.radius}
+              data-angle={f.angle}
+              style={{
+                left: "50%",
+                top: "50%",
+                transform: `translate(-50%, -50%) translate(${x}vmin, ${y}vmin) rotate(${f.rot}deg)`,
+              }}
             >
-              {corner.data.map((text, i) => (
-                <span
-                  key={i}
-                  className={styles.fragment}
-                  data-corner={corner.anchor}
-                  style={{
-                    transform: `translate(${positions[i].x}px, ${positions[i].y}px) rotate(${positions[i].rot}deg)`,
-                  }}
-                >
-                  {text}
-                </span>
-              ))}
-            </div>
+              {f.text}
+            </span>
           );
         })}
       </div>
 
-      {/* Headline */}
-      <div ref={headlineRef} className={styles.headline}>
-        {HEADLINE_WORDS.map((word, i) => (
-          <span key={i} className={styles.word}>
-            {word}
-          </span>
-        ))}
-      </div>
+      {/* Centered headline — word by word */}
+      <h2 className={styles.headline}>
+        <span className={styles.line}>
+          {HEADLINE_WORDS.slice(0, 7).map((w, i) => (
+            <span key={i} className={styles.word}>{w.text}</span>
+          ))}
+        </span>
+        <br />
+        <span className={styles.line2}>
+          {HEADLINE_WORDS.slice(7).map((w, i) => (
+            <span key={i + 7} className={styles.word}>{w.text}</span>
+          ))}
+        </span>
+      </h2>
     </section>
   );
 }
