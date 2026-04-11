@@ -2,24 +2,10 @@
   position: relative;
   min-height: 100svh;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   overflow: clip;
-  padding: clamp(132px, 14vw, 176px) 0 90px;
-  background: linear-gradient(140deg, #06111f 0%, #0c1f35 42%, #d7e1ea 100%);
-}
-
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0;
-  height: 28%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(246, 248, 250, 0.82) 70%,
-    #ffffff 100%
-  );
-  z-index: 1;
+  padding: clamp(132px, 14vw, 176px) 0 84px;
+  background: linear-gradient(180deg, #edf3f7 0%, #f8fafb 56%, #ffffff 100%);
 }
 
 .backdrop {
@@ -29,68 +15,60 @@
 
 .imageField {
   position: absolute;
-  inset: -4%;
-  opacity: 0.84;
+  inset: 0;
+  opacity: 0.28;
   transform-origin: center;
   mask-image: linear-gradient(
-    112deg,
+    104deg,
     rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.42) 28%,
-    rgba(0, 0, 0, 0.92) 56%,
+    rgba(0, 0, 0, 0.12) 34%,
+    rgba(0, 0, 0, 0.72) 62%,
     rgba(0, 0, 0, 1) 100%
   );
   -webkit-mask-image: linear-gradient(
-    112deg,
+    104deg,
     rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.42) 28%,
-    rgba(0, 0, 0, 0.92) 56%,
+    rgba(0, 0, 0, 0.12) 34%,
+    rgba(0, 0, 0, 0.72) 62%,
     rgba(0, 0, 0, 1) 100%
   );
 }
 
 .image {
   object-fit: cover;
-  object-position: 74% 22%;
-  filter: grayscale(20%) saturate(0.42) contrast(1.08) brightness(0.46);
+  object-position: 78% 24%;
+  filter: grayscale(0.9) saturate(0.34) brightness(1.32) contrast(0.78);
 }
 
 .imageVeil {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 76% 20%, rgba(141, 197, 240, 0.18), transparent 22%),
+    radial-gradient(circle at 76% 52%, rgba(161, 205, 235, 0.24), transparent 22%),
+    radial-gradient(circle at 88% 36%, rgba(255, 255, 255, 0.78), transparent 26%),
     linear-gradient(
-      104deg,
-      rgba(6, 17, 31, 0.98) 0%,
-      rgba(6, 17, 31, 0.92) 26%,
-      rgba(12, 31, 53, 0.72) 48%,
-      rgba(26, 52, 79, 0.36) 62%,
-      rgba(255, 255, 255, 0.08) 78%,
-      rgba(255, 255, 255, 0) 100%
+      90deg,
+      rgba(248, 250, 251, 1) 0%,
+      rgba(248, 250, 251, 0.96) 28%,
+      rgba(248, 250, 251, 0.82) 48%,
+      rgba(248, 250, 251, 0.22) 78%,
+      rgba(248, 250, 251, 0) 100%
     ),
     linear-gradient(
       180deg,
-      rgba(6, 17, 31, 0.06) 0%,
-      rgba(6, 17, 31, 0.18) 44%,
-      rgba(6, 17, 31, 0.56) 72%,
-      rgba(247, 248, 250, 0.94) 100%
+      rgba(244, 248, 250, 0.74) 0%,
+      rgba(244, 248, 250, 0.08) 42%,
+      rgba(255, 255, 255, 0.18) 100%
     );
 }
 
-.structureGlow {
+.atmosphere {
   position: absolute;
-  top: -12%;
-  right: -10%;
-  width: 48vw;
-  height: 48vw;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(109, 200, 255, 0.16) 0%,
-    rgba(109, 200, 255, 0.04) 42%,
-    transparent 72%
-  );
-  filter: blur(14px);
+  inset: 0;
+  background:
+    radial-gradient(circle at 70% 54%, rgba(132, 184, 221, 0.12), transparent 20%),
+    radial-gradient(circle at 84% 44%, rgba(255, 255, 255, 0.58), transparent 28%);
+  filter: blur(8px);
 }
 
 .flowField {
@@ -98,123 +76,134 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.9;
-  transform-origin: center;
+  opacity: 0.92;
+}
+
+.mistLayer {
+  opacity: 0.5;
+}
+
+.mistPath {
+  fill: none;
+  stroke: rgba(125, 174, 209, 0.18);
+  stroke-width: 18;
+  stroke-linecap: round;
+}
+
+.lineLayer {
+  opacity: 0.78;
 }
 
 .flowPath {
   fill: none;
   stroke-linecap: round;
-  stroke-width: 3.2;
-}
-
-.pathPrimary {
-  stroke: rgba(109, 200, 255, 0.94);
-}
-
-.pathSoft {
-  stroke: rgba(222, 233, 243, 0.74);
 }
 
 .pathGhost {
-  stroke: rgba(255, 255, 255, 0.24);
-  stroke-width: 2.2;
+  stroke: rgba(118, 150, 177, 0.24);
+  stroke-width: 1.1;
 }
 
-.flowNode {
-  fill: rgba(109, 200, 255, 0.9);
-  filter: drop-shadow(0 0 10px rgba(109, 200, 255, 0.28));
+.pathSteel {
+  stroke: rgba(103, 136, 165, 0.36);
+  stroke-width: 1.2;
+}
+
+.pathSoft {
+  stroke: rgba(149, 188, 218, 0.42);
+  stroke-width: 1.3;
+}
+
+.accentLayer {
+  opacity: 0.92;
+}
+
+.accentPath {
+  stroke: rgba(122, 174, 212, 0.74);
+  stroke-width: 2.2;
 }
 
 .inner {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   width: 100%;
 }
 
 .copy {
-  max-width: 42rem;
-  padding-bottom: clamp(28px, 4vw, 72px);
+  max-width: 40rem;
 }
 
 .headline {
   margin: 0;
-  max-width: 8.8ch;
+  max-width: 8.4ch;
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(3.9rem, 7vw, 7rem);
-  line-height: 0.9;
-  letter-spacing: -0.07em;
-  color: rgba(247, 250, 252, 0.98);
+  font-size: clamp(3.8rem, 6.8vw, 6.8rem);
+  line-height: 0.92;
+  letter-spacing: -0.065em;
+  color: #11263d;
   text-wrap: balance;
 }
 
 .body {
-  margin: 26px 0 0;
-  max-width: 32rem;
+  margin: 24px 0 0;
+  max-width: 31rem;
   font-family: var(--font-body);
   font-weight: 500;
-  font-size: clamp(1.02rem, 1.28vw, 1.18rem);
-  line-height: 1.78;
-  color: rgba(219, 229, 237, 0.84);
+  font-size: clamp(1.02rem, 1.22vw, 1.16rem);
+  line-height: 1.76;
+  color: rgba(17, 38, 61, 0.72);
 }
 
 .scrollCue {
   position: absolute;
   left: 50%;
   bottom: 28px;
-  z-index: 2;
+  z-index: 1;
   transform: translateX(-50%);
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(224, 234, 241, 0.62);
+  color: rgba(17, 38, 61, 0.42);
 }
 
 @media (max-width: 768px) {
   .hero {
-    align-items: flex-end;
     padding: 118px 0 72px;
-    background: linear-gradient(180deg, #06111f 0%, #0d2238 42%, #dfe7ee 100%);
   }
 
   .imageField {
-    inset: -2%;
+    opacity: 0.2;
     mask-image: linear-gradient(
       180deg,
-      rgba(0, 0, 0, 0.22) 0%,
-      rgba(0, 0, 0, 0.86) 44%,
-      rgba(0, 0, 0, 1) 100%
+      rgba(0, 0, 0, 0.08) 0%,
+      rgba(0, 0, 0, 0.48) 48%,
+      rgba(0, 0, 0, 0.88) 100%
     );
     -webkit-mask-image: linear-gradient(
       180deg,
-      rgba(0, 0, 0, 0.22) 0%,
-      rgba(0, 0, 0, 0.86) 44%,
-      rgba(0, 0, 0, 1) 100%
+      rgba(0, 0, 0, 0.08) 0%,
+      rgba(0, 0, 0, 0.48) 48%,
+      rgba(0, 0, 0, 0.88) 100%
     );
   }
 
   .image {
-    object-position: 68% 18%;
+    object-position: 70% 24%;
   }
 
   .flowField {
-    opacity: 0.74;
-  }
-
-  .copy {
-    max-width: 100%;
-    padding-bottom: 22px;
+    opacity: 0.76;
   }
 
   .headline {
-    max-width: 8.2ch;
-    font-size: clamp(3.15rem, 12vw, 4.8rem);
+    max-width: 8ch;
+    font-size: clamp(3rem, 11vw, 4.8rem);
   }
 
   .body {
-    max-width: 25rem;
+    max-width: 24rem;
     font-size: 0.98rem;
   }
 

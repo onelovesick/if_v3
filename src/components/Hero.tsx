@@ -6,52 +6,60 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import styles from "./Hero.module.css";
 
-const FLOW_PATHS = [
+const FLOW_MIST_PATHS = [
+  "M -120 640 C 180 648, 420 608, 690 530 S 1160 342, 1710 120",
+  "M -90 586 C 210 594, 448 562, 716 492 S 1176 324, 1710 136",
+  "M -72 540 C 226 548, 462 522, 728 458 S 1188 306, 1710 156",
+];
+
+const FLOW_LINES = [
   {
-    d: "M -40 706 C 160 706, 238 652, 360 628 S 562 570, 724 474 S 1044 286, 1460 278",
+    d: "M -84 668 C 176 668, 350 628, 604 548 S 1076 360, 1708 126",
     tone: "ghost",
   },
   {
-    d: "M -32 642 C 154 642, 250 612, 380 596 S 580 530, 748 428 S 1060 264, 1460 226",
+    d: "M -76 630 C 184 630, 364 600, 618 530 S 1086 350, 1708 132",
+    tone: "steel",
+  },
+  {
+    d: "M -68 592 C 194 592, 376 572, 632 512 S 1098 338, 1706 140",
     tone: "soft",
   },
   {
-    d: "M -26 586 C 158 586, 266 562, 396 546 S 608 486, 776 380 S 1080 222, 1460 180",
-    tone: "primary",
-  },
-  {
-    d: "M -20 532 C 162 532, 270 516, 408 500 S 624 444, 798 332 S 1096 198, 1460 146",
-    tone: "soft",
-  },
-  {
-    d: "M -12 478 C 160 478, 274 470, 416 452 S 636 398, 816 284 S 1110 178, 1460 126",
-    tone: "primary",
-  },
-  {
-    d: "M -8 424 C 164 424, 280 422, 432 406 S 652 354, 838 238 S 1124 160, 1460 114",
+    d: "M -58 554 C 202 554, 390 544, 646 492 S 1110 326, 1706 150",
     tone: "ghost",
   },
   {
-    d: "M 0 370 C 170 370, 292 372, 448 362 S 670 318, 860 212 S 1138 150, 1460 118",
+    d: "M -48 516 C 214 516, 404 514, 662 474 S 1122 316, 1706 162",
     tone: "soft",
+  },
+  {
+    d: "M -36 478 C 224 478, 420 484, 680 458 S 1140 308, 1706 180",
+    tone: "steel",
+  },
+  {
+    d: "M -24 440 C 236 440, 434 454, 698 442 S 1158 304, 1706 206",
+    tone: "ghost",
+  },
+  {
+    d: "M -12 404 C 248 404, 452 424, 720 428 S 1180 306, 1706 236",
+    tone: "steel",
   },
 ];
 
-const FLOW_NODES = [
-  { cx: 864, cy: 318, r: 5.5 },
-  { cx: 934, cy: 262, r: 4.5 },
-  { cx: 1016, cy: 214, r: 5 },
-  { cx: 1092, cy: 172, r: 4.5 },
-  { cx: 1168, cy: 142, r: 5.5 },
+const ACCENT_LINES = [
+  "M 84 604 C 350 604, 556 556, 784 478 S 1192 316, 1710 144",
+  "M 42 560 C 314 560, 528 526, 770 456 S 1194 304, 1710 154",
+  "M 12 520 C 290 520, 512 498, 762 438 S 1192 300, 1710 176",
 ];
 
 function getToneClassName(tone: string) {
-  if (tone === "primary") {
-    return styles.pathPrimary;
-  }
-
   if (tone === "soft") {
     return styles.pathSoft;
+  }
+
+  if (tone === "steel") {
+    return styles.pathSteel;
   }
 
   return styles.pathGhost;
@@ -80,74 +88,72 @@ export default function Hero() {
       });
 
       gsap.from("[data-copy-item]", {
-        y: 40,
+        y: 36,
         opacity: 0,
-        duration: 1,
+        duration: 0.95,
         stagger: 0.12,
         ease: "power3.out",
         delay: 0.12,
       });
 
-      gsap.from(`.${styles.flowNode}`, {
-        scale: 0,
+      gsap.from(`.${styles.flowField}`, {
         opacity: 0,
-        duration: 0.7,
-        stagger: 0.08,
-        ease: "back.out(1.7)",
-        delay: 0.4,
-      });
-
-      gsap.to(flowPaths, {
-        strokeDashoffset: 0,
-        duration: 1.7,
-        stagger: 0.08,
+        scale: 0.98,
+        duration: 1.2,
         ease: "power2.out",
         delay: 0.18,
       });
 
-      gsap.to(`.${styles.imageField}`, {
-        yPercent: -8,
-        scale: 1.04,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.9,
-        },
+      gsap.to(flowPaths, {
+        strokeDashoffset: 0,
+        duration: 1.8,
+        stagger: 0.03,
+        ease: "power2.out",
+        delay: 0.22,
       });
 
-      gsap.to(`.${styles.flowField}`, {
-        yPercent: -10,
+      gsap.to(`.${styles.imageField}`, {
+        yPercent: -4,
         scale: 1.02,
         ease: "none",
         scrollTrigger: {
           trigger: section,
           start: "top top",
           end: "bottom top",
-          scrub: 0.82,
+          scrub: 0.8,
         },
       });
 
-      gsap.to(`.${styles.copy}`, {
-        y: -42,
+      gsap.to(`.${styles.flowField}`, {
+        yPercent: -6,
         ease: "none",
         scrollTrigger: {
           trigger: section,
           start: "top top",
           end: "bottom top",
-          scrub: 0.7,
+          scrub: 0.74,
+        },
+      });
+
+      gsap.to(`.${styles.copy}`, {
+        y: -26,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.68,
         },
       });
 
       gsap.to(`.${styles.scrollCue}`, {
         opacity: 0,
-        y: -24,
+        y: -20,
         ease: "none",
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "top+=260 top",
+          end: "top+=220 top",
           scrub: 0.6,
         },
       });
@@ -170,31 +176,53 @@ export default function Hero() {
         </div>
 
         <div className={styles.imageVeil} />
-        <div className={styles.structureGlow} />
+        <div className={styles.atmosphere} />
 
         <svg
           className={styles.flowField}
-          viewBox="0 0 1400 900"
+          viewBox="0 0 1700 900"
           preserveAspectRatio="none"
         >
-          {FLOW_PATHS.map((path) => (
-            <path
-              key={path.d}
-              d={path.d}
-              data-flow-path
-              className={`${styles.flowPath} ${getToneClassName(path.tone)}`}
-            />
-          ))}
+          <defs>
+            <filter id="hero-soft-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="16" />
+            </filter>
+            <filter id="hero-line-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
 
-          {FLOW_NODES.map((node) => (
-            <circle
-              key={`${node.cx}-${node.cy}`}
-              cx={node.cx}
-              cy={node.cy}
-              r={node.r}
-              className={styles.flowNode}
-            />
-          ))}
+          <g className={styles.mistLayer} filter="url(#hero-soft-glow)">
+            {FLOW_MIST_PATHS.map((path) => (
+              <path key={path} d={path} className={styles.mistPath} />
+            ))}
+          </g>
+
+          <g className={styles.lineLayer}>
+            {FLOW_LINES.map((path) => (
+              <path
+                key={path.d}
+                d={path.d}
+                data-flow-path
+                className={`${styles.flowPath} ${getToneClassName(path.tone)}`}
+              />
+            ))}
+          </g>
+
+          <g className={styles.accentLayer} filter="url(#hero-line-glow)">
+            {ACCENT_LINES.map((path) => (
+              <path
+                key={path}
+                d={path}
+                data-flow-path
+                className={`${styles.flowPath} ${styles.accentPath}`}
+              />
+            ))}
+          </g>
         </svg>
       </div>
 
