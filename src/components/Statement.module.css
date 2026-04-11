@@ -8,38 +8,25 @@
   background: var(--white);
 }
 
-/* ─── FRAGMENTS LAYER ─── */
-.fragmentsLayer {
+.canvas {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 1;
 }
 
-.fragment {
-  position: absolute;
-  font-family: var(--font-mono);
-  font-weight: 400;
-  font-size: 9px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  opacity: 0.3;
-  white-space: nowrap;
-  will-change: transform;
-}
-
-/* ─── HEADLINE ─── */
 .headline {
   position: relative;
   z-index: 2;
   text-align: center;
-  max-width: 960px;
+  max-width: 900px;
   padding: 0 40px;
   margin: 0;
 }
 
-.line,
+.line1,
 .line2 {
   display: inline;
 }
@@ -54,28 +41,21 @@
   letter-spacing: -0.015em;
   color: var(--text-heading);
   opacity: 0;
-  margin: 0 0.2em 0.12em 0;
+  margin: 0 0.22em 0.14em 0;
 }
 
-/* Second line words — slightly muted until revealed */
 .line2 .word {
   color: var(--text-body);
 }
 
-/* "structure." gets heavy weight */
 .line2 .word:last-child {
   font-weight: 900;
   color: var(--text-heading);
 }
 
-/* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
   .word {
     font-size: clamp(1.6rem, 7vw, 2.4rem);
-  }
-
-  .fragment {
-    font-size: 7px;
   }
 
   .headline {
