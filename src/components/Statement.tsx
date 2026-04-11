@@ -15,11 +15,12 @@ function seededRandom(seed: number) {
   };
 }
 
+const radiusState = { value: 1 };
+
 export default function Statement() {
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Canvas particle ring
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -38,7 +39,6 @@ export default function Statement() {
       });
     }
 
-    let radiusFactor = 1;
     let raf: number;
 
     const resize = () => {
@@ -52,7 +52,7 @@ export default function Statement() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const cx = canvas.width / 2;
       const cy = canvas.height / 2;
-      const baseRadius = Math.min(canvas.width, canvas.height) * 0.42 * radiusFactor;
+      const baseRadius = Math.min(canvas.width, canvas.height) * 0.42 * radiusState.value;
 
       particles.forEach((p) => {
         const r = baseRadius * (1 + p.radiusOffset);
@@ -61,16 +61,13 @@ export default function Statement() {
 
         ctx.beginPath();
         ctx.arc(x, y, p.size * devicePixelRatio, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(90, 90, 90, ${p.opacity * radiusFactor})`;
+        ctx.fillStyle = `rgba(90, 90, 90, ${p.opacity})`;
         ctx.fill();
       });
 
       raf = requestAnimationFrame(draw);
     };
     draw();
-
-    // Expose setter for GSAP
-    (canvas as any).__setRadius = (v: number) => { radiusFactor = v; };
 
     return () => {
       cancelAnimationFrame(raf);
@@ -81,30 +78,22 @@ export default function Statement() {
   useGSAP(
     () => {
       const section = sectionRef.current;
-      const canvas = canvasRef.current;
-      if (!section || !canvas) return;
+      if (!section) return;
 
-      // Circle tightens from full to ~50% as section enters
-      gsap.fromTo(
-        { v: 1 },
-        { v: 1 },
-        {
-          v: 0.5,
-          ease: "none",
-          onUpdate: function () {
-            (canvas as any).__setRadius(this.targets()[0].v);
-          },
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "top top",
-            scrub: 0.8,
-          },
-        }
-      );
+      // Circle tightens
+      gsap.to(radiusState, {
+        value: 0.5,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "top top",
+          scrub: 0.8,
+        },
+      });
 
-      // Fade out particles as section settles
-      gsap.to(canvas, {
+      // Fade out canvas
+      gsap.to(canvasRef.current, {
         opacity: 0,
         ease: "none",
         scrollTrigger: {
@@ -115,11 +104,11 @@ export default function Statement() {
         },
       });
 
-      // Word reveal — all complete by 100vh
+      // Word reveal — all done by 100vh
       const words = section.querySelectorAll(`.${styles.word}`);
-      const totalWords = words.length;
+      const total = words.length;
       words.forEach((word, i) => {
-        const startPct = 80 - (i / totalWords) * 65; // spread across 80% → 15%
+        const startPct = 80 - (i / total) * 65;
         const endPct = startPct - 6;
         gsap.fromTo(
           word,
