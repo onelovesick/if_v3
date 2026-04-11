@@ -48,6 +48,13 @@ const ACCENT_LINES = [
   "M 34 574 C 300 574, 534 538, 782 468 S 1204 310, 1710 160",
 ];
 
+const DEPTH_LINES = [
+  "M -76 646 C 182 646, 370 620, 628 548 S 1100 362, 1710 138",
+  "M -34 532 C 220 532, 420 536, 684 490 S 1140 326, 1710 176",
+  "M 72 612 C 334 612, 556 564, 790 488 S 1200 320, 1710 148",
+  "M 34 574 C 300 574, 534 538, 782 468 S 1204 310, 1710 160",
+];
+
 function getToneClassName(tone: string) {
   if (tone === "soft") {
     return styles.pathSoft;
@@ -70,9 +77,18 @@ export default function Hero() {
         return;
       }
 
+      const cleanup: Array<() => void> = [];
+
       const flowPaths = Array.from(
         section.querySelectorAll<SVGPathElement>("[data-flow-path]")
       );
+      const flowField = section.querySelector<SVGSVGElement>(`.${styles.flowField}`);
+      const imageField = section.querySelector<HTMLElement>(`.${styles.imageField}`);
+      const atmosphere = section.querySelector<HTMLElement>(`.${styles.atmosphere}`);
+      const mistLayer = section.querySelector<SVGGElement>(`.${styles.mistLayer}`);
+      const depthLayer = section.querySelector<SVGGElement>(`.${styles.depthLayer}`);
+      const lineLayer = section.querySelector<SVGGElement>(`.${styles.lineLayer}`);
+      const accentLayer = section.querySelector<SVGGElement>(`.${styles.accentLayer}`);
 
       flowPaths.forEach((path) => {
         const length = path.getTotalLength();
@@ -163,6 +179,135 @@ export default function Hero() {
           scrub: 0.6,
         },
       });
+
+      if (
+        window.matchMedia("(min-width: 769px) and (pointer: fine)").matches &&
+        flowField &&
+        imageField &&
+        atmosphere &&
+        mistLayer &&
+        depthLayer &&
+        lineLayer &&
+        accentLayer
+      ) {
+        gsap.set(section, {
+          transformPerspective: 1400,
+        });
+
+        const moveImageX = gsap.quickTo(imageField, "x", {
+          duration: 1.2,
+          ease: "power3.out",
+        });
+        const moveImageY = gsap.quickTo(imageField, "y", {
+          duration: 1.2,
+          ease: "power3.out",
+        });
+        const moveAtmosphereX = gsap.quickTo(atmosphere, "x", {
+          duration: 1.12,
+          ease: "power3.out",
+        });
+        const moveAtmosphereY = gsap.quickTo(atmosphere, "y", {
+          duration: 1.12,
+          ease: "power3.out",
+        });
+        const moveMistX = gsap.quickTo(mistLayer, "x", {
+          duration: 1.04,
+          ease: "power3.out",
+        });
+        const moveMistY = gsap.quickTo(mistLayer, "y", {
+          duration: 1.04,
+          ease: "power3.out",
+        });
+        const moveDepthX = gsap.quickTo(depthLayer, "x", {
+          duration: 0.98,
+          ease: "power3.out",
+        });
+        const moveDepthY = gsap.quickTo(depthLayer, "y", {
+          duration: 0.98,
+          ease: "power3.out",
+        });
+        const moveLineX = gsap.quickTo(lineLayer, "x", {
+          duration: 0.92,
+          ease: "power3.out",
+        });
+        const moveLineY = gsap.quickTo(lineLayer, "y", {
+          duration: 0.92,
+          ease: "power3.out",
+        });
+        const moveAccentX = gsap.quickTo(accentLayer, "x", {
+          duration: 0.84,
+          ease: "power3.out",
+        });
+        const moveAccentY = gsap.quickTo(accentLayer, "y", {
+          duration: 0.84,
+          ease: "power3.out",
+        });
+        const rotateFlowX = gsap.quickTo(flowField, "rotationX", {
+          duration: 1.05,
+          ease: "power3.out",
+        });
+        const rotateFlowY = gsap.quickTo(flowField, "rotationY", {
+          duration: 1.05,
+          ease: "power3.out",
+        });
+        const scaleFlow = gsap.quickTo(flowField, "scale", {
+          duration: 1.05,
+          ease: "power3.out",
+        });
+
+        const handlePointerMove = (event: PointerEvent) => {
+          const bounds = section.getBoundingClientRect();
+          const offsetX = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+          const offsetY = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+
+          moveImageX(offsetX * 10);
+          moveImageY(offsetY * 8);
+          moveAtmosphereX(offsetX * 18);
+          moveAtmosphereY(offsetY * 14);
+          moveMistX(offsetX * 14);
+          moveMistY(offsetY * 10);
+          moveDepthX(offsetX * 18);
+          moveDepthY(offsetY * 14);
+          moveLineX(offsetX * 24);
+          moveLineY(offsetY * 18);
+          moveAccentX(offsetX * 34);
+          moveAccentY(offsetY * 22);
+          rotateFlowY(offsetX * 1.85);
+          rotateFlowX(offsetY * -1.35);
+          scaleFlow(1.008);
+        };
+
+        const resetInteraction = () => {
+          moveImageX(0);
+          moveImageY(0);
+          moveAtmosphereX(0);
+          moveAtmosphereY(0);
+          moveMistX(0);
+          moveMistY(0);
+          moveDepthX(0);
+          moveDepthY(0);
+          moveLineX(0);
+          moveLineY(0);
+          moveAccentX(0);
+          moveAccentY(0);
+          rotateFlowX(0);
+          rotateFlowY(0);
+          scaleFlow(1);
+        };
+
+        section.addEventListener("pointermove", handlePointerMove);
+        section.addEventListener("pointerleave", resetInteraction);
+
+        cleanup.push(() => {
+          section.removeEventListener("pointermove", handlePointerMove);
+          section.removeEventListener("pointerleave", resetInteraction);
+          resetInteraction();
+        });
+      }
+
+      return () => {
+        cleanup.forEach((fn) => fn());
+      };
     },
     { scope: sectionRef }
   );
@@ -206,6 +351,17 @@ export default function Hero() {
           <g className={styles.mistLayer} filter="url(#hero-soft-glow)">
             {FLOW_MIST_PATHS.map((path) => (
               <path key={path} d={path} className={styles.mistPath} />
+            ))}
+          </g>
+
+          <g className={styles.depthLayer} filter="url(#hero-soft-glow)">
+            {DEPTH_LINES.map((path) => (
+              <path
+                key={path}
+                d={path}
+                data-flow-path
+                className={`${styles.flowPath} ${styles.depthPath}`}
+              />
             ))}
           </g>
 
