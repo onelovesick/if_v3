@@ -328,7 +328,6 @@ export default function Hero() {
 
         <div className={styles.imageVeil} />
         <div className={styles.atmosphere} />
-        <div className={styles.bottomBlend} />
 
         <svg
           className={styles.flowField}

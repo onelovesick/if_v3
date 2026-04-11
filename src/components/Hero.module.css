@@ -1,15 +1,55 @@
 .hero {
+  --hero-spill: clamp(140px, 18svh, 220px);
   position: relative;
   min-height: 100svh;
   overflow: visible;
-  background: #07121f;
+  background: transparent;
   z-index: 1;
 }
 
 .backdrop {
   position: absolute;
-  inset: 0;
+  inset: 0 0 calc(var(--hero-spill) * -1) 0;
   perspective: 1400px;
+  mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 56%,
+    rgba(0, 0, 0, 0.95) 68%,
+    rgba(0, 0, 0, 0.76) 80%,
+    rgba(0, 0, 0, 0.38) 90%,
+    rgba(0, 0, 0, 0.08) 96%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 56%,
+    rgba(0, 0, 0, 0.95) 68%,
+    rgba(0, 0, 0, 0.76) 80%,
+    rgba(0, 0, 0, 0.38) 90%,
+    rgba(0, 0, 0, 0.08) 96%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.backdrop::after {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -4svh;
+  height: 34svh;
+  background:
+    radial-gradient(
+      84% 100% at 50% 100%,
+      rgba(255, 255, 255, 0.88) 0%,
+      rgba(255, 255, 255, 0.36) 28%,
+      rgba(255, 255, 255, 0.08) 52%,
+      rgba(255, 255, 255, 0) 74%
+    );
+  filter: blur(34px);
+  pointer-events: none;
 }
 
 .imageField {
@@ -55,9 +95,11 @@
     ),
     linear-gradient(
       180deg,
-      rgba(7, 18, 31, 0.16) 0%,
-      rgba(7, 18, 31, 0.04) 42%,
-      rgba(255, 255, 255, 0.08) 100%
+      rgba(7, 18, 31, 0.14) 0%,
+      rgba(7, 18, 31, 0.05) 48%,
+      rgba(255, 255, 255, 0.04) 72%,
+      rgba(255, 255, 255, 0.22) 90%,
+      rgba(255, 255, 255, 0.62) 100%
     );
 }
 
@@ -71,42 +113,11 @@
   will-change: transform;
 }
 
-.bottomBlend {
-  position: absolute;
-  left: -6%;
-  right: -6%;
-  bottom: -22svh;
-  height: 54svh;
-  background:
-    radial-gradient(
-      140% 96% at 14% 100%,
-      rgba(255, 255, 255, 0.62) 0%,
-      rgba(255, 255, 255, 0.18) 28%,
-      rgba(255, 255, 255, 0) 68%
-    ),
-    radial-gradient(
-      140% 100% at 86% 100%,
-      rgba(255, 255, 255, 0.58) 0%,
-      rgba(255, 255, 255, 0.16) 30%,
-      rgba(255, 255, 255, 0) 70%
-    ),
-    radial-gradient(
-      112% 76% at 50% 100%,
-      rgba(255, 255, 255, 0.96) 0%,
-      rgba(252, 253, 254, 0.62) 26%,
-      rgba(249, 251, 252, 0.2) 50%,
-      rgba(246, 248, 250, 0) 74%
-    );
-  filter: blur(44px);
-  opacity: 0.98;
-  pointer-events: none;
-}
-
 .flowField {
   position: absolute;
   inset: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% + var(--hero-spill));
   opacity: 0.7;
   transform-origin: 62% 50%;
   transform-style: preserve-3d;
@@ -300,12 +311,10 @@
     font-size: 0.98rem;
   }
 
-  .bottomBlend {
-    left: -12%;
-    right: -12%;
-    bottom: -16svh;
-    height: 34svh;
-    filter: blur(30px);
+  .backdrop::after {
+    bottom: -6svh;
+    height: 24svh;
+    filter: blur(24px);
   }
 
   .scrollCue {
