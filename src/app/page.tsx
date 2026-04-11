@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import Statement from "@/components/Statement";
+import Pillars from "@/components/Pillars";
 
 export default function Home() {
   return (
@@ -10,7 +11,10 @@ export default function Home() {
       {/* S2 — Statement */}
       <Statement />
 
-      {/* S3 — 3D Bridge (placeholder dark zone) */}
+      {/* S3 — Pillars */}
+      <Pillars />
+
+      {/* S4 — 3D Bridge (placeholder dark zone) */}
       <section className="section-dark" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div className="page-container" style={{ textAlign: "center" }}>
           <p className="text-mono-label" style={{ color: "var(--blue)", marginBottom: "var(--space-24)" }}>

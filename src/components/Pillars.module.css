@@ -1,0 +1,205 @@
+.section {
+  position: relative;
+  padding: 160px 0 120px;
+  background: var(--white);
+  overflow: hidden;
+}
+
+.layout {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
+}
+
+/* ─── VENN CONTAINER ─── */
+.vennContainer {
+  perspective: 900px;
+}
+
+.venn {
+  position: relative;
+  width: 420px;
+  height: 380px;
+  transform: rotateX(8deg);
+  transform-style: preserve-3d;
+}
+
+/* ─── CIRCLES ─── */
+.circle {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  will-change: transform, opacity;
+}
+
+.circleInner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid rgba(8, 18, 37, 0.12);
+  box-shadow:
+    0 8px 32px rgba(8, 18, 37, 0.08),
+    0 2px 8px rgba(8, 18, 37, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.circle1 {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.circle1 .circleInner {
+  background: linear-gradient(
+    145deg,
+    rgba(8, 18, 37, 0.06) 0%,
+    rgba(11, 60, 93, 0.10) 50%,
+    rgba(71, 181, 255, 0.06) 100%
+  );
+  backdrop-filter: blur(2px);
+}
+
+.circle2 {
+  bottom: 0;
+  left: 0;
+}
+.circle2 .circleInner {
+  background: linear-gradient(
+    220deg,
+    rgba(8, 18, 37, 0.06) 0%,
+    rgba(11, 60, 93, 0.12) 50%,
+    rgba(71, 181, 255, 0.05) 100%
+  );
+  backdrop-filter: blur(2px);
+}
+
+.circle3 {
+  bottom: 0;
+  right: 0;
+}
+.circle3 .circleInner {
+  background: linear-gradient(
+    320deg,
+    rgba(8, 18, 37, 0.06) 0%,
+    rgba(11, 60, 93, 0.11) 50%,
+    rgba(71, 181, 255, 0.06) 100%
+  );
+  backdrop-filter: blur(2px);
+}
+
+/* ─── CENTER TARGET ─── */
+.target {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  filter: drop-shadow(0 2px 8px rgba(8, 18, 37, 0.15));
+}
+
+.target svg circle,
+.target svg line {
+  stroke: var(--navy);
+  fill: none;
+}
+
+.target svg circle:last-of-type {
+  fill: var(--navy);
+}
+
+/* ─── CONNECTOR DOTS ─── */
+.dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--navy);
+  z-index: 2;
+}
+
+.dotTop {
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dotLeft {
+  bottom: 80px;
+  left: 100px;
+}
+
+.dotRight {
+  bottom: 80px;
+  right: 100px;
+}
+
+/* ─── PILLARS GRID ─── */
+.pillarsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+  width: 100%;
+}
+
+.pillar {
+  will-change: transform, opacity;
+}
+
+.pillarNumber {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--blue);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.pillarLabel {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  letter-spacing: -0.01em;
+  color: var(--text-heading);
+  margin: 0 0 12px;
+}
+
+.pillarText {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .section {
+    padding: 100px 0 80px;
+  }
+
+  .venn {
+    width: 300px;
+    height: 280px;
+    transform: rotateX(5deg);
+  }
+
+  .circle {
+    width: 180px;
+    height: 180px;
+  }
+
+  .pillarsGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .dotLeft { left: 70px; }
+  .dotRight { right: 70px; }
+  .dotTop { top: 90px; }
+}
