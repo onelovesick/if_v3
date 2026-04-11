@@ -7,50 +7,45 @@ import { gsap } from "@/lib/gsap";
 import styles from "./Hero.module.css";
 
 const FLOW_MIST_PATHS = [
-  "M -120 640 C 180 648, 420 608, 690 530 S 1160 342, 1710 120",
-  "M -90 586 C 210 594, 448 562, 716 492 S 1176 324, 1710 136",
-  "M -72 540 C 226 548, 462 522, 728 458 S 1188 306, 1710 156",
+  "M -120 648 C 182 654, 420 620, 694 546 S 1180 356, 1710 128",
+  "M -88 590 C 214 596, 454 568, 722 500 S 1190 334, 1710 142",
+  "M -64 546 C 236 550, 470 530, 736 468 S 1200 316, 1710 164",
 ];
 
 const FLOW_LINES = [
   {
-    d: "M -84 668 C 176 668, 350 628, 604 548 S 1076 360, 1708 126",
+    d: "M -86 684 C 168 684, 354 648, 612 564 S 1088 372, 1710 132",
     tone: "ghost",
   },
   {
-    d: "M -76 630 C 184 630, 364 600, 618 530 S 1086 350, 1708 132",
+    d: "M -76 646 C 182 646, 370 620, 628 548 S 1100 362, 1710 138",
     tone: "steel",
   },
   {
-    d: "M -68 592 C 194 592, 376 572, 632 512 S 1098 338, 1706 140",
+    d: "M -64 608 C 194 608, 386 592, 644 528 S 1110 348, 1710 146",
     tone: "soft",
   },
   {
-    d: "M -58 554 C 202 554, 390 544, 646 492 S 1110 326, 1706 150",
+    d: "M -50 570 C 206 570, 402 564, 662 508 S 1122 336, 1710 158",
     tone: "ghost",
   },
   {
-    d: "M -48 516 C 214 516, 404 514, 662 474 S 1122 316, 1706 162",
+    d: "M -34 532 C 220 532, 420 536, 684 490 S 1140 326, 1710 176",
+    tone: "steel",
+  },
+  {
+    d: "M -18 494 C 236 494, 438 508, 706 474 S 1160 320, 1710 202",
     tone: "soft",
   },
   {
-    d: "M -36 478 C 224 478, 420 484, 680 458 S 1140 308, 1706 180",
-    tone: "steel",
-  },
-  {
-    d: "M -24 440 C 236 440, 434 454, 698 442 S 1158 304, 1706 206",
+    d: "M -4 456 C 252 456, 456 478, 726 458 S 1180 320, 1710 232",
     tone: "ghost",
-  },
-  {
-    d: "M -12 404 C 248 404, 452 424, 720 428 S 1180 306, 1706 236",
-    tone: "steel",
   },
 ];
 
 const ACCENT_LINES = [
-  "M 84 604 C 350 604, 556 556, 784 478 S 1192 316, 1710 144",
-  "M 42 560 C 314 560, 528 526, 770 456 S 1194 304, 1710 154",
-  "M 12 520 C 290 520, 512 498, 762 438 S 1192 300, 1710 176",
+  "M 72 612 C 334 612, 556 564, 790 488 S 1200 320, 1710 148",
+  "M 34 574 C 300 574, 534 538, 782 468 S 1204 310, 1710 160",
 ];
 
 function getToneClassName(tone: string) {
@@ -88,17 +83,17 @@ export default function Hero() {
       });
 
       gsap.from("[data-copy-item]", {
-        y: 36,
+        y: 34,
         opacity: 0,
         duration: 0.95,
-        stagger: 0.12,
+        stagger: 0.14,
         ease: "power3.out",
         delay: 0.12,
       });
 
       gsap.from(`.${styles.flowField}`, {
         opacity: 0,
-        scale: 0.98,
+        scale: 0.985,
         duration: 1.2,
         ease: "power2.out",
         delay: 0.18,
@@ -113,36 +108,47 @@ export default function Hero() {
       });
 
       gsap.to(`.${styles.imageField}`, {
-        yPercent: -4,
-        scale: 1.02,
+        yPercent: -3,
+        scale: 1.015,
         ease: "none",
         scrollTrigger: {
           trigger: section,
           start: "top top",
           end: "bottom top",
-          scrub: 0.8,
+          scrub: 0.76,
         },
       });
 
       gsap.to(`.${styles.flowField}`, {
-        yPercent: -6,
+        yPercent: -4,
         ease: "none",
         scrollTrigger: {
           trigger: section,
           start: "top top",
           end: "bottom top",
-          scrub: 0.74,
+          scrub: 0.72,
         },
       });
 
-      gsap.to(`.${styles.copy}`, {
-        y: -26,
+      gsap.to(`.${styles.headlineWrap}`, {
+        y: 60,
         ease: "none",
         scrollTrigger: {
           trigger: section,
           start: "top top",
           end: "bottom top",
-          scrub: 0.68,
+          scrub: 0.7,
+        },
+      });
+
+      gsap.to(`.${styles.bodyWrap}`, {
+        y: 92,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.72,
         },
       });
 
@@ -177,6 +183,7 @@ export default function Hero() {
 
         <div className={styles.imageVeil} />
         <div className={styles.atmosphere} />
+        <div className={styles.bottomBlend} />
 
         <svg
           className={styles.flowField}
@@ -185,10 +192,10 @@ export default function Hero() {
         >
           <defs>
             <filter id="hero-soft-glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="16" />
+              <feGaussianBlur stdDeviation="18" />
             </filter>
             <filter id="hero-line-glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="5" result="blur" />
+              <feGaussianBlur stdDeviation="4" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
@@ -227,16 +234,21 @@ export default function Hero() {
       </div>
 
       <div className={`${styles.inner} page-container`}>
-        <div className={styles.copy}>
-          <h1 className={styles.headline} data-copy-item>
-            Human-Led, Digitally Enabled.
-          </h1>
+        <div className={styles.layout}>
+          <div className={styles.headlineWrap} data-copy-item>
+            <h1 className={styles.headline}>
+              <span>Human-Led,</span>
+              <span>Digitally Enabled.</span>
+            </h1>
+          </div>
 
-          <p className={styles.body} data-copy-item>
-            Infraforma brings fragmented construction information into a
-            disciplined flow so project teams can make clearer decisions,
-            maintain context, and deliver with greater control.
-          </p>
+          <div className={styles.bodyWrap} data-copy-item>
+            <p className={styles.body}>
+              Infraforma brings fragmented construction information into a
+              disciplined flow so project teams can make clearer decisions,
+              maintain context, and deliver with greater control.
+            </p>
+          </div>
         </div>
       </div>
 
