@@ -1,0 +1,240 @@
+.section {
+  position: relative;
+  background: linear-gradient(180deg, #f7f8fa 0%, #edf3f7 100%);
+  overflow: hidden;
+}
+
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(8, 18, 37, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(8, 18, 37, 0.04) 1px, transparent 1px);
+  background-size: 104px 104px;
+  opacity: 0.22;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  box-sizing: border-box;
+  display: grid;
+  align-content: center;
+  gap: 26px;
+  padding: 118px 0 84px;
+}
+
+.header {
+  max-width: 66rem;
+}
+
+.kicker {
+  margin: 0 0 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(8, 18, 37, 0.52);
+}
+
+.headline {
+  margin: 0;
+  max-width: 14ch;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.8rem, 4.7vw, 4.8rem);
+  line-height: 0.94;
+  letter-spacing: -0.05em;
+  color: var(--navy);
+  text-wrap: balance;
+}
+
+.stageGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.stageCard {
+  padding: 22px 22px 20px;
+  border-radius: 24px;
+  border: 1px solid rgba(8, 18, 37, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow:
+    0 20px 46px rgba(8, 18, 37, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.stageTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.14rem, 1.6vw, 1.4rem);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  color: var(--navy);
+}
+
+.stageText {
+  margin: 12px 0 0;
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  line-height: 1.68;
+  color: rgba(8, 18, 37, 0.62);
+}
+
+.diagramShell {
+  position: relative;
+  min-height: clamp(360px, 42vw, 540px);
+  border-radius: 34px;
+  overflow: hidden;
+  border: 1px solid rgba(8, 18, 37, 0.08);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(236, 242, 247, 0.96) 100%
+  );
+  box-shadow:
+    0 30px 80px rgba(8, 18, 37, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.diagramShell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(8, 18, 37, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(8, 18, 37, 0.04) 1px, transparent 1px);
+  background-size: 96px 96px;
+  opacity: 0.28;
+  mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.outputGlow {
+  position: absolute;
+  top: 16%;
+  right: 4%;
+  width: 34%;
+  height: 64%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(109, 200, 255, 0.2) 0%,
+    rgba(109, 200, 255, 0.06) 42%,
+    transparent 72%
+  );
+  filter: blur(18px);
+}
+
+.diagram {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.diagramPath {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.chaosLayer .pathPrimary {
+  stroke: rgba(71, 181, 255, 0.72);
+}
+
+.chaosLayer .pathSteel {
+  stroke: rgba(127, 154, 179, 0.74);
+}
+
+.chaosLayer .pathGhost {
+  stroke: rgba(210, 220, 229, 0.84);
+}
+
+.alignedLayer .pathPrimary {
+  stroke: rgba(71, 181, 255, 0.96);
+}
+
+.alignedLayer .pathSteel {
+  stroke: rgba(109, 138, 165, 0.88);
+}
+
+.alignedLayer .pathGhost {
+  stroke: rgba(229, 236, 242, 0.96);
+}
+
+.core {
+  transform-origin: center;
+}
+
+.coreFrame {
+  fill: rgba(8, 18, 37, 0.06);
+  stroke: rgba(8, 18, 37, 0.12);
+  stroke-width: 1.5;
+}
+
+.coreBand {
+  fill: rgba(8, 18, 37, 0.82);
+}
+
+.coreBandSoft {
+  fill: rgba(109, 200, 255, 0.24);
+}
+
+.inputNode {
+  fill: rgba(8, 18, 37, 0.22);
+}
+
+.outputNode {
+  fill: rgba(71, 181, 255, 0.78);
+  filter: drop-shadow(0 0 8px rgba(71, 181, 255, 0.22));
+}
+
+@media (max-width: 768px) {
+  .inner {
+    min-height: auto;
+    gap: 20px;
+    padding: 88px 0 96px;
+  }
+
+  .headline {
+    font-size: clamp(2.4rem, 8.8vw, 3.6rem);
+  }
+
+  .stageGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .stageCard {
+    padding: 18px 18px 16px;
+    border-radius: 22px;
+  }
+
+  .stageText {
+    font-size: 0.92rem;
+  }
+
+  .diagramShell {
+    min-height: 320px;
+    border-radius: 26px;
+  }
+
+  .diagramPath {
+    stroke-width: 5;
+  }
+}

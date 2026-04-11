@@ -4,10 +4,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  padding: clamp(84px, 10vw, 120px) 0;
-  background:
-    radial-gradient(circle at 82% 24%, rgba(71, 181, 255, 0.08), transparent 22%),
-    linear-gradient(180deg, #eef3f6 0%, #f4f7f9 52%, #f7f8fa 100%);
+  background: #ffffff;
 }
 
 .section::before {
@@ -17,16 +14,16 @@
   background:
     linear-gradient(rgba(8, 18, 37, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(8, 18, 37, 0.04) 1px, transparent 1px);
-  background-size: 120px 120px;
-  opacity: 0.3;
+  background-size: 108px 108px;
+  opacity: 0.18;
   mask-image: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0.26) 0%,
     rgba(0, 0, 0, 0) 100%
   );
   -webkit-mask-image: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0.26) 0%,
     rgba(0, 0, 0, 0) 100%
   );
 }
@@ -36,13 +33,13 @@
   z-index: 1;
   display: grid;
   grid-template-columns: minmax(0, 0.94fr) minmax(0, 1fr);
-  gap: clamp(36px, 6vw, 92px);
+  gap: clamp(40px, 6vw, 96px);
   align-items: center;
   width: 100%;
 }
 
-.copyRail {
-  max-width: 36rem;
+.copy {
+  max-width: 38rem;
 }
 
 .kicker {
@@ -51,108 +48,94 @@
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(8, 18, 37, 0.52);
-}
-
-.support {
-  margin: 22px 0 0;
-  font-family: var(--font-body);
-  font-size: 1.04rem;
-  line-height: 1.76;
-  color: rgba(8, 18, 37, 0.66);
+  color: rgba(8, 18, 37, 0.5);
 }
 
 .headline {
   margin: 0;
+  max-width: 10ch;
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(3rem, 4.8vw, 5rem);
+  font-size: clamp(3rem, 4.9vw, 5.2rem);
   line-height: 0.94;
   letter-spacing: -0.05em;
   color: var(--navy);
   text-wrap: balance;
 }
 
-.issueRail {
-  position: relative;
-  display: grid;
-  gap: 20px;
-  padding-left: 32px;
+.support {
+  margin: 24px 0 0;
+  max-width: 31rem;
+  font-family: var(--font-body);
+  font-size: 1.04rem;
+  line-height: 1.76;
+  color: rgba(8, 18, 37, 0.64);
 }
 
-.progressLine {
+.fragmentField {
+  position: relative;
+  padding: 24px 0;
+}
+
+.fragmentField::before {
+  content: "";
   position: absolute;
   left: 0;
-  top: 14px;
-  bottom: 14px;
-  width: 1px;
+  right: 0;
+  top: 50%;
+  height: 1px;
   background: linear-gradient(
-    180deg,
-    rgba(71, 181, 255, 0.18) 0%,
-    rgba(8, 18, 37, 0.14) 100%
+    90deg,
+    rgba(8, 18, 37, 0) 0%,
+    rgba(8, 18, 37, 0.08) 14%,
+    rgba(8, 18, 37, 0.08) 86%,
+    rgba(8, 18, 37, 0) 100%
   );
-  transform: scaleY(0.16);
-  transform-origin: top center;
 }
 
-.issueCard {
-  position: relative;
-  padding: 30px 30px 28px;
-  border-radius: 28px;
-  border: 1px solid rgba(8, 18, 37, 0.08);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.94) 0%,
-    rgba(238, 244, 248, 0.9) 100%
-  );
+.fragmentRow {
+  display: flex;
+  gap: clamp(14px, 1.8vw, 22px);
+  align-items: center;
+  height: 46px;
+}
+
+.fragmentRow + .fragmentRow {
+  margin-top: 16px;
+}
+
+.segment {
+  display: block;
+  height: 14px;
+  border-radius: 999px;
+  flex: none;
   box-shadow:
-    0 26px 60px rgba(8, 18, 37, 0.07),
-    0 6px 18px rgba(8, 18, 37, 0.04);
+    0 8px 18px rgba(8, 18, 37, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
-.issueIndex {
-  margin: 0 0 16px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(8, 18, 37, 0.44);
-}
-
-.issueTitle {
-  margin: 0;
-  max-width: 20ch;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(1.35rem, 2vw, 1.8rem);
-  line-height: 1.04;
-  letter-spacing: -0.03em;
-  color: var(--navy);
-}
-
-.issueText {
-  margin: 14px 0 0;
-  max-width: 32rem;
-  font-family: var(--font-body);
-  font-size: 0.98rem;
-  line-height: 1.72;
-  color: rgba(8, 18, 37, 0.62);
-}
-
-.ambientGlow {
-  position: absolute;
-  right: -12%;
-  bottom: -18%;
-  width: 42vw;
-  height: 42vw;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(71, 181, 255, 0.12) 0%,
-    rgba(71, 181, 255, 0.02) 38%,
-    transparent 72%
+.segmentGhost {
+  background: linear-gradient(
+    90deg,
+    rgba(214, 224, 232, 0.6),
+    rgba(236, 241, 246, 0.94)
   );
-  pointer-events: none;
+}
+
+.segmentSteel {
+  background: linear-gradient(
+    90deg,
+    rgba(110, 138, 164, 0.34),
+    rgba(177, 194, 208, 0.9)
+  );
+}
+
+.segmentBlue {
+  background: linear-gradient(
+    90deg,
+    rgba(71, 181, 255, 0.82),
+    rgba(164, 220, 255, 0.96)
+  );
 }
 
 @media (max-width: 768px) {
@@ -163,34 +146,31 @@
 
   .inner {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 36px;
   }
 
   .headline {
-    font-size: clamp(2.4rem, 9vw, 3.4rem);
+    font-size: clamp(2.5rem, 9.2vw, 3.8rem);
   }
 
-  .issueRail {
-    padding-left: 20px;
+  .support {
+    font-size: 0.98rem;
   }
 
-  .issueCard {
-    padding: 24px 22px 22px;
-    border-radius: 24px;
+  .fragmentField {
+    padding: 4px 0 0;
   }
 
-  .issueTitle {
-    font-size: clamp(1.2rem, 5.4vw, 1.5rem);
+  .fragmentRow {
+    gap: 10px;
+    height: 34px;
   }
 
-  .issueText {
-    font-size: 0.94rem;
+  .fragmentRow + .fragmentRow {
+    margin-top: 12px;
   }
 
-  .ambientGlow {
-    width: 80vw;
-    height: 80vw;
-    right: -24%;
-    bottom: -24%;
+  .segment {
+    height: 11px;
   }
 }
