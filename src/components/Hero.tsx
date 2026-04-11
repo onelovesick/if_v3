@@ -16,15 +16,37 @@ export default function Hero() {
         y: 40,
         opacity: 0,
         duration: 1.2,
-        delay: 0.4,
-      }).from(
-        `.${styles.scrollIndicator}`,
-        { opacity: 0, duration: 0.6 },
-        "-=0.4"
-      );
+        delay: 0.3,
+      })
+        .from(
+          `.${styles.descriptorClaim}`,
+          { y: 16, opacity: 0, duration: 0.8 },
+          "-=0.6"
+        )
+        .from(
+          `.${styles.descriptorVision}`,
+          { y: 12, opacity: 0, duration: 0.7 },
+          "-=0.4"
+        )
+        .from(
+          `.${styles.scrollIndicator}`,
+          { opacity: 0, duration: 0.5 },
+          "-=0.3"
+        );
 
       gsap.to(`.${styles.headline}`, {
-        y: 120,
+        y: 100,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.6,
+        },
+      });
+
+      gsap.to(`.${styles.descriptor}`, {
+        y: 60,
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -48,12 +70,23 @@ export default function Hero() {
         playsInline
       />
 
+      <div className={styles.vignette} />
+
       <div className={styles.overlay}>
         <h1 className={styles.headline}>
           Human-Led,
           <br />
           Digitally Enabled.
         </h1>
+
+        <div className={styles.descriptor}>
+          <p className={styles.descriptorClaim}>
+            The infrastructure industry loses $1.8 trillion a year to bad data.
+          </p>
+          <p className={styles.descriptorVision}>
+            We exist to close that gap.
+          </p>
+        </div>
 
         <div className={styles.scrollIndicator}>
           <svg
