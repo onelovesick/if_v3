@@ -41,8 +41,8 @@ export default function Statement() {
       const cy = canvas.height / 2;
       const p = scrollState.progress; // 0 → 1
 
-      const maxRadius = Math.min(canvas.width, canvas.height) * 0.42;
-      const minRadius = Math.min(canvas.width, canvas.height) * 0.18;
+      const maxRadius = Math.min(canvas.width, canvas.height) * 0.65;
+      const minRadius = Math.min(canvas.width, canvas.height) * 0.32;
       const radius = maxRadius - (maxRadius - minRadius) * p;
 
       // Spiral: rotate 180deg as they close in
@@ -57,22 +57,10 @@ export default function Statement() {
         const y = cy + Math.sin(angle) * radius;
         const sz = pt.size * devicePixelRatio;
 
-        // 3D glow: radial gradient sphere
-        const grad = ctx.createRadialGradient(x - sz * 0.3, y - sz * 0.3, 0, x, y, sz * 3);
-        grad.addColorStop(0, `rgba(71, 181, 255, ${0.9 * fadeAlpha})`);
-        grad.addColorStop(0.3, `rgba(71, 181, 255, ${0.4 * fadeAlpha})`);
-        grad.addColorStop(0.6, `rgba(71, 181, 255, ${0.1 * fadeAlpha})`);
-        grad.addColorStop(1, `rgba(71, 181, 255, 0)`);
-
+        // Solid dark navy particle, no glow
         ctx.beginPath();
-        ctx.arc(x, y, sz * 3, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
-
-        // Solid core
-        ctx.beginPath();
-        ctx.arc(x, y, sz * 0.6, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(200, 230, 255, ${0.95 * fadeAlpha})`;
+        ctx.arc(x, y, sz, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(8, 18, 37, ${0.7 * fadeAlpha})`;
         ctx.fill();
       });
 
