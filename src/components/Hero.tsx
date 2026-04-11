@@ -10,47 +10,21 @@ export default function Hero() {
 
   useGSAP(
     () => {
-      // Entrance timeline
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-      tl.from(`.${styles.monoLabel}`, {
-        y: 12,
+      tl.from(`.${styles.headline}`, {
+        y: 40,
         opacity: 0,
-        duration: 0.8,
-        delay: 0.3,
-      })
-        .from(
-          `.${styles.headline}`,
-          { y: 30, opacity: 0, duration: 1 },
-          "-=0.5"
-        )
-        .from(
-          `.${styles.subtitle}`,
-          { y: 20, opacity: 0, duration: 0.8 },
-          "-=0.6"
-        )
-        .from(
-          `.${styles.scrollIndicator}`,
-          { opacity: 0, duration: 0.6 },
-          "-=0.3"
-        );
+        duration: 1.2,
+        delay: 0.4,
+      }).from(
+        `.${styles.scrollIndicator}`,
+        { opacity: 0, duration: 0.6 },
+        "-=0.4"
+      );
 
-      // Headline sinks downward — disappears behind S2's white background
       gsap.to(`.${styles.headline}`, {
         y: 120,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.6,
-        },
-      });
-
-      // Subtitle drifts down and right — exits the screen
-      gsap.to(`.${styles.subtitle}`, {
-        y: 180,
-        x: 250,
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -75,28 +49,12 @@ export default function Hero() {
       />
 
       <div className={styles.overlay}>
-        {/* Top — mono label */}
-        <p className={`${styles.monoLabel}`}>Digital Delivery Partner</p>
-
-        {/* Mid-right — subtitle */}
-        <div className={styles.subtitle}>
-          <p className={styles.subtitleText}>
-            We bring structured information management to the world&apos;s most
-            complex infrastructure projects.
-          </p>
-          <p className={styles.subtitleStrong}>
-            Every asset governed, every decision informed.
-          </p>
-        </div>
-
-        {/* Bottom-left — headline */}
         <h1 className={styles.headline}>
           Human-Led,
           <br />
           Digitally Enabled.
         </h1>
 
-        {/* Bottom-right — scroll indicator */}
         <div className={styles.scrollIndicator}>
           <svg
             width="14"
