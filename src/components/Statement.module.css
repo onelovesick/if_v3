@@ -39,18 +39,12 @@
   font-size: clamp(2.4rem, 4.9vw, 4.5rem);
   line-height: 0.96;
   letter-spacing: -0.015em;
-  color: var(--text-heading);
-  opacity: 0;
+  color: rgba(8, 8, 8, 0.12);
   margin: 0 0.22em 0.14em 0;
-}
-
-.line2 .word {
-  color: var(--text-body);
 }
 
 .line2 .word:last-child {
   font-weight: 900;
-  color: var(--text-heading);
 }
 
 @media (max-width: 768px) {
