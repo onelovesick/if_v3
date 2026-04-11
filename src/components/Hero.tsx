@@ -35,7 +35,8 @@ export default function Hero() {
         );
 
       gsap.to(`.${styles.headline}`, {
-        y: 100,
+        y: 180,
+        x: 250,
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -46,7 +47,8 @@ export default function Hero() {
       });
 
       gsap.to(`.${styles.descriptor}`, {
-        y: 60,
+        y: 160,
+        x: -280,
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
