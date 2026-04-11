@@ -1,0 +1,91 @@
+.section {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--white);
+}
+
+/* ─── FRAGMENTS LAYER ─── */
+.fragmentsLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cornerCluster {
+  position: absolute;
+  width: 320px;
+  height: 260px;
+}
+
+.tl { top: 20px; left: 20px; }
+.tr { top: 20px; right: 20px; }
+.bl { bottom: 20px; left: 20px; }
+.br { bottom: 20px; right: 20px; }
+
+.fragment {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  opacity: 0.35;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* ─── HEADLINE ─── */
+.headline {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 40px;
+}
+
+.word {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--text-heading);
+  opacity: 0;
+  margin-right: 0.28em;
+}
+
+/* The last word of first sentence and last word overall get emphasis */
+.word:nth-child(7) {
+  margin-right: 0.6em;
+}
+
+.word:last-child {
+  font-weight: 900;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .cornerCluster {
+    width: 180px;
+    height: 160px;
+  }
+
+  .fragment {
+    font-size: 7px;
+  }
+
+  .word {
+    font-size: clamp(1.8rem, 8vw, 2.8rem);
+  }
+
+  .headline {
+    padding: 0 20px;
+  }
+}

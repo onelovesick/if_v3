@@ -1,4 +1,5 @@
 import Hero from "@/components/Hero";
+import Statement from "@/components/Statement";
 
 export default function Home() {
   return (
@@ -6,19 +7,8 @@ export default function Home() {
       {/* S1 — Hero + Video */}
       <Hero />
 
-      {/* S2 — Problem */}
-      <section className="section-light">
-        <div className="page-container">
-          <h2 className="text-h1" style={{ maxWidth: "800px" }}>
-            Projects don&apos;t fail from lack of tools. They fail from lack of
-            structure.
-          </h2>
-          <p className="text-body" style={{ marginTop: "var(--space-24)", maxWidth: "var(--narrow-width)" }}>
-            We connect every team around one source of truth — from BIM strategy
-            on day one to digital twin handover.
-          </p>
-        </div>
-      </section>
+      {/* S2 — Statement */}
+      <Statement />
 
       {/* S3 — 3D Bridge (placeholder dark zone) */}
       <section className="section-dark" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
