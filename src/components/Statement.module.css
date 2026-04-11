@@ -1,31 +1,48 @@
 .section {
   position: relative;
-  min-height: 82svh;
+  min-height: 100svh;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   overflow: hidden;
-  background: linear-gradient(
+  padding: clamp(84px, 10vw, 120px) 0;
+  background:
+    radial-gradient(circle at 82% 24%, rgba(71, 181, 255, 0.08), transparent 22%),
+    linear-gradient(180deg, #eef3f6 0%, #f4f7f9 52%, #f7f8fa 100%);
+}
+
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(8, 18, 37, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(8, 18, 37, 0.04) 1px, transparent 1px);
+  background-size: 120px 120px;
+  opacity: 0.3;
+  mask-image: linear-gradient(
     180deg,
-    rgba(247, 248, 250, 0) 0%,
-    rgba(247, 248, 250, 0.16) 18%,
-    rgba(247, 248, 250, 0.78) 62%,
-    rgba(247, 248, 250, 1) 100%
+    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0) 100%
   );
-  margin-top: -10vh;
-  padding: 22vh 0 14vh;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }
 
 .inner {
   position: relative;
   z-index: 1;
   display: grid;
-  gap: 36px;
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1fr);
+  gap: clamp(36px, 6vw, 92px);
+  align-items: center;
   width: 100%;
 }
 
 .copyRail {
-  max-width: 28rem;
-  padding-left: clamp(0px, 8vw, 120px);
+  max-width: 36rem;
 }
 
 .kicker {
@@ -38,51 +55,142 @@
 }
 
 .support {
-  margin: 0;
+  margin: 22px 0 0;
   font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.7;
-  color: rgba(8, 18, 37, 0.62);
+  font-size: 1.04rem;
+  line-height: 1.76;
+  color: rgba(8, 18, 37, 0.66);
 }
 
 .headline {
   margin: 0;
-  max-width: 1120px;
-  padding: 0 40px;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3rem, 4.8vw, 5rem);
+  line-height: 0.94;
+  letter-spacing: -0.05em;
+  color: var(--navy);
+  text-wrap: balance;
 }
 
-.word {
-  display: inline-block;
-  margin: 0 0.22em 0.14em 0;
+.issueRail {
+  position: relative;
+  display: grid;
+  gap: 20px;
+  padding-left: 32px;
+}
+
+.progressLine {
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(71, 181, 255, 0.18) 0%,
+    rgba(8, 18, 37, 0.14) 100%
+  );
+  transform: scaleY(0.16);
+  transform-origin: top center;
+}
+
+.issueCard {
+  position: relative;
+  padding: 30px 30px 28px;
+  border-radius: 28px;
+  border: 1px solid rgba(8, 18, 37, 0.08);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.94) 0%,
+    rgba(238, 244, 248, 0.9) 100%
+  );
+  box-shadow:
+    0 26px 60px rgba(8, 18, 37, 0.07),
+    0 6px 18px rgba(8, 18, 37, 0.04);
+}
+
+.issueIndex {
+  margin: 0 0 16px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(8, 18, 37, 0.44);
+}
+
+.issueTitle {
+  margin: 0;
+  max-width: 20ch;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(2.2rem, 4.7vw, 4.5rem);
-  line-height: 0.98;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  line-height: 1.04;
   letter-spacing: -0.03em;
-  color: rgba(247, 248, 250, 0.18);
-  text-shadow: 0 10px 28px rgba(8, 18, 37, 0.08);
+  color: var(--navy);
 }
 
-.word:last-child {
-  font-weight: 900;
+.issueText {
+  margin: 14px 0 0;
+  max-width: 32rem;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.72;
+  color: rgba(8, 18, 37, 0.62);
+}
+
+.ambientGlow {
+  position: absolute;
+  right: -12%;
+  bottom: -18%;
+  width: 42vw;
+  height: 42vw;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(71, 181, 255, 0.12) 0%,
+    rgba(71, 181, 255, 0.02) 38%,
+    transparent 72%
+  );
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
   .section {
-    min-height: 72svh;
-    margin-top: -6vh;
-    padding: 16vh 0 10vh;
+    min-height: auto;
+    padding: 88px 0 96px;
   }
 
-  .copyRail {
-    padding-left: 0;
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
   }
 
   .headline {
-    padding: 0 20px;
+    font-size: clamp(2.4rem, 9vw, 3.4rem);
   }
 
-  .word {
-    font-size: clamp(1.7rem, 7vw, 2.8rem);
+  .issueRail {
+    padding-left: 20px;
+  }
+
+  .issueCard {
+    padding: 24px 22px 22px;
+    border-radius: 24px;
+  }
+
+  .issueTitle {
+    font-size: clamp(1.2rem, 5.4vw, 1.5rem);
+  }
+
+  .issueText {
+    font-size: 0.94rem;
+  }
+
+  .ambientGlow {
+    width: 80vw;
+    height: 80vw;
+    right: -24%;
+    bottom: -24%;
   }
 }

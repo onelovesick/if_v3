@@ -5,21 +5,19 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import styles from "./Statement.module.css";
 
-const HEADLINE = [
-  "Projects",
-  "do",
-  "not",
-  "fail",
-  "from",
-  "lack",
-  "of",
-  "tools.",
-  "They",
-  "fail",
-  "from",
-  "lack",
-  "of",
-  "structure.",
+const ISSUES = [
+  {
+    title: "Versions move faster than alignment.",
+    text: "Teams lose time proving what is current, approved, and relevant to the task in front of them.",
+  },
+  {
+    title: "Risk grows in the handoffs.",
+    text: "Design, commercial, procurement, and site delivery each hold part of the picture, but not the full decision trail.",
+  },
+  {
+    title: "Dashboards do not create discipline.",
+    text: "More software does not solve the problem when the underlying information model is still fragmented.",
+  },
 ];
 
 export default function Statement() {
@@ -32,70 +30,84 @@ export default function Statement() {
         return;
       }
 
-      gsap.from(`.${styles.kicker}`, {
-        y: 20,
+      gsap.from(`.${styles.copyRail}`, {
+        y: 28,
         opacity: 0,
-        duration: 0.8,
+        duration: 0.95,
         ease: "power3.out",
         scrollTrigger: {
           trigger: section,
-          start: "top 88%",
+          start: "top 72%",
         },
       });
 
-      gsap.from(`.${styles.support}`, {
-        y: 24,
+      gsap.from(`.${styles.issueCard}`, {
+        y: 44,
         opacity: 0,
-        duration: 0.85,
+        duration: 0.9,
+        stagger: 0.14,
         ease: "power3.out",
-        delay: 0.08,
         scrollTrigger: {
           trigger: section,
-          start: "top 84%",
+          start: "top 66%",
         },
       });
 
-      const words = section.querySelectorAll<HTMLElement>(`.${styles.word}`);
-      const total = words.length;
+      gsap.to(`.${styles.progressLine}`, {
+        scaleY: 1,
+        transformOrigin: "top center",
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top 70%",
+          end: "bottom 34%",
+          scrub: 0.7,
+        },
+      });
 
-      words.forEach((word, index) => {
-        const startPct = 82 - (index / total) * 46;
-        const endPct = startPct - 8;
-
-        gsap.to(word, {
-          color: "rgb(8, 18, 37)",
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: section,
-            start: `top ${startPct}%`,
-            end: `top ${endPct}%`,
-            scrub: 0.35,
-          },
-        });
+      gsap.to(`.${styles.ambientGlow}`, {
+        yPercent: -16,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+        },
       });
     },
     { scope: sectionRef }
   );
 
   return (
-    <section ref={sectionRef} className={styles.section}>
+    <section ref={sectionRef} id="industry-issue" className={styles.section}>
       <div className={`${styles.inner} page-container`}>
         <div className={styles.copyRail}>
-          <p className={styles.kicker}>Delivery Principle</p>
+          <p className={styles.kicker}>The Industry Issue</p>
+          <h2 className={styles.headline}>
+            Information is everywhere. Shared control is not.
+          </h2>
           <p className={styles.support}>
-            The digital thread only matters when it reduces risk on the asset
-            itself, not when it adds another layer of software theatre.
+            Major programmes rarely struggle because teams lack data. They
+            struggle because design, commercial, procurement, and site delivery
+            are each working with partial context at different moments in time.
           </p>
         </div>
 
-        <h2 className={styles.headline}>
-          {HEADLINE.map((word, index) => (
-            <span key={`${word}-${index}`} className={styles.word}>
-              {word}
-            </span>
+        <div className={styles.issueRail}>
+          <div className={styles.progressLine} aria-hidden="true" />
+
+          {ISSUES.map((issue, index) => (
+            <article key={issue.title} className={styles.issueCard}>
+              <p className={styles.issueIndex}>0{index + 1}</p>
+              <h3 className={styles.issueTitle}>{issue.title}</h3>
+              <p className={styles.issueText}>{issue.text}</p>
+            </article>
           ))}
-        </h2>
+        </div>
       </div>
+
+      <div className={styles.ambientGlow} aria-hidden="true" />
     </section>
   );
 }

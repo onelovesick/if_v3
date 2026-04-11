@@ -66,10 +66,9 @@ export default function Home() {
             </div>
 
             <p className="text-body-lg" style={{ maxWidth: "34rem" }}>
-              The most persuasive experience here is not a loud technology demo.
-              It is a calm sense of control. Every section should reinforce that
-              Infraforma helps teams move from noise to coordination, and from
-              coordination to delivery.
+              Infraforma gives delivery teams a dependable line of sight from
+              intake to execution, so information does not lose meaning every
+              time it crosses a discipline, package, or approval gate.
             </p>
           </div>
 
@@ -137,10 +136,9 @@ export default function Home() {
               className="text-body-lg"
               style={{ color: "var(--text-dark-body)", maxWidth: "34rem" }}
             >
-              Beautiful enterprise experiences feel precise, not decorative.
-              Motion should clarify relationships, typography should breathe, and
-              every visual choice should increase trust in the system behind the
-              screen.
+              The difference is not another dashboard. It is a structured layer
+              that preserves ownership, timing, and decision context as work
+              moves from design through delivery and governance.
             </p>
           </div>
 
@@ -233,9 +231,9 @@ export default function Home() {
               maxWidth: "34rem",
             }}
           >
-            The strongest version of this site would keep pairing cinematic calm
-            with operational credibility all the way through case studies,
-            methodology, and contact flow.
+            We work with organisations that need cleaner coordination, clearer
+            accountability, and a more reliable operating picture across the
+            entire delivery chain.
           </p>
           <div
             style={{
@@ -282,7 +280,7 @@ export default function Home() {
               borderTop: "1px solid rgba(207, 217, 224, 0.1)",
             }}
           >
-            <p className="text-mono-label">46.8123N / 71.2145W · Quebec City</p>
+            <p className="text-mono-label">46.8123N / 71.2145W / Quebec City</p>
             <p className="text-mono-label">Copyright 2026 Infraforma Inc.</p>
           </div>
         </div>
