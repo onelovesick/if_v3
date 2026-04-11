@@ -131,7 +131,7 @@ export default function Hero() {
       });
 
       gsap.to(`.${styles.headlineWrap}`, {
-        y: 60,
+        y: 74,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -142,7 +142,7 @@ export default function Hero() {
       });
 
       gsap.to(`.${styles.bodyWrap}`, {
-        y: 92,
+        y: 116,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -233,7 +233,7 @@ export default function Hero() {
         </svg>
       </div>
 
-      <div className={`${styles.inner} page-container`}>
+      <div className={styles.inner}>
         <div className={styles.layout}>
           <div className={styles.headlineWrap} data-copy-item>
             <h1 className={styles.headline}>
