@@ -211,9 +211,6 @@ export default function Statement() {
       const orbits = Array.from(
         section.querySelectorAll<HTMLElement>("[data-orbit]")
       );
-      const outroScene = section.querySelector<HTMLElement>("[data-outro-scene]");
-      const outroTint = section.querySelector<HTMLElement>("[data-outro-tint]");
-      const outroDisk = section.querySelector<HTMLElement>("[data-outro-disk]");
       const grid = section.querySelector<HTMLElement>(`.${styles.grid}`);
 
       const introCopy = [lead, summary].filter(
@@ -226,10 +223,7 @@ export default function Statement() {
         !endTitle ||
         !endCaption ||
         !multiplyGraphic ||
-        !multiplyCore ||
-        !outroScene ||
-        !outroTint ||
-        !outroDisk
+        !multiplyCore
       ) {
         return;
       }
@@ -261,9 +255,6 @@ export default function Statement() {
             multiplyCore,
             ...multiplyNodes,
             ...orbits,
-            outroScene,
-            outroTint,
-            outroDisk,
           ],
           { clearProps: "all" }
         );
@@ -343,13 +334,6 @@ export default function Statement() {
             scale: 0.78,
             transformOrigin: "center center",
           });
-          gsap.set(outroScene, { opacity: 0 });
-          gsap.set(outroTint, { opacity: 0 });
-          gsap.set(outroDisk, {
-            opacity: 0,
-            scale: 0.14,
-            transformOrigin: "center center",
-          });
 
           multiplyPaths.forEach((path) => {
             const length = path.getTotalLength();
@@ -418,7 +402,7 @@ export default function Statement() {
             scrollTrigger: {
               trigger: section,
               start: "top top",
-              end: "+=3000",
+              end: "+=2200",
               scrub: 0.9,
               pin: true,
               anticipatePin: 1,
@@ -566,68 +550,16 @@ export default function Statement() {
                 duration: 0.2,
               },
               1.42
-            )
-            .to(
-              [...multiplyNodes, endCaption, ...multiplyPaths, ...orbits],
-              {
-                opacity: 0,
-                stagger: 0.02,
-                duration: 0.18,
-              },
-              1.74
-            )
-            .to(
-              [multiplyGraphic, endTitle],
-              {
-                opacity: 0.22,
-                filter: "blur(10px)",
-                duration: 0.18,
-              },
-              1.76
-            )
-            .to(
-              outroScene,
-              {
-                opacity: 1,
-                duration: 0.16,
-              },
-              1.8
-            )
-            .to(
-              outroTint,
-              {
-                opacity: 1,
-                duration: 0.28,
-              },
-              1.84
-            )
-            .to(
-              outroDisk,
-              {
-                opacity: 1,
-                scale: 14,
-                duration: 0.72,
-                ease: "power2.inOut",
-              },
-              1.84
-            )
-            .to(
-              endScene,
-              {
-                opacity: 0,
-                duration: 0.24,
-              },
-              1.88
             );
 
           if (grid) {
             timeline.to(
               grid,
               {
-                opacity: 0,
-                duration: 0.28,
+                opacity: 0.2,
+                duration: 0.22,
               },
-              1.9
+              1.3
             );
           }
         }
@@ -695,13 +627,6 @@ export default function Statement() {
           gsap.set(orbits, {
             opacity: 0,
             scale: 0.82,
-            transformOrigin: "center center",
-          });
-          gsap.set(outroScene, { opacity: 0 });
-          gsap.set(outroTint, { opacity: 0 });
-          gsap.set(outroDisk, {
-            opacity: 0,
-            scale: 0.16,
             transformOrigin: "center center",
           });
 
@@ -909,40 +834,6 @@ export default function Statement() {
               start: "center 24%",
             },
           });
-
-          gsap.to(outroScene, {
-            opacity: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: section,
-              start: "bottom 34%",
-              end: "bottom top",
-              scrub: 0.7,
-            },
-          });
-
-          gsap.to(outroTint, {
-            opacity: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: section,
-              start: "bottom 30%",
-              end: "bottom top",
-              scrub: 0.7,
-            },
-          });
-
-          gsap.to(outroDisk, {
-            opacity: 1,
-            scale: 10,
-            ease: "none",
-            scrollTrigger: {
-              trigger: section,
-              start: "bottom 30%",
-              end: "bottom top",
-              scrub: 0.75,
-            },
-          });
         }
       );
 
@@ -965,10 +856,6 @@ export default function Statement() {
           data-opacity="0.68"
           className={`${styles.halo} ${styles.haloSecondary}`}
         />
-        <div data-outro-scene className={styles.outroScene}>
-          <div data-outro-tint className={styles.outroTint} />
-          <div data-outro-disk className={styles.outroDisk} />
-        </div>
 
         <div className={styles.metaRow}>
           <p data-meta className={styles.kicker}>
