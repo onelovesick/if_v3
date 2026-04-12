@@ -9,10 +9,10 @@
 .backdrop {
   position: absolute;
   inset: 0;
-  perspective: 1400px;
   overflow: hidden;
 }
 
+/* Bottom fade into next (light) section */
 .backdrop::after {
   content: "";
   position: absolute;
@@ -43,6 +43,8 @@
   pointer-events: none;
 }
 
+/* ─── Background image ─── */
+
 .imageField {
   position: absolute;
   inset: 0;
@@ -69,6 +71,8 @@
   object-position: 78% 26%;
   filter: grayscale(0.48) saturate(0.52) brightness(0.62) contrast(1);
 }
+
+/* ─── Overlays ─── */
 
 .imageVeil {
   position: absolute;
@@ -102,83 +106,23 @@
     radial-gradient(circle at 72% 52%, rgba(132, 184, 221, 0.16), transparent 22%),
     radial-gradient(circle at 84% 44%, rgba(255, 255, 255, 0.14), transparent 30%);
   filter: blur(8px);
-  will-change: transform;
 }
 
-.flowField {
+/* ─── Floating lines layer ─── */
+
+.linesLayer {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  z-index: 1;
+  will-change: transform;
   opacity: 0.7;
-  transform-origin: 62% 50%;
-  transform-style: preserve-3d;
-  will-change: transform;
 }
 
-.mistLayer {
-  opacity: 0.54;
-  will-change: transform;
-}
-
-.mistPath {
-  fill: none;
-  stroke: rgba(135, 178, 209, 0.12);
-  stroke-width: 22;
-  stroke-linecap: round;
-}
-
-.depthLayer {
-  opacity: 0.46;
-  will-change: transform;
-}
-
-.depthPath {
-  stroke: rgba(111, 175, 224, 0.12);
-  stroke-width: 8;
-}
-
-.lineLayer {
-  opacity: 0.84;
-  filter: drop-shadow(0 18px 26px rgba(6, 14, 24, 0.18));
-  will-change: transform;
-}
-
-.flowPath {
-  fill: none;
-  stroke-linecap: round;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.pathGhost {
-  stroke: rgba(196, 215, 230, 0.14);
-  stroke-width: 1;
-}
-
-.pathSteel {
-  stroke: rgba(154, 186, 211, 0.2);
-  stroke-width: 1.05;
-}
-
-.pathSoft {
-  stroke: rgba(176, 213, 238, 0.24);
-  stroke-width: 1.1;
-}
-
-.accentLayer {
-  opacity: 0.96;
-  will-change: transform;
-}
-
-.accentPath {
-  stroke: rgba(126, 191, 243, 0.42);
-  stroke-width: 1.95;
-}
+/* ─── Content ─── */
 
 .inner {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   min-height: 100svh;
   width: 100%;
   padding-inline: clamp(32px, 4vw, 72px);
@@ -248,6 +192,8 @@
   color: rgba(240, 245, 249, 0.48);
 }
 
+/* ─── Mobile ─── */
+
 @media (max-width: 768px) {
   .imageField {
     opacity: 0.46;
@@ -269,8 +215,8 @@
     object-position: 70% 24%;
   }
 
-  .flowField {
-    opacity: 0.62;
+  .linesLayer {
+    opacity: 0.5;
   }
 
   .layout {
