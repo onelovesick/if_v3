@@ -1,10 +1,8 @@
 .section {
-  --hero-overlap: clamp(140px, 18svh, 220px);
   position: relative;
   min-height: 100svh;
-  margin-top: calc(var(--hero-overlap) * -1);
   overflow: hidden;
-  background: transparent;
+  background: linear-gradient(180deg, #fbfcfd 0%, #ffffff 18%, #ffffff 100%);
   z-index: 2;
 }
 
@@ -13,33 +11,24 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
-  height: calc(var(--hero-overlap) + 44svh);
+  top: -10svh;
+  height: 24svh;
   background:
     radial-gradient(
-      94% 86% at 50% 0%,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.04) 26%,
-      rgba(255, 255, 255, 0) 58%
-    ),
-    radial-gradient(
-      ellipse at 50% 0%,
-      rgba(255, 255, 255, 0.18) 0%,
-      rgba(255, 255, 255, 0.08) 26%,
-      rgba(255, 255, 255, 0.02) 48%,
+      84% 100% at 50% 0%,
+      rgba(255, 255, 255, 0.74) 0%,
+      rgba(255, 255, 255, 0.28) 24%,
+      rgba(255, 255, 255, 0.06) 48%,
       rgba(255, 255, 255, 0) 100%
     ),
     linear-gradient(
       180deg,
       rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0) 24%,
-      rgba(255, 255, 255, 0.02) 38%,
-      rgba(255, 255, 255, 0.08) 52%,
-      rgba(255, 255, 255, 0.22) 68%,
-      rgba(255, 255, 255, 0.54) 84%,
-      #ffffff 100%
+      rgba(255, 255, 255, 0.18) 42%,
+      rgba(255, 255, 255, 0.58) 74%,
+      rgba(255, 255, 255, 0.9) 100%
     );
-  filter: blur(12px);
+  filter: blur(26px);
   pointer-events: none;
   z-index: 0;
 }
@@ -56,15 +45,15 @@
   mask-image: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0) 18%,
-    rgba(0, 0, 0, 0.12) 42%,
+    rgba(0, 0, 0, 0.14) 22%,
+    rgba(0, 0, 0, 0.28) 44%,
     rgba(0, 0, 0, 0.52) 100%
   );
   -webkit-mask-image: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0) 18%,
-    rgba(0, 0, 0, 0.12) 42%,
+    rgba(0, 0, 0, 0.14) 22%,
+    rgba(0, 0, 0, 0.28) 44%,
     rgba(0, 0, 0, 0.52) 100%
   );
   pointer-events: none;
@@ -73,7 +62,7 @@
 .panel {
   position: relative;
   z-index: 1;
-  min-height: calc(100svh + var(--hero-overlap));
+  min-height: 100svh;
   display: grid;
   place-items: center;
   padding: 0 clamp(28px, 4vw, 72px);
@@ -293,12 +282,10 @@
 }
 
 @media (max-width: 768px) {
-  .section {
-    --hero-overlap: 110px;
-  }
-
   .section::before {
-    height: calc(var(--hero-overlap) + 18svh);
+    top: -7svh;
+    height: 18svh;
+    filter: blur(20px);
   }
 
   .panel {
