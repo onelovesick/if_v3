@@ -109,19 +109,18 @@ export default function Hero() {
         <div className={styles.linesLayer}>
           <FloatingLines
             linesGradient={[
-              "#1a3a5c",
+              "#14293d",
+              "#1e3f5c",
               "#2a5a8a",
-              "#47b5ff",
-              "#6dc8ff",
-              "#47b5ff",
+              "#3a7aaa",
               "#2a5a8a",
-              "#1a3a5c",
+              "#1e3f5c",
+              "#14293d",
             ]}
-            enabledWaves={["top", "middle", "bottom"]}
-            lineCount={[4, 7, 5]}
-            lineDistance={[6, 4, 5]}
+            enabledWaves={["top", "bottom"]}
+            lineCount={[5, 6]}
+            lineDistance={[5, 4]}
             topWavePosition={{ x: 10.0, y: 0.5, rotate: -0.4 }}
-            middleWavePosition={{ x: 5.0, y: 0.0, rotate: 0.2 }}
             bottomWavePosition={{ x: 2.0, y: -0.7, rotate: -1.0 }}
             animationSpeed={0.6}
             interactive={true}
@@ -134,6 +133,9 @@ export default function Hero() {
           />
         </div>
       </div>
+
+      {/* Bottom dissolve — outside backdrop to avoid overflow:hidden clipping */}
+      <div className={styles.bottomFade} aria-hidden="true" />
 
       <div className={styles.inner}>
         <div className={styles.layout}>
