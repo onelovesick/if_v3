@@ -49,10 +49,10 @@ export default function Hero() {
         },
       });
 
-      // Headline drifts down + left (outward)
+      // Headline drifts down + toward center
       gsap.to(`.${styles.headlineWrap}`, {
-        y: 90,
-        x: -60,
+        y: 100,
+        x: 80,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -62,10 +62,10 @@ export default function Hero() {
         },
       });
 
-      // Body copy drifts down + right (outward)
+      // Body copy drifts down + toward center
       gsap.to(`.${styles.bodyWrap}`, {
-        y: 130,
-        x: 50,
+        y: 120,
+        x: -60,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -138,9 +138,6 @@ export default function Hero() {
           />
         </div>
       </div>
-
-      {/* Bottom dissolve — outside backdrop to avoid overflow:hidden clipping */}
-      <div className={styles.bottomFade} aria-hidden="true" />
 
       <div className={styles.inner}>
         <div className={styles.layout}>
