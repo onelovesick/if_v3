@@ -1,13 +1,13 @@
 .section {
   position: relative;
-  min-height: 100svh;
   overflow: hidden;
   background: #f8f8f8;
   z-index: 2;
   box-shadow: 0 -40px 80px rgba(7, 18, 31, 0.1);
+  padding-bottom: clamp(80px, 10vh, 140px);
 }
 
-/* ─── Layout ─── */
+/* ─── Statement text (top) ─── */
 
 .copy {
   position: relative;
@@ -16,29 +16,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100svh;
+  min-height: 80svh;
   padding: 0 clamp(32px, 6vw, 120px);
   text-align: center;
-}
-
-/* Soft halo behind text for readability */
-.copy::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(90vw, 1100px);
-  height: 50vh;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse,
-    rgba(248, 248, 248, 0.95) 0%,
-    rgba(248, 248, 248, 0.8) 28%,
-    rgba(248, 248, 248, 0.45) 52%,
-    rgba(248, 248, 248, 0) 72%
-  );
-  z-index: -1;
 }
 
 .kicker {
@@ -52,53 +32,61 @@
 
 .headline {
   margin: 0;
-  max-width: 18ch;
+  max-width: 20ch;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(3.2rem, 5.6vw, 6.4rem);
-  line-height: 1.05;
-  letter-spacing: -0.045em;
+  font-size: clamp(3rem, 5.2vw, 6rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
   text-wrap: balance;
 }
 
+/* Regular characters — start ghost, animate to navy */
 .char {
   display: inline;
   color: rgba(8, 18, 37, 0.12);
 }
 
-/* ─── Data field (full background) ─── */
+/* Highlighted characters ($1.8 Trillion) — same start, but will be bold */
+.charHighlight {
+  display: inline;
+  color: rgba(8, 18, 37, 0.12);
+  font-weight: 900;
+}
+
+/* ─── Data field (below text) ─── */
 
 .field {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 6svh 0;
+  gap: clamp(28px, 3.5vh, 48px);
+  padding: clamp(40px, 6vh, 80px) 0;
 }
 
 .centerBeam {
   position: absolute;
   left: 50%;
-  top: 8%;
-  bottom: 8%;
+  top: 0;
+  bottom: 0;
   width: 1px;
   transform: translateX(-50%);
   background: linear-gradient(
     180deg,
     rgba(71, 181, 255, 0) 0%,
-    rgba(71, 181, 255, 0.14) 20%,
-    rgba(71, 181, 255, 0.3) 50%,
-    rgba(71, 181, 255, 0.14) 80%,
+    rgba(71, 181, 255, 0.16) 15%,
+    rgba(71, 181, 255, 0.28) 50%,
+    rgba(71, 181, 255, 0.16) 85%,
     rgba(71, 181, 255, 0) 100%
   );
 }
 
+/* ─── Individual row ─── */
+
 .rowWrap {
   position: relative;
-  height: clamp(16px, 1.8vh, 22px);
-  flex-shrink: 0;
+  height: clamp(28px, 3.2vh, 40px);
 }
 
 .row {
@@ -121,7 +109,7 @@
     90deg,
     rgba(8, 18, 37, 0) 0%,
     rgba(8, 18, 37, 0.04) 10%,
-    rgba(8, 18, 37, 0.1) 50%,
+    rgba(8, 18, 37, 0.09) 50%,
     rgba(8, 18, 37, 0.04) 90%,
     rgba(8, 18, 37, 0) 100%
   );
@@ -139,12 +127,12 @@
   background: linear-gradient(
     90deg,
     rgba(71, 181, 255, 0) 0%,
-    rgba(71, 181, 255, 0.55) 20%,
-    rgba(140, 210, 255, 0.9) 50%,
-    rgba(71, 181, 255, 0.55) 80%,
+    rgba(71, 181, 255, 0.5) 20%,
+    rgba(140, 215, 255, 0.85) 50%,
+    rgba(71, 181, 255, 0.5) 80%,
     rgba(71, 181, 255, 0) 100%
   );
-  box-shadow: 0 0 14px rgba(71, 181, 255, 0.12);
+  box-shadow: 0 0 12px rgba(71, 181, 255, 0.1);
 }
 
 /* End dots */
@@ -156,8 +144,8 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: rgba(10, 22, 38, 0.6);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7);
+  background: rgba(10, 22, 38, 0.55);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.65);
   transform: translateY(-50%);
 }
 
@@ -174,27 +162,54 @@
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: rgba(8, 18, 37, var(--particle-opacity));
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+/* ─── Revealed word on aligned rows ─── */
+
+.word {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.4rem, 2.2vw, 2.4rem);
+  letter-spacing: -0.03em;
+  color: var(--navy);
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 /* ─── Mobile ─── */
 
 @media (max-width: 768px) {
   .copy {
+    min-height: 60svh;
     padding: 0 24px;
   }
 
   .headline {
-    max-width: 14ch;
-    font-size: clamp(2.4rem, 8vw, 3.6rem);
+    max-width: 16ch;
+    font-size: clamp(2.2rem, 7.5vw, 3.4rem);
   }
 
   .field {
-    padding: 10svh 0;
+    gap: 24px;
+    padding: 32px 0 48px;
+  }
+
+  .rowWrap {
+    height: 28px;
   }
 
   .row {
     width: 220vw;
     margin-left: -60vw;
+  }
+
+  .word {
+    font-size: clamp(1.1rem, 4vw, 1.6rem);
   }
 }
