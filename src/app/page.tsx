@@ -1,24 +1,6 @@
 import Pillars from "@/components/Pillars";
 import TopScene from "@/components/TopScene";
 
-const DELIVERY_STAGES = [
-  {
-    step: "01",
-    title: "Capture every signal",
-    text: "Create one intake layer for design, schedule, field, and commercial information so the programme stops losing context between tools.",
-  },
-  {
-    step: "02",
-    title: "Connect decisions to structure",
-    text: "Map information to shared naming, ownership, and control rules so teams can act from the same operating picture.",
-  },
-  {
-    step: "03",
-    title: "Deliver from a trusted thread",
-    text: "Move from reactive coordination to controlled execution, where teams can see what changed, what matters, and what to do next.",
-  },
-];
-
 const PROOF_POINTS = [
   { value: "1", label: "shared delivery thread" },
   { value: "3", label: "layers: capture, connect, control" },
@@ -45,68 +27,6 @@ export default function Home() {
   return (
     <main>
       <TopScene />
-
-      <section id="delivery-environment" className="section-light">
-        <div className="page-container">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: "40px",
-              alignItems: "end",
-            }}
-          >
-            <div>
-              <p className="text-mono-label" style={{ marginBottom: "var(--space-16)" }}>
-                Delivery Environment
-              </p>
-              <h2 className="text-h1" style={{ maxWidth: "11ch" }}>
-                Turn fragmented project data into a controlled operating layer.
-              </h2>
-            </div>
-
-            <p className="text-body-lg" style={{ maxWidth: "34rem" }}>
-              Infraforma gives delivery teams a dependable line of sight from
-              intake to execution, so information does not lose meaning every
-              time it crosses a discipline, package, or approval gate.
-            </p>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: "24px",
-              marginTop: "var(--space-48)",
-            }}
-          >
-            {DELIVERY_STAGES.map((stage) => (
-              <article
-                key={stage.step}
-                style={{
-                  padding: "28px",
-                  borderRadius: "24px",
-                  border: "1px solid rgba(8, 18, 37, 0.08)",
-                  background:
-                    "linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(239, 245, 250, 0.78))",
-                  boxShadow: "0 24px 60px rgba(8, 18, 37, 0.05)",
-                }}
-              >
-                <p
-                  className="text-mono-label"
-                  style={{ color: "var(--blue-deep)", marginBottom: "var(--space-16)" }}
-                >
-                  {stage.step}
-                </p>
-                <h3 className="text-h3" style={{ marginBottom: "var(--space-12)" }}>
-                  {stage.title}
-                </h3>
-                <p className="text-body">{stage.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <Pillars />
 
