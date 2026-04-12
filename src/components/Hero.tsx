@@ -53,7 +53,6 @@ export default function Hero() {
       gsap.to(`.${styles.headlineWrap}`, {
         y: 90,
         x: -60,
-        opacity: 0,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -67,7 +66,6 @@ export default function Hero() {
       gsap.to(`.${styles.bodyWrap}`, {
         y: 130,
         x: 50,
-        opacity: 0,
         ease: "none",
         scrollTrigger: {
           trigger: section,
