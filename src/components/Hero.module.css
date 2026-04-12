@@ -1,54 +1,45 @@
 .hero {
-  --hero-spill: clamp(140px, 18svh, 220px);
   position: relative;
   min-height: 100svh;
   overflow: visible;
-  background: transparent;
+  background: #07121f;
   z-index: 1;
 }
 
 .backdrop {
   position: absolute;
-  inset: 0 0 calc(var(--hero-spill) * -1) 0;
+  inset: 0;
   perspective: 1400px;
-  mask-image: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 56%,
-    rgba(0, 0, 0, 0.95) 68%,
-    rgba(0, 0, 0, 0.76) 80%,
-    rgba(0, 0, 0, 0.38) 90%,
-    rgba(0, 0, 0, 0.08) 96%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 56%,
-    rgba(0, 0, 0, 0.95) 68%,
-    rgba(0, 0, 0, 0.76) 80%,
-    rgba(0, 0, 0, 0.38) 90%,
-    rgba(0, 0, 0, 0.08) 96%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  overflow: hidden;
 }
 
 .backdrop::after {
   content: "";
   position: absolute;
-  left: -10%;
-  right: -10%;
-  bottom: -4svh;
-  height: 34svh;
+  left: -4%;
+  right: -4%;
+  bottom: -10svh;
+  height: 30svh;
   background:
     radial-gradient(
-      84% 100% at 50% 100%,
-      rgba(255, 255, 255, 0.88) 0%,
-      rgba(255, 255, 255, 0.36) 28%,
-      rgba(255, 255, 255, 0.08) 52%,
+      76% 96% at 50% 100%,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 255, 255, 0.52) 20%,
+      rgba(255, 255, 255, 0.16) 38%,
+      rgba(255, 255, 255, 0.02) 58%,
       rgba(255, 255, 255, 0) 74%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 34%,
+      rgba(246, 248, 250, 0.08) 54%,
+      rgba(249, 251, 252, 0.22) 68%,
+      rgba(252, 253, 254, 0.58) 82%,
+      rgba(255, 255, 255, 0.9) 92%,
+      #ffffff 100%
     );
-  filter: blur(34px);
+  filter: blur(28px);
   pointer-events: none;
 }
 
@@ -84,21 +75,22 @@
   inset: 0;
   background:
     radial-gradient(circle at 76% 54%, rgba(137, 186, 222, 0.18), transparent 24%),
-    radial-gradient(circle at 88% 34%, rgba(255, 255, 255, 0.14), transparent 28%),
+    radial-gradient(circle at 88% 34%, rgba(255, 255, 255, 0.12), transparent 28%),
     linear-gradient(
       90deg,
-      rgba(7, 18, 31, 0.94) 0%,
-      rgba(7, 18, 31, 0.82) 24%,
-      rgba(7, 18, 31, 0.56) 44%,
+      rgba(7, 18, 31, 0.96) 0%,
+      rgba(7, 18, 31, 0.84) 24%,
+      rgba(7, 18, 31, 0.58) 44%,
       rgba(7, 18, 31, 0.24) 66%,
       rgba(7, 18, 31, 0.08) 100%
     ),
     linear-gradient(
       180deg,
-      rgba(7, 18, 31, 0.14) 0%,
-      rgba(7, 18, 31, 0.05) 48%,
-      rgba(255, 255, 255, 0.04) 72%,
-      rgba(255, 255, 255, 0.22) 90%,
+      rgba(7, 18, 31, 0.1) 0%,
+      rgba(7, 18, 31, 0.08) 56%,
+      rgba(7, 18, 31, 0.05) 72%,
+      rgba(255, 255, 255, 0.04) 84%,
+      rgba(255, 255, 255, 0.26) 94%,
       rgba(255, 255, 255, 0.62) 100%
     );
 }
@@ -117,7 +109,7 @@
   position: absolute;
   inset: 0;
   width: 100%;
-  height: calc(100% + var(--hero-spill));
+  height: 100%;
   opacity: 0.7;
   transform-origin: 62% 50%;
   transform-style: preserve-3d;
@@ -312,9 +304,11 @@
   }
 
   .backdrop::after {
-    bottom: -6svh;
-    height: 24svh;
-    filter: blur(24px);
+    left: -8%;
+    right: -8%;
+    bottom: -7svh;
+    height: 22svh;
+    filter: blur(22px);
   }
 
   .scrollCue {
