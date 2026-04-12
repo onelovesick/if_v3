@@ -291,8 +291,8 @@ export default function Statement() {
           timeline.to(
             amountLine,
             {
-              scale: 0.96,
-              transformOrigin: "left center",
+              scale: 0.98,
+              transformOrigin: "center center",
               duration: 0.42,
             },
             0.54
@@ -301,7 +301,7 @@ export default function Statement() {
 
         timeline
           .to(statChunks, {
-            yPercent: -6,
+            yPercent: -2,
             stagger: 0.03,
             duration: 0.4,
           }, 0.56)

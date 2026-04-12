@@ -67,7 +67,10 @@
 }
 
 .metaRow {
-  position: relative;
+  position: absolute;
+  top: clamp(28px, 4vw, 56px);
+  left: clamp(28px, 4vw, 56px);
+  right: clamp(28px, 4vw, 56px);
   z-index: 4;
   display: flex;
   justify-content: space-between;
@@ -96,17 +99,21 @@
 }
 
 .centerpiece {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -54%);
   z-index: 4;
   display: grid;
+  justify-items: center;
   gap: 18px;
-  width: min(62rem, 74vw);
-  margin-top: clamp(84px, 11vh, 136px);
+  width: min(54rem, 70vw);
+  text-align: center;
 }
 
 .lead {
-  margin: 0;
-  max-width: 24rem;
+  margin: 0 auto;
+  max-width: 28rem;
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.16em;
@@ -118,15 +125,17 @@
   margin: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 4px;
   will-change: transform, opacity;
 }
 
 .amountLine {
   display: inline-flex;
+  justify-content: center;
   align-items: baseline;
   gap: clamp(8px, 1vw, 18px);
-  width: fit-content;
+  width: auto;
 }
 
 .amountSymbol,
@@ -172,8 +181,8 @@
 }
 
 .summary {
-  margin: 8px 0 0;
-  max-width: 36rem;
+  margin: 8px auto 0;
+  max-width: 40rem;
   font-size: 1rem;
   line-height: 1.8;
   color: rgba(8, 18, 37, 0.64);
@@ -382,7 +391,7 @@
   }
 
   .centerpiece {
-    width: min(100%, 52rem);
+    width: min(48rem, calc(100% - 72px));
   }
 
   .card {
@@ -428,19 +437,31 @@
   }
 
   .metaRow {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
     flex-direction: column;
+    align-items: center;
     gap: 8px;
+    text-align: center;
   }
 
   .microStat {
     max-width: 100%;
-    text-align: left;
+    text-align: center;
   }
 
   .centerpiece {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
     width: 100%;
     margin-top: 44px;
+    justify-items: center;
     gap: 14px;
+    text-align: center;
   }
 
   .amountLine {
