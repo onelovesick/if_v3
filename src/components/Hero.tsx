@@ -49,8 +49,11 @@ export default function Hero() {
         },
       });
 
+      // Headline drifts down + left (outward)
       gsap.to(`.${styles.headlineWrap}`, {
-        y: 74,
+        y: 90,
+        x: -60,
+        opacity: 0,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -60,8 +63,11 @@ export default function Hero() {
         },
       });
 
+      // Body copy drifts down + right (outward)
       gsap.to(`.${styles.bodyWrap}`, {
-        y: 116,
+        y: 130,
+        x: 50,
+        opacity: 0,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -105,22 +111,23 @@ export default function Hero() {
         <div className={styles.imageVeil} />
         <div className={styles.atmosphere} />
 
-        {/* Floating lines shader — replaces old SVG flowField */}
+        {/* Floating lines shader */}
         <div className={styles.linesLayer}>
           <FloatingLines
             linesGradient={[
-              "#14293d",
-              "#1e3f5c",
+              "#1a3a5c",
               "#2a5a8a",
-              "#3a7aaa",
+              "#47b5ff",
+              "#5ac0ff",
+              "#47b5ff",
               "#2a5a8a",
-              "#1e3f5c",
-              "#14293d",
+              "#1a3a5c",
             ]}
-            enabledWaves={["top", "bottom"]}
-            lineCount={[5, 6]}
-            lineDistance={[5, 4]}
+            enabledWaves={["top", "middle", "bottom"]}
+            lineCount={[5, 4, 6]}
+            lineDistance={[5, 5, 4]}
             topWavePosition={{ x: 10.0, y: 0.5, rotate: -0.4 }}
+            middleWavePosition={{ x: 5.0, y: 0.1, rotate: 0.15 }}
             bottomWavePosition={{ x: 2.0, y: -0.7, rotate: -1.0 }}
             animationSpeed={0.6}
             interactive={true}
