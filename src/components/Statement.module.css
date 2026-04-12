@@ -2,21 +2,12 @@
   position: relative;
   min-height: 100svh;
   overflow: hidden;
-  background: linear-gradient(180deg, #f8f8f8 0%, #ffffff 18%, #ffffff 100%);
+  background: #f8f8f8;
   z-index: 2;
   box-shadow: 0 -40px 80px rgba(7, 18, 31, 0.12);
 }
 
-.section::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 1px;
-  background: rgba(7, 18, 31, 0.06);
-}
-
+/* Subtle grid texture */
 .section::after {
   content: "";
   position: absolute;
@@ -43,6 +34,8 @@
   pointer-events: none;
 }
 
+/* ─── Layout ─── */
+
 .panel {
   position: relative;
   z-index: 1;
@@ -53,67 +46,70 @@
   box-sizing: border-box;
 }
 
+/* ─── Text layer ─── */
+
 .copy {
   position: relative;
   z-index: 2;
-  max-width: min(58rem, 74vw);
+  max-width: min(64rem, 80vw);
   text-align: center;
 }
 
+/* Soft halo behind text for readability over data rows */
 .copy::before {
   content: "";
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(72vw, 860px);
-  height: 360px;
+  width: min(80vw, 960px);
+  height: 420px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.82) 36%,
-    rgba(255, 255, 255, 0.28) 58%,
-    rgba(255, 255, 255, 0) 78%
+    rgba(248, 248, 248, 0.92) 0%,
+    rgba(248, 248, 248, 0.78) 30%,
+    rgba(248, 248, 248, 0.4) 55%,
+    rgba(248, 248, 248, 0) 75%
   );
-  filter: blur(18px);
+  filter: blur(20px);
   z-index: -1;
 }
 
 .kicker {
-  margin: 0 0 16px;
+  margin: 0 0 24px;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(8, 18, 37, 0.46);
+  color: rgba(8, 18, 37, 0.4);
 }
 
 .headline {
   margin: 0;
-  max-width: 12ch;
-  margin-inline: auto;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(3.5rem, 5.3vw, 5.9rem);
-  line-height: 0.95;
-  letter-spacing: -0.055em;
-  color: var(--navy);
-  text-wrap: balance;
+  font-size: clamp(2.8rem, 4.6vw, 5.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
 }
 
-.support {
-  margin: 22px auto 0;
-  max-width: 42rem;
-  font-family: var(--font-body);
-  font-size: clamp(0.98rem, 1.04vw, 1.08rem);
-  line-height: 1.78;
-  color: rgba(8, 18, 37, 0.62);
+.line {
+  display: block;
 }
+
+.char {
+  display: inline-block;
+  color: rgba(8, 18, 37, 0.14);
+  transition: none;
+}
+
+/* ─── Data field (background) ─── */
 
 .field {
   position: absolute;
   inset: 0;
+  z-index: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -131,30 +127,11 @@
   background: linear-gradient(
     180deg,
     rgba(71, 181, 255, 0) 0%,
-    rgba(71, 181, 255, 0.2) 18%,
-    rgba(71, 181, 255, 0.42) 52%,
-    rgba(71, 181, 255, 0.2) 84%,
+    rgba(71, 181, 255, 0.18) 18%,
+    rgba(71, 181, 255, 0.36) 52%,
+    rgba(71, 181, 255, 0.18) 84%,
     rgba(71, 181, 255, 0) 100%
   );
-}
-
-.centerGlow {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(64vw, 780px);
-  height: min(34vw, 420px);
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background:
-    radial-gradient(
-      circle,
-      rgba(71, 181, 255, 0.12) 0%,
-      rgba(71, 181, 255, 0.06) 24%,
-      rgba(255, 255, 255, 0.46) 44%,
-      rgba(255, 255, 255, 0) 72%
-    );
-  filter: blur(28px);
 }
 
 .rowWrap {
@@ -169,6 +146,7 @@
   margin-left: -30vw;
 }
 
+/* Horizontal track line */
 .row::before {
   content: "";
   position: absolute;
@@ -180,33 +158,14 @@
   background: linear-gradient(
     90deg,
     rgba(8, 18, 37, 0) 0%,
-    rgba(8, 18, 37, 0.06) 12%,
-    rgba(8, 18, 37, 0.18) 48%,
-    rgba(8, 18, 37, 0.06) 88%,
+    rgba(8, 18, 37, 0.05) 12%,
+    rgba(8, 18, 37, 0.14) 48%,
+    rgba(8, 18, 37, 0.05) 88%,
     rgba(8, 18, 37, 0) 100%
   );
 }
 
-.row::after {
-  content: "";
-  position: absolute;
-  left: 4%;
-  right: 4%;
-  top: 50%;
-  height: 11px;
-  transform: translateY(-50%);
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(8, 18, 37, 0.018) 18%,
-    rgba(8, 18, 37, 0.04) 50%,
-    rgba(8, 18, 37, 0.018) 82%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  filter: blur(10px);
-  opacity: 0.42;
-}
-
+/* Signal segment — the "data" line */
 .signal {
   position: absolute;
   left: 50%;
@@ -218,28 +177,29 @@
   background: linear-gradient(
     90deg,
     rgba(71, 181, 255, 0) 0%,
-    rgba(71, 181, 255, 0.72) 18%,
-    rgba(187, 234, 255, 1) 50%,
-    rgba(71, 181, 255, 0.72) 82%,
+    rgba(71, 181, 255, 0.65) 18%,
+    rgba(160, 220, 255, 1) 50%,
+    rgba(71, 181, 255, 0.65) 82%,
     rgba(71, 181, 255, 0) 100%
   );
   box-shadow:
-    0 0 22px rgba(71, 181, 255, 0.22),
-    0 0 44px rgba(71, 181, 255, 0.12);
+    0 0 18px rgba(71, 181, 255, 0.18),
+    0 0 40px rgba(71, 181, 255, 0.08);
 }
 
+/* End dots on signal */
 .signal::before,
 .signal::after {
   content: "";
   position: absolute;
   top: 50%;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: rgba(10, 22, 38, 0.74);
+  background: rgba(10, 22, 38, 0.7);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.82),
-    0 0 16px rgba(71, 181, 255, 0.18);
+    0 0 0 1px rgba(255, 255, 255, 0.8),
+    0 0 12px rgba(71, 181, 255, 0.14);
   transform: translateY(-50%);
 }
 
@@ -251,6 +211,7 @@
   right: -2px;
 }
 
+/* Scattered particles — the "noise" */
 .particle {
   position: absolute;
   left: var(--particle-x);
@@ -262,18 +223,14 @@
   background: rgba(8, 18, 37, var(--particle-opacity));
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.6),
-    0 8px 18px rgba(8, 18, 37, 0.08);
+    0 6px 14px rgba(8, 18, 37, 0.06);
 }
 
-@media (max-width: 768px) {
-  .section::before {
-    top: -7svh;
-    height: 18svh;
-    filter: blur(20px);
-  }
+/* ─── Mobile ─── */
 
+@media (max-width: 768px) {
   .panel {
-    min-height: auto;
+    min-height: 80svh;
     padding: 96px 24px;
   }
 
@@ -282,33 +239,16 @@
   }
 
   .headline {
-    max-width: 10ch;
-    font-size: clamp(2.7rem, 9vw, 4.2rem);
-  }
-
-  .support {
-    max-width: 25rem;
-    font-size: 0.98rem;
+    font-size: clamp(2.2rem, 7.5vw, 3.4rem);
   }
 
   .field {
-    inset: auto 0 0;
-    min-height: 420px;
     padding: 86px 0 76px;
     gap: 16px;
-  }
-
-  .centerGlow {
-    width: 92vw;
-    height: 280px;
   }
 
   .row {
     width: 200vw;
     margin-left: -50vw;
-  }
-
-  .signal {
-    height: 2px;
   }
 }

@@ -5,10 +5,23 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import styles from "./Statement.module.css";
 
+/* ─── Statement text split into lines ─── */
+
+const LINES = [
+  "$1.8 trillion lost to bad data",
+  "in a single year.",
+  "",
+  "Not from lack of tools.",
+  "From information that lost its structure",
+  "between the people who needed it.",
+];
+
+/* ─── Data rows config ─── */
+
 const ROWS = [
   {
-    shift: -28,
-    duration: 0.78,
+    shift: -32,
+    duration: 0.72,
     signalWidth: "clamp(138px, 10vw, 194px)",
     particles: [
       { x: "7%", size: 4, opacity: 0.34 },
@@ -21,7 +34,7 @@ const ROWS = [
     ],
   },
   {
-    shift: -22,
+    shift: -24,
     duration: 0.56,
     signalWidth: "clamp(126px, 9vw, 176px)",
     particles: [
@@ -35,7 +48,7 @@ const ROWS = [
     ],
   },
   {
-    shift: -34,
+    shift: -38,
     duration: 0.84,
     signalWidth: "clamp(146px, 11vw, 208px)",
     particles: [
@@ -64,7 +77,7 @@ const ROWS = [
   },
   {
     shift: -30,
-    duration: 0.8,
+    duration: 0.78,
     signalWidth: "clamp(140px, 10.5vw, 198px)",
     particles: [
       { x: "6%", size: 4, opacity: 0.32 },
@@ -77,7 +90,7 @@ const ROWS = [
     ],
   },
   {
-    shift: -24,
+    shift: -26,
     duration: 0.62,
     signalWidth: "clamp(130px, 9.5vw, 184px)",
     particles: [
@@ -106,7 +119,7 @@ const ROWS = [
   },
   {
     shift: -20,
-    duration: 0.54,
+    duration: 0.52,
     signalWidth: "clamp(122px, 9vw, 170px)",
     particles: [
       { x: "10%", size: 3, opacity: 0.22 },
@@ -118,6 +131,34 @@ const ROWS = [
       { x: "96%", size: 3, opacity: 0.18 },
     ],
   },
+  {
+    shift: -28,
+    duration: 0.68,
+    signalWidth: "clamp(134px, 10vw, 190px)",
+    particles: [
+      { x: "5%", size: 3, opacity: 0.2 },
+      { x: "15%", size: 4, opacity: 0.26 },
+      { x: "30%", size: 3, opacity: 0.22 },
+      { x: "48%", size: 4, opacity: 0.3 },
+      { x: "62%", size: 3, opacity: 0.18 },
+      { x: "76%", size: 4, opacity: 0.26 },
+      { x: "93%", size: 3, opacity: 0.22 },
+    ],
+  },
+  {
+    shift: -22,
+    duration: 0.58,
+    signalWidth: "clamp(128px, 9.2vw, 178px)",
+    particles: [
+      { x: "12%", size: 4, opacity: 0.28 },
+      { x: "22%", size: 3, opacity: 0.2 },
+      { x: "36%", size: 4, opacity: 0.24 },
+      { x: "50%", size: 3, opacity: 0.16 },
+      { x: "67%", size: 4, opacity: 0.22 },
+      { x: "80%", size: 3, opacity: 0.24 },
+      { x: "92%", size: 4, opacity: 0.26 },
+    ],
+  },
 ];
 
 export default function Statement() {
@@ -126,11 +167,14 @@ export default function Statement() {
   useGSAP(
     () => {
       const section = sectionRef.current;
-      if (!section) {
-        return;
-      }
+      if (!section) return;
 
-      const rows = Array.from(section.querySelectorAll<HTMLElement>("[data-row]"));
+      const chars = Array.from(
+        section.querySelectorAll<HTMLElement>("[data-char]")
+      );
+      const rows = Array.from(
+        section.querySelectorAll<HTMLElement>("[data-row]")
+      );
       const signals = Array.from(
         section.querySelectorAll<HTMLElement>("[data-signal]")
       );
@@ -138,21 +182,20 @@ export default function Statement() {
         section.querySelectorAll<HTMLElement>("[data-particle]")
       );
 
+      // Initial states
       rows.forEach((row) => {
-        gsap.set(row, {
-          xPercent: Number(row.dataset.shift ?? 0),
-        });
+        gsap.set(row, { xPercent: Number(row.dataset.shift ?? 0) });
       });
 
       gsap.set(signals, {
-        opacity: 0.56,
-        scaleX: 0.76,
+        opacity: 0.4,
+        scaleX: 0.7,
         transformOrigin: "center center",
       });
 
       gsap.set(particles, {
-        opacity: 0.22,
-        scale: 0.9,
+        opacity: 0.15,
+        scale: 0.8,
         transformOrigin: "center center",
       });
 
@@ -160,104 +203,95 @@ export default function Statement() {
 
       media.add("(min-width: 769px)", () => {
         gsap.set(`.${styles.centerBeam}`, {
-          opacity: 0.12,
-          scaleY: 0.72,
+          opacity: 0,
+          scaleY: 0.6,
           transformOrigin: "center top",
         });
 
-        gsap.set(`.${styles.centerGlow}`, {
-          opacity: 0.18,
-          scale: 0.84,
-        });
-
-        const timeline = gsap.timeline({
+        const tl = gsap.timeline({
           scrollTrigger: {
             trigger: section,
             start: "top top",
-            end: "+=1350",
-            scrub: 0.72,
+            end: "+=1600",
+            scrub: 0.6,
             pin: true,
           },
         });
 
-        timeline.from(
-          "[data-message-item]",
+        // Phase 1 (0 → 0.55): Characters reveal + rows align simultaneously
+        tl.to(
+          chars,
           {
-            y: 36,
-            opacity: 0,
-            duration: 0.22,
-            stagger: 0.08,
-            ease: "power3.out",
+            color: "#080808",
+            duration: 0.55,
+            stagger: { each: 0.55 / chars.length },
+            ease: "none",
           },
           0
         );
 
-        rows.forEach((row, index) => {
-          timeline.to(
+        // Rows align in the same window
+        rows.forEach((row, i) => {
+          tl.to(
             row,
             {
               xPercent: 0,
               duration: Number(row.dataset.duration ?? 0.6),
               ease: "power2.out",
             },
-            0.08 + index * 0.022
+            0.05 + i * 0.02
           );
         });
 
-        timeline.to(
+        // Phase 2 (0.35 → 0.55): Signals and particles reach full
+        tl.to(
           signals,
           {
             opacity: 1,
             scaleX: 1,
-            duration: 0.24,
-            stagger: 0.02,
+            duration: 0.2,
+            stagger: 0.015,
           },
-          0.28
+          0.35
         );
 
-        timeline.to(
+        tl.to(
           particles,
           {
             opacity: (_, target) =>
               Number((target as HTMLElement).dataset.opacity ?? 0.3),
             scale: 1,
-            duration: 0.22,
-            stagger: 0.004,
+            duration: 0.2,
+            stagger: 0.003,
           },
-          0.28
+          0.35
         );
 
-        timeline.to(
+        // Center beam appears as alignment completes
+        tl.to(
           `.${styles.centerBeam}`,
           {
-            opacity: 0.78,
+            opacity: 0.72,
             scaleY: 1,
-            duration: 0.24,
+            duration: 0.18,
           },
-          0.34
+          0.42
         );
 
-        timeline.to(
-          `.${styles.centerGlow}`,
-          {
-            opacity: 0.92,
-            scale: 1,
-            duration: 0.24,
-          },
-          0.34
-        );
+        // Phase 3 (0.55 → 1.0): Hold — let user absorb the message
       });
 
       media.add("(max-width: 768px)", () => {
-        gsap.from("[data-message-item]", {
-          y: 28,
-          opacity: 0,
-          duration: 0.85,
-          stagger: 0.08,
-          ease: "power3.out",
+        // Mobile: scroll-driven character reveal
+        gsap.to(chars, {
+          color: "#080808",
+          ease: "none",
+          stagger: { each: 0.8 / chars.length },
           scrollTrigger: {
             trigger: section,
-            start: "top 76%",
+            start: "top 70%",
+            end: "center center",
+            scrub: 0.8,
           },
         });
 
@@ -268,7 +302,7 @@ export default function Statement() {
             scrollTrigger: {
               trigger: section,
               start: "top 74%",
-              end: "bottom 26%",
+              end: "center center",
               scrub: 0.9,
             },
           });
@@ -281,8 +315,8 @@ export default function Statement() {
           stagger: 0.02,
           scrollTrigger: {
             trigger: section,
-            start: "top 72%",
-            end: "bottom 26%",
+            start: "top 60%",
+            end: "center center",
             scrub: 0.9,
           },
         });
@@ -295,32 +329,8 @@ export default function Statement() {
           stagger: 0.004,
           scrollTrigger: {
             trigger: section,
-            start: "top 72%",
-            end: "bottom 26%",
-            scrub: 0.9,
-          },
-        });
-
-        gsap.to(`.${styles.centerBeam}`, {
-          opacity: 0.62,
-          scaleY: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 72%",
-            end: "bottom 26%",
-            scrub: 0.9,
-          },
-        });
-
-        gsap.to(`.${styles.centerGlow}`, {
-          opacity: 0.8,
-          scale: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 72%",
-            end: "bottom 26%",
+            start: "top 60%",
+            end: "center center",
             scrub: 0.9,
           },
         });
@@ -331,28 +341,33 @@ export default function Statement() {
     { scope: sectionRef }
   );
 
+  // Build character spans
+  const renderLine = (text: string, lineIndex: number) => {
+    if (text === "") {
+      return <br key={`br-${lineIndex}`} />;
+    }
+
+    return (
+      <span key={`line-${lineIndex}`} className={styles.line}>
+        {text.split("").map((char, charIndex) => (
+          <span
+            key={`c-${lineIndex}-${charIndex}`}
+            data-char
+            className={styles.char}
+          >
+            {char === " " ? "\u00A0" : char}
+          </span>
+        ))}
+      </span>
+    );
+  };
+
   return (
     <section ref={sectionRef} id="industry-issue" className={styles.section}>
       <div className={styles.panel}>
-        <div className={styles.copy}>
-          <p className={styles.kicker} data-message-item>
-            The Industry Problem
-          </p>
-
-          <h2 className={styles.headline} data-message-item>
-            Construction information is not missing. It is fragmented.
-          </h2>
-
-          <p className={styles.support} data-message-item>
-            Critical updates move continuously across design, programme,
-            procurement, commercial, and site delivery, but they rarely move
-            through one aligned system. Fragmentation turns motion into risk.
-          </p>
-        </div>
-
+        {/* Background data field */}
         <div className={styles.field} aria-hidden="true">
           <div className={styles.centerBeam} />
-          <div className={styles.centerGlow} />
 
           {ROWS.map((row, index) => (
             <div key={`row-${index}`} className={styles.rowWrap}>
@@ -361,17 +376,13 @@ export default function Statement() {
                 data-shift={row.shift}
                 data-duration={row.duration}
                 className={styles.row}
-                style={
-                  {
-                    "--signal-width": row.signalWidth,
-                  } as CSSProperties
-                }
+                style={{ "--signal-width": row.signalWidth } as CSSProperties}
               >
                 <span className={styles.signal} data-signal />
 
-                {row.particles.map((particle, particleIndex) => (
+                {row.particles.map((particle, pi) => (
                   <span
-                    key={`particle-${index}-${particleIndex}`}
+                    key={`p-${index}-${pi}`}
                     data-particle
                     data-opacity={particle.opacity}
                     className={styles.particle}
@@ -387,6 +398,14 @@ export default function Statement() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Foreground text */}
+        <div className={styles.copy}>
+          <p className={styles.kicker}>The Industry Problem</p>
+          <h2 className={styles.headline}>
+            {LINES.map((line, i) => renderLine(line, i))}
+          </h2>
         </div>
       </div>
     </section>
