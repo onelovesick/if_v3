@@ -213,6 +213,39 @@
   will-change: transform, opacity, filter;
 }
 
+.outroScene {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.outroTint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #edf4f8 0%, #dfeaf1 100%);
+  opacity: 0;
+}
+
+.outroDisk {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: clamp(160px, 18vw, 224px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(0.14);
+  border-radius: 50%;
+  border: 1px solid rgba(8, 18, 37, 0.08);
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.98), rgba(226, 239, 246, 0.94) 62%, rgba(205, 228, 242, 0.9) 100%);
+  box-shadow:
+    0 20px 46px rgba(8, 18, 37, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.98);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
 .cardTag {
   margin: 0;
   font-family: var(--font-mono);
@@ -246,11 +279,11 @@
   z-index: 7;
   display: grid;
   justify-items: center;
-  gap: 18px;
-  width: min(68rem, 88vw);
-  transform: translate(-50%, -48%);
+  gap: 14px;
+  width: min(66rem, 84vw);
+  transform: translate(-50%, -50%);
   text-align: center;
-  will-change: transform, opacity;
+  will-change: transform, opacity, filter;
 }
 
 .endEyebrow {
@@ -274,14 +307,19 @@
   text-wrap: balance;
 }
 
-.endTitleAccent {
+.endTitleMain,
+.endTitleAccentLine {
   display: block;
+}
+
+.endTitleAccent,
+.endTitleAccentLine {
   color: var(--blue-deep);
 }
 
 .multiplyGraphic {
   position: relative;
-  width: min(58rem, 88vw);
+  width: min(54rem, 82vw);
   aspect-ratio: 1.75;
   border-radius: 38px;
   border: 1px solid rgba(8, 18, 37, 0.08);
@@ -434,7 +472,7 @@
 
 .endCaption {
   margin: 0;
-  max-width: 38rem;
+  max-width: 35rem;
   font-size: 0.98rem;
   line-height: 1.72;
   color: rgba(8, 18, 37, 0.62);
@@ -450,7 +488,7 @@
   }
 
   .endScene {
-    width: min(100%, calc(100% - 48px));
+    width: min(100%, calc(100% - 64px));
   }
 }
 
@@ -566,6 +604,10 @@
     margin-top: 34px;
     transform: none;
     gap: 16px;
+  }
+
+  .outroDisk {
+    width: 140px;
   }
 
   .endTitle {

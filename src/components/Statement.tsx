@@ -195,10 +195,13 @@ export default function Statement() {
       );
       const endScene = section.querySelector<HTMLElement>("[data-end-scene]");
       const endTitle = section.querySelector<HTMLElement>("[data-end-title]");
+      const endTitleMain = section.querySelector<HTMLElement>("[data-end-title-main]");
+      const endTitleAccent = section.querySelector<HTMLElement>("[data-end-title-accent]");
       const endCaption = section.querySelector<HTMLElement>("[data-end-caption]");
       const multiplyGraphic = section.querySelector<HTMLElement>(
         "[data-multiply-graphic]"
       );
+      const multiplyCore = section.querySelector<HTMLElement>("[data-multiply-core]");
       const multiplyPaths = Array.from(
         section.querySelectorAll<SVGPathElement>("[data-multiply-path]")
       );
@@ -208,13 +211,26 @@ export default function Statement() {
       const orbits = Array.from(
         section.querySelectorAll<HTMLElement>("[data-orbit]")
       );
+      const outroScene = section.querySelector<HTMLElement>("[data-outro-scene]");
+      const outroTint = section.querySelector<HTMLElement>("[data-outro-tint]");
+      const outroDisk = section.querySelector<HTMLElement>("[data-outro-disk]");
       const grid = section.querySelector<HTMLElement>(`.${styles.grid}`);
 
       const introCopy = [lead, summary].filter(
         (item): item is HTMLElement => Boolean(item)
       );
 
-      if (!centerpiece || !endScene || !endTitle || !endCaption || !multiplyGraphic) {
+      if (
+        !centerpiece ||
+        !endScene ||
+        !endTitle ||
+        !endCaption ||
+        !multiplyGraphic ||
+        !multiplyCore ||
+        !outroScene ||
+        !outroTint ||
+        !outroDisk
+      ) {
         return;
       }
 
@@ -238,10 +254,16 @@ export default function Statement() {
             ...halos,
             endScene,
             endTitle,
+            endTitleMain,
+            endTitleAccent,
             endCaption,
             multiplyGraphic,
+            multiplyCore,
             ...multiplyNodes,
             ...orbits,
+            outroScene,
+            outroTint,
+            outroDisk,
           ],
           { clearProps: "all" }
         );
@@ -278,19 +300,39 @@ export default function Statement() {
             filter: "blur(14px)",
             transformOrigin: "center center",
           });
-          gsap.set(endScene, { opacity: 0, y: 48, pointerEvents: "none" });
-          gsap.set(endTitle, {
+          gsap.set(endScene, {
             opacity: 0,
-            y: 28,
-            filter: "blur(14px)",
+            y: 20,
+            scale: 0.985,
+            filter: "blur(12px)",
+            pointerEvents: "none",
+          });
+          gsap.set(endTitle, {
+            opacity: 1,
+          });
+          gsap.set(endTitleMain, {
+            opacity: 0,
+            y: 18,
+            filter: "blur(10px)",
+          });
+          gsap.set(endTitleAccent, {
+            opacity: 0,
+            y: 10,
+            scale: 0.94,
+            filter: "blur(8px)",
           });
           gsap.set(multiplyGraphic, {
             opacity: 0,
-            scale: 0.92,
-            y: 34,
+            scale: 0.965,
+            y: 18,
+            filter: "blur(10px)",
             transformOrigin: "center top",
           });
-          gsap.set(endCaption, { opacity: 0, y: 24 });
+          gsap.set(multiplyCore, {
+            scale: 0.92,
+            transformOrigin: "center center",
+          });
+          gsap.set(endCaption, { opacity: 0, y: 14, filter: "blur(8px)" });
           gsap.set(multiplyNodes, {
             opacity: 0,
             scale: 0.72,
@@ -299,6 +341,13 @@ export default function Statement() {
           gsap.set(orbits, {
             opacity: 0,
             scale: 0.78,
+            transformOrigin: "center center",
+          });
+          gsap.set(outroScene, { opacity: 0 });
+          gsap.set(outroTint, { opacity: 0 });
+          gsap.set(outroDisk, {
+            opacity: 0,
+            scale: 0.14,
             transformOrigin: "center center",
           });
 
@@ -369,8 +418,8 @@ export default function Statement() {
             scrollTrigger: {
               trigger: section,
               start: "top top",
-              end: "+=2500",
-              scrub: 0.75,
+              end: "+=3000",
+              scrub: 0.9,
               pin: true,
               anticipatePin: 1,
               invalidateOnRefresh: true,
@@ -387,8 +436,8 @@ export default function Statement() {
                 rotate: 0,
                 scale: 1,
                 filter: "blur(0px)",
-                stagger: 0.05,
-                duration: 0.5,
+                stagger: 0.04,
+                duration: 0.36,
               },
               0.08
             )
@@ -402,10 +451,10 @@ export default function Statement() {
                 scale: 0.72,
                 opacity: 0,
                 filter: "blur(12px)",
-                stagger: 0.04,
-                duration: 0.62,
+                stagger: 0.02,
+                duration: 0.28,
               },
-              0.56
+              0.78
             )
             .to(
               centerpiece,
@@ -414,37 +463,50 @@ export default function Statement() {
                 scale: 0.94,
                 filter: "blur(12px)",
                 transformOrigin: "center center",
-                duration: 0.38,
+                duration: 0.22,
               },
-              0.66
+              0.94
             )
             .to(
               meta,
               {
                 opacity: 0.3,
-                duration: 0.24,
+                duration: 0.18,
               },
-              0.7
+              0.98
             )
             .to(
               endScene,
               {
                 opacity: 1,
                 y: 0,
-                duration: 0.44,
+                scale: 1,
+                filter: "blur(0px)",
+                duration: 0.24,
                 pointerEvents: "auto",
               },
-              1.48
+              1.18
             )
             .to(
-              endTitle,
+              endTitleMain,
               {
                 opacity: 1,
                 y: 0,
                 filter: "blur(0px)",
-                duration: 0.44,
+                duration: 0.18,
               },
-              1.54
+              1.22
+            )
+            .to(
+              endTitleAccent,
+              {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                filter: "blur(0px)",
+                duration: 0.14,
+              },
+              1.26
             )
             .to(
               multiplyGraphic,
@@ -452,9 +514,18 @@ export default function Statement() {
                 opacity: 1,
                 scale: 1,
                 y: 0,
-                duration: 0.54,
+                filter: "blur(0px)",
+                duration: 0.24,
               },
-              1.6
+              1.24
+            )
+            .to(
+              multiplyCore,
+              {
+                scale: 1,
+                duration: 0.18,
+              },
+              1.26
             )
             .to(
               orbits,
@@ -462,9 +533,9 @@ export default function Statement() {
                 opacity: 1,
                 scale: 1,
                 stagger: 0.05,
-                duration: 0.5,
+                duration: 0.22,
               },
-              1.64
+              1.28
             )
             .to(
               multiplyPaths,
@@ -472,9 +543,9 @@ export default function Statement() {
                 strokeDashoffset: 0,
                 opacity: 1,
                 stagger: 0.03,
-                duration: 0.6,
+                duration: 0.34,
               },
-              1.68
+              1.32
             )
             .to(
               multiplyNodes,
@@ -482,28 +553,81 @@ export default function Statement() {
                 opacity: 1,
                 scale: 1,
                 stagger: 0.04,
-                duration: 0.36,
+                duration: 0.2,
               },
-              1.72
+              1.36
             )
             .to(
               endCaption,
               {
                 opacity: 1,
                 y: 0,
-                duration: 0.4,
+                filter: "blur(0px)",
+                duration: 0.2,
+              },
+              1.42
+            )
+            .to(
+              [...multiplyNodes, endCaption, ...multiplyPaths, ...orbits],
+              {
+                opacity: 0,
+                stagger: 0.02,
+                duration: 0.18,
+              },
+              1.74
+            )
+            .to(
+              [multiplyGraphic, endTitle],
+              {
+                opacity: 0.22,
+                filter: "blur(10px)",
+                duration: 0.18,
+              },
+              1.76
+            )
+            .to(
+              outroScene,
+              {
+                opacity: 1,
+                duration: 0.16,
               },
               1.8
+            )
+            .to(
+              outroTint,
+              {
+                opacity: 1,
+                duration: 0.28,
+              },
+              1.84
+            )
+            .to(
+              outroDisk,
+              {
+                opacity: 1,
+                scale: 14,
+                duration: 0.72,
+                ease: "power2.inOut",
+              },
+              1.84
+            )
+            .to(
+              endScene,
+              {
+                opacity: 0,
+                duration: 0.24,
+              },
+              1.88
             );
 
           if (grid) {
             timeline.to(
               grid,
               {
-                opacity: 0.2,
-                duration: 0.3,
+                opacity: 0,
+                duration: 0.28,
               },
-              1.66
+              1.9
             );
           }
         }
@@ -533,15 +657,36 @@ export default function Statement() {
             y: 28,
             filter: "blur(10px)",
           });
-          gsap.set(endScene, { opacity: 0, y: 34 });
-          gsap.set(endTitle, { opacity: 0, y: 22, filter: "blur(10px)" });
+          gsap.set(endScene, {
+            opacity: 0,
+            y: 18,
+            scale: 0.985,
+            filter: "blur(10px)",
+          });
+          gsap.set(endTitle, { opacity: 1 });
+          gsap.set(endTitleMain, {
+            opacity: 0,
+            y: 18,
+            filter: "blur(8px)",
+          });
+          gsap.set(endTitleAccent, {
+            opacity: 0,
+            y: 8,
+            scale: 0.95,
+            filter: "blur(8px)",
+          });
           gsap.set(multiplyGraphic, {
             opacity: 0,
-            scale: 0.94,
-            y: 26,
+            scale: 0.97,
+            y: 18,
+            filter: "blur(8px)",
             transformOrigin: "center top",
           });
-          gsap.set(endCaption, { opacity: 0, y: 18 });
+          gsap.set(multiplyCore, {
+            scale: 0.94,
+            transformOrigin: "center center",
+          });
+          gsap.set(endCaption, { opacity: 0, y: 14, filter: "blur(8px)" });
           gsap.set(multiplyNodes, {
             opacity: 0,
             scale: 0.76,
@@ -550,6 +695,13 @@ export default function Statement() {
           gsap.set(orbits, {
             opacity: 0,
             scale: 0.82,
+            transformOrigin: "center center",
+          });
+          gsap.set(outroScene, { opacity: 0 });
+          gsap.set(outroTint, { opacity: 0 });
+          gsap.set(outroDisk, {
+            opacity: 0,
+            scale: 0.16,
             transformOrigin: "center center",
           });
 
@@ -651,7 +803,9 @@ export default function Statement() {
           gsap.to(endScene, {
             opacity: 1,
             y: 0,
-            duration: 0.52,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.34,
             ease: "power3.out",
             scrollTrigger: {
               trigger: section,
@@ -659,11 +813,11 @@ export default function Statement() {
             },
           });
 
-          gsap.to(endTitle, {
+          gsap.to(endTitleMain, {
             opacity: 1,
             y: 0,
             filter: "blur(0px)",
-            duration: 0.46,
+            duration: 0.3,
             ease: "power3.out",
             scrollTrigger: {
               trigger: section,
@@ -671,15 +825,39 @@ export default function Statement() {
             },
           });
 
+          gsap.to(endTitleAccent, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.2,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 36%",
+            },
+          });
+
           gsap.to(multiplyGraphic, {
             opacity: 1,
             scale: 1,
             y: 0,
-            duration: 0.54,
+            filter: "blur(0px)",
+            duration: 0.36,
             ease: "power3.out",
             scrollTrigger: {
               trigger: section,
               start: "center 34%",
+            },
+          });
+
+          gsap.to(multiplyCore, {
+            scale: 1,
+            duration: 0.24,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 33%",
             },
           });
 
@@ -723,11 +901,46 @@ export default function Statement() {
           gsap.to(endCaption, {
             opacity: 1,
             y: 0,
-            duration: 0.4,
+            filter: "blur(0px)",
+            duration: 0.28,
             ease: "power3.out",
             scrollTrigger: {
               trigger: section,
               start: "center 24%",
+            },
+          });
+
+          gsap.to(outroScene, {
+            opacity: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "bottom 34%",
+              end: "bottom top",
+              scrub: 0.7,
+            },
+          });
+
+          gsap.to(outroTint, {
+            opacity: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "bottom 30%",
+              end: "bottom top",
+              scrub: 0.7,
+            },
+          });
+
+          gsap.to(outroDisk, {
+            opacity: 1,
+            scale: 10,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "bottom 30%",
+              end: "bottom top",
+              scrub: 0.75,
             },
           });
         }
@@ -752,6 +965,10 @@ export default function Statement() {
           data-opacity="0.68"
           className={`${styles.halo} ${styles.haloSecondary}`}
         />
+        <div data-outro-scene className={styles.outroScene}>
+          <div data-outro-tint className={styles.outroTint} />
+          <div data-outro-disk className={styles.outroDisk} />
+        </div>
 
         <div className={styles.metaRow}>
           <p data-meta className={styles.kicker}>
@@ -819,8 +1036,15 @@ export default function Statement() {
         <div data-end-scene className={styles.endScene}>
           <p className={styles.endEyebrow}>What broken information does next</p>
           <h3 data-end-title className={styles.endTitle}>
-            Bad data does not break once.
-            <span className={styles.endTitleAccent}>It MULTIPLIES.</span>
+            <span data-end-title-main className={styles.endTitleMain}>
+              Bad data does not break once.
+            </span>
+            <span
+              data-end-title-accent
+              className={`${styles.endTitleAccent} ${styles.endTitleAccentLine}`}
+            >
+              It MULTIPLIES.
+            </span>
           </h3>
 
           <div data-multiply-graphic className={styles.multiplyGraphic}>
@@ -853,7 +1077,7 @@ export default function Statement() {
               ))}
             </svg>
 
-            <div className={styles.multiplyCore}>
+            <div data-multiply-core className={styles.multiplyCore}>
               <p className={styles.coreKicker}>1 bad record</p>
               <p className={styles.coreTitle}>spreads through the job</p>
             </div>
