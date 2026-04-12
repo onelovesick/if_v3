@@ -19,15 +19,16 @@ interface LossCard {
   collapseY: number;
 }
 
-interface LaneChip {
-  label: string;
-  left: string;
+interface MultiplyPath {
+  d: string;
+  tone: "primary" | "steel" | "ghost";
 }
 
-interface LaneConfig {
-  shift: number;
-  width: string;
-  chips: LaneChip[];
+interface MultiplyNode {
+  label: string;
+  top: string;
+  left: string;
+  tone: "primary" | "steel" | "ghost";
 }
 
 const LOSS_CARDS: LossCard[] = [
@@ -35,124 +36,139 @@ const LOSS_CARDS: LossCard[] = [
     tag: "01 / Version drift",
     title: "Near-matching information",
     text: "Teams move from files that look aligned but no longer mean the same thing once they cross a tool, package, or approval step.",
-    top: "15%",
-    left: "4%",
-    width: "clamp(220px, 19vw, 296px)",
-    floatX: -96,
-    floatY: 68,
+    top: "14%",
+    left: "9%",
+    width: "clamp(220px, 18vw, 292px)",
+    floatX: 110,
+    floatY: 48,
     rotate: -8,
-    collapseX: 196,
-    collapseY: 146,
+    collapseX: 150,
+    collapseY: 132,
   },
   {
     tag: "02 / Duplicate capture",
     title: "Re-entered context",
     text: "The same fact gets captured again and again by different owners, each with slightly different names, timing, and assumptions.",
-    top: "18%",
-    left: "72%",
-    width: "clamp(220px, 18vw, 284px)",
-    floatX: 88,
-    floatY: 60,
-    rotate: 7,
-    collapseX: -182,
-    collapseY: 134,
+    top: "15%",
+    left: "69%",
+    width: "clamp(220px, 18vw, 286px)",
+    floatX: -106,
+    floatY: 44,
+    rotate: 8,
+    collapseX: -152,
+    collapseY: 128,
   },
   {
     tag: "03 / Schedule drag",
     title: "Delay compounds quietly",
     text: "A broken handoff becomes waiting time, resequencing, clarification loops, and avoidable coordination debt across the programme.",
-    top: "43%",
-    left: "2%",
-    width: "clamp(236px, 20vw, 308px)",
-    floatX: -110,
-    floatY: 42,
+    top: "38%",
+    left: "4%",
+    width: "clamp(232px, 19vw, 308px)",
+    floatX: 126,
+    floatY: 20,
     rotate: -6,
-    collapseX: 228,
-    collapseY: 28,
+    collapseX: 180,
+    collapseY: 22,
   },
   {
     tag: "04 / Commercial leakage",
     title: "Risk hides in the gaps",
     text: "Bad structure obscures entitlement, status, and exposure until teams are reacting to cost instead of controlling it.",
-    top: "46%",
-    left: "73%",
+    top: "39%",
+    left: "74%",
     width: "clamp(228px, 19vw, 300px)",
-    floatX: 116,
-    floatY: 44,
-    rotate: 8,
-    collapseX: -214,
-    collapseY: 24,
+    floatX: -122,
+    floatY: 16,
+    rotate: 7,
+    collapseX: -182,
+    collapseY: 18,
   },
   {
     tag: "05 / Field uncertainty",
     title: "Crews stop to verify",
     text: "Execution slows down when people on site need to validate what is current before they can act with confidence.",
     top: "66%",
-    left: "16%",
-    width: "clamp(218px, 18vw, 282px)",
-    floatX: -74,
-    floatY: 54,
+    left: "12%",
+    width: "clamp(218px, 18vw, 284px)",
+    floatX: 96,
+    floatY: -42,
     rotate: -5,
-    collapseX: 128,
+    collapseX: 138,
     collapseY: -126,
   },
   {
     tag: "06 / Handover risk",
     title: "Operations inherit doubt",
     text: "Disconnected records mean the final asset lands with information that is incomplete, duplicated, or no longer trusted.",
-    top: "69%",
-    left: "58%",
+    top: "66%",
+    left: "66%",
     width: "clamp(220px, 18vw, 288px)",
-    floatX: 70,
-    floatY: 52,
+    floatX: -94,
+    floatY: -44,
     rotate: 5,
-    collapseX: -122,
-    collapseY: -138,
+    collapseX: -140,
+    collapseY: -128,
   },
 ];
 
-const LANES: LaneConfig[] = [
+const MULTIPLY_PATHS: MultiplyPath[] = [
   {
-    shift: -18,
-    width: "clamp(180px, 22vw, 330px)",
-    chips: [
-      { label: "RFI", left: "18%" },
-      { label: "REV 12", left: "80%" },
-    ],
+    d: "M 400 230 C 350 190, 284 144, 182 102",
+    tone: "steel",
   },
   {
-    shift: 14,
-    width: "clamp(210px, 26vw, 376px)",
-    chips: [
-      { label: "COST CODE", left: "24%" },
-      { label: "FIELD NOTE", left: "74%" },
-    ],
+    d: "M 400 230 C 400 182, 400 136, 400 82",
+    tone: "ghost",
   },
   {
-    shift: -12,
-    width: "clamp(220px, 28vw, 420px)",
-    chips: [
-      { label: "PACKAGE", left: "14%" },
-      { label: "ASSET ID", left: "86%" },
-    ],
+    d: "M 400 230 C 450 190, 516 144, 618 102",
+    tone: "primary",
   },
   {
-    shift: 10,
-    width: "clamp(188px, 24vw, 352px)",
-    chips: [
-      { label: "SUBMITTAL", left: "22%" },
-      { label: "QA LOG", left: "78%" },
-    ],
+    d: "M 400 230 C 324 228, 244 226, 138 224",
+    tone: "ghost",
   },
   {
-    shift: -16,
-    width: "clamp(194px, 23vw, 338px)",
-    chips: [
-      { label: "CHANGE", left: "20%" },
-      { label: "HANDOVER", left: "82%" },
-    ],
+    d: "M 400 230 C 476 228, 556 226, 662 224",
+    tone: "steel",
+  },
+  {
+    d: "M 400 230 C 352 282, 290 328, 206 364",
+    tone: "primary",
+  },
+  {
+    d: "M 400 230 C 400 286, 400 334, 400 390",
+    tone: "ghost",
+  },
+  {
+    d: "M 400 230 C 448 282, 510 328, 594 364",
+    tone: "steel",
   },
 ];
+
+const MULTIPLY_NODES: MultiplyNode[] = [
+  { label: "Schedule drag", top: "16%", left: "18%", tone: "steel" },
+  { label: "Approval loops", top: "10%", left: "50%", tone: "ghost" },
+  { label: "Cost leakage", top: "16%", left: "82%", tone: "primary" },
+  { label: "Field hesitation", top: "48%", left: "12%", tone: "ghost" },
+  { label: "Rework cycles", top: "48%", left: "88%", tone: "steel" },
+  { label: "Commercial risk", top: "80%", left: "22%", tone: "primary" },
+  { label: "Handover doubt", top: "88%", left: "50%", tone: "ghost" },
+  { label: "Trust erosion", top: "80%", left: "78%", tone: "steel" },
+];
+
+function getToneClassName(tone: MultiplyPath["tone"]) {
+  if (tone === "primary") {
+    return styles.tonePrimary;
+  }
+
+  if (tone === "steel") {
+    return styles.toneSteel;
+  }
+
+  return styles.toneGhost;
+}
 
 export default function Statement() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -168,307 +184,554 @@ export default function Statement() {
       const statChunks = Array.from(
         section.querySelectorAll<HTMLElement>("[data-stat-chunk]")
       );
-      const amountLine = section.querySelector<HTMLElement>("[data-amount-line]");
+      const lead = section.querySelector<HTMLElement>("[data-lead]");
+      const summary = section.querySelector<HTMLElement>("[data-summary]");
+      const centerpiece = section.querySelector<HTMLElement>(`.${styles.centerpiece}`);
       const lossCards = Array.from(
         section.querySelectorAll<HTMLElement>("[data-loss-card]")
       );
       const halos = Array.from(
         section.querySelectorAll<HTMLElement>("[data-halo]")
       );
-      const laneField = section.querySelector<HTMLElement>(`.${styles.laneField}`);
-      const lanes = Array.from(
-        section.querySelectorAll<HTMLElement>("[data-lane]")
+      const endScene = section.querySelector<HTMLElement>("[data-end-scene]");
+      const endTitle = section.querySelector<HTMLElement>("[data-end-title]");
+      const endCaption = section.querySelector<HTMLElement>("[data-end-caption]");
+      const multiplyGraphic = section.querySelector<HTMLElement>(
+        "[data-multiply-graphic]"
       );
-      const laneCores = Array.from(
-        section.querySelectorAll<HTMLElement>("[data-lane-core]")
+      const multiplyPaths = Array.from(
+        section.querySelectorAll<SVGPathElement>("[data-multiply-path]")
       );
-      const laneChips = Array.from(
-        section.querySelectorAll<HTMLElement>("[data-lane-chip]")
+      const multiplyNodes = Array.from(
+        section.querySelectorAll<HTMLElement>("[data-multiply-node]")
       );
-      const footer = Array.from(
-        section.querySelectorAll<HTMLElement>("[data-footer]")
+      const orbits = Array.from(
+        section.querySelectorAll<HTMLElement>("[data-orbit]")
       );
       const grid = section.querySelector<HTMLElement>(`.${styles.grid}`);
 
-      if (!laneField) return;
+      const introCopy = [lead, summary].filter(
+        (item): item is HTMLElement => Boolean(item)
+      );
+
+      if (!centerpiece || !endScene || !endTitle || !endCaption || !multiplyGraphic) {
+        return;
+      }
 
       const media = gsap.matchMedia();
 
       media.add("(prefers-reduced-motion: reduce)", () => {
+        multiplyPaths.forEach((path) => {
+          gsap.set(path, {
+            strokeDasharray: "none",
+            strokeDashoffset: 0,
+            opacity: 1,
+          });
+        });
+
         gsap.set(
           [
             ...meta,
             ...statChunks,
+            ...introCopy,
             ...lossCards,
             ...halos,
-            ...lanes,
-            ...laneCores,
-            ...laneChips,
-            ...footer,
+            endScene,
+            endTitle,
+            endCaption,
+            multiplyGraphic,
+            ...multiplyNodes,
+            ...orbits,
           ],
           { clearProps: "all" }
         );
       });
 
-      media.add("(min-width: 769px) and (prefers-reduced-motion: no-preference)", () => {
-        gsap.set(meta, { opacity: 0, y: 26 });
-        gsap.set(statChunks, { opacity: 0, yPercent: 22, filter: "blur(10px)" });
-        gsap.set(lossCards, {
-          opacity: 0,
-          x: (_, target) =>
-            Number((target as HTMLElement).dataset.floatX ?? 0),
-          y: (_, target) =>
-            Number((target as HTMLElement).dataset.floatY ?? 0),
-          rotate: (_, target) =>
-            Number((target as HTMLElement).dataset.rotate ?? 0),
-          filter: "blur(14px)",
-          transformOrigin: "center center",
-        });
-        gsap.set(halos, { opacity: 0.18, scale: 0.78, transformOrigin: "center center" });
-        gsap.set(laneField, { opacity: 0, y: 80 });
-        gsap.set(lanes, {
-          opacity: 0.14,
-          xPercent: (_, target) =>
-            Number((target as HTMLElement).dataset.shift ?? 0),
-        });
-        gsap.set(laneCores, {
-          opacity: 0.16,
-          scaleX: 0.58,
-          transformOrigin: "center center",
-        });
-        gsap.set(laneChips, { opacity: 0, y: 18, scale: 0.92 });
-        gsap.set(footer, { opacity: 0, y: 24 });
-
-        if (grid) {
-          gsap.set(grid, { opacity: 0.12 });
-        }
-
-        const timeline = gsap.timeline({
-          defaults: { ease: "power3.out" },
-          scrollTrigger: {
-            trigger: section,
-            start: "top top",
-            end: "+=1900",
-            scrub: 0.75,
-            pin: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        timeline
-          .to(meta, {
-            opacity: 1,
-            y: 0,
-            stagger: 0.08,
-            duration: 0.32,
-          }, 0.04)
-          .to(statChunks, {
-            opacity: 1,
-            yPercent: 0,
-            filter: "blur(0px)",
-            stagger: 0.08,
-            duration: 0.46,
-          }, 0.08)
-          .to(halos, {
-            opacity: (_, target) =>
-              Number((target as HTMLElement).dataset.opacity ?? 0.8),
-            scale: 1,
-            stagger: 0.04,
-            duration: 0.54,
-          }, 0.14)
-          .to(lossCards, {
-            opacity: 1,
-            x: 0,
-            y: 0,
-            rotate: 0,
-            filter: "blur(0px)",
-            stagger: 0.05,
-            duration: 0.58,
-          }, 0.18);
-
-        if (amountLine) {
-          timeline.to(
-            amountLine,
-            {
-              scale: 0.98,
-              transformOrigin: "center center",
-              duration: 0.42,
-            },
-            0.54
-          );
-        }
-
-        timeline
-          .to(statChunks, {
-            yPercent: -2,
-            stagger: 0.03,
-            duration: 0.4,
-          }, 0.56)
-          .to(laneField, {
-            opacity: 1,
-            y: 0,
-            duration: 0.48,
-          }, 0.58)
-          .to(lossCards, {
-            x: (_, target) =>
-              Number((target as HTMLElement).dataset.collapseX ?? 0),
-            y: (_, target) =>
-              Number((target as HTMLElement).dataset.collapseY ?? 0),
-            scale: 0.82,
-            opacity: 0.14,
+      media.add(
+        "(min-width: 769px) and (prefers-reduced-motion: no-preference)",
+        () => {
+          gsap.set(meta, { opacity: 0, y: 20 });
+          gsap.set(statChunks, {
+            opacity: 0,
+            yPercent: 18,
+            filter: "blur(12px)",
+          });
+          gsap.set(introCopy, {
+            opacity: 0,
+            y: 24,
             filter: "blur(10px)",
-            stagger: 0.03,
-            duration: 0.58,
-          }, 0.64)
-          .to(lanes, {
+          });
+          gsap.set(halos, {
+            opacity: 0.14,
+            scale: 0.82,
+            transformOrigin: "center center",
+          });
+          gsap.set(lossCards, {
+            opacity: 0,
+            x: (_, target) =>
+              Number((target as HTMLElement).dataset.floatX ?? 0),
+            y: (_, target) =>
+              Number((target as HTMLElement).dataset.floatY ?? 0),
+            rotate: (_, target) =>
+              Number((target as HTMLElement).dataset.rotate ?? 0),
+            scale: 0.92,
+            filter: "blur(14px)",
+            transformOrigin: "center center",
+          });
+          gsap.set(endScene, { opacity: 0, y: 48, pointerEvents: "none" });
+          gsap.set(endTitle, {
+            opacity: 0,
+            y: 28,
+            filter: "blur(14px)",
+          });
+          gsap.set(multiplyGraphic, {
+            opacity: 0,
+            scale: 0.92,
+            y: 34,
+            transformOrigin: "center top",
+          });
+          gsap.set(endCaption, { opacity: 0, y: 24 });
+          gsap.set(multiplyNodes, {
+            opacity: 0,
+            scale: 0.72,
+            transformOrigin: "center center",
+          });
+          gsap.set(orbits, {
+            opacity: 0,
+            scale: 0.78,
+            transformOrigin: "center center",
+          });
+
+          multiplyPaths.forEach((path) => {
+            const length = path.getTotalLength();
+            gsap.set(path, {
+              strokeDasharray: length,
+              strokeDashoffset: length,
+              opacity: 0.18,
+            });
+          });
+
+          if (grid) {
+            gsap.set(grid, { opacity: 0.1 });
+          }
+
+          gsap.timeline({
+            defaults: { ease: "none" },
+            scrollTrigger: {
+              trigger: section,
+              start: "top bottom",
+              end: "top top",
+              scrub: 0.8,
+            },
+          })
+            .to(
+              statChunks,
+              {
+                opacity: 1,
+                yPercent: 0,
+                filter: "blur(0px)",
+                stagger: 0.08,
+              },
+              0
+            )
+            .to(
+              halos,
+              {
+                opacity: (_, target) =>
+                  Number((target as HTMLElement).dataset.opacity ?? 0.8),
+                scale: 1,
+                stagger: 0.05,
+              },
+              0.04
+            )
+            .to(
+              meta,
+              {
+                opacity: 1,
+                y: 0,
+                stagger: 0.06,
+              },
+              0.1
+            )
+            .to(
+              introCopy,
+              {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+                stagger: 0.08,
+              },
+              0.16
+            );
+
+          const timeline = gsap.timeline({
+            defaults: { ease: "power3.out" },
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              end: "+=2500",
+              scrub: 0.75,
+              pin: true,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+            },
+          });
+
+          timeline
+            .to(
+              lossCards,
+              {
+                opacity: 1,
+                x: 0,
+                y: 0,
+                rotate: 0,
+                scale: 1,
+                filter: "blur(0px)",
+                stagger: 0.05,
+                duration: 0.5,
+              },
+              0.08
+            )
+            .to(
+              lossCards,
+              {
+                x: (_, target) =>
+                  Number((target as HTMLElement).dataset.collapseX ?? 0),
+                y: (_, target) =>
+                  Number((target as HTMLElement).dataset.collapseY ?? 0),
+                scale: 0.72,
+                opacity: 0,
+                filter: "blur(12px)",
+                stagger: 0.04,
+                duration: 0.62,
+              },
+              0.56
+            )
+            .to(
+              centerpiece,
+              {
+                opacity: 0.14,
+                scale: 0.94,
+                filter: "blur(12px)",
+                transformOrigin: "center center",
+                duration: 0.38,
+              },
+              0.66
+            )
+            .to(
+              meta,
+              {
+                opacity: 0.3,
+                duration: 0.24,
+              },
+              0.7
+            )
+            .to(
+              endScene,
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.44,
+                pointerEvents: "auto",
+              },
+              1.48
+            )
+            .to(
+              endTitle,
+              {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+                duration: 0.44,
+              },
+              1.54
+            )
+            .to(
+              multiplyGraphic,
+              {
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                duration: 0.54,
+              },
+              1.6
+            )
+            .to(
+              orbits,
+              {
+                opacity: 1,
+                scale: 1,
+                stagger: 0.05,
+                duration: 0.5,
+              },
+              1.64
+            )
+            .to(
+              multiplyPaths,
+              {
+                strokeDashoffset: 0,
+                opacity: 1,
+                stagger: 0.03,
+                duration: 0.6,
+              },
+              1.68
+            )
+            .to(
+              multiplyNodes,
+              {
+                opacity: 1,
+                scale: 1,
+                stagger: 0.04,
+                duration: 0.36,
+              },
+              1.72
+            )
+            .to(
+              endCaption,
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.4,
+              },
+              1.8
+            );
+
+          if (grid) {
+            timeline.to(
+              grid,
+              {
+                opacity: 0.2,
+                duration: 0.3,
+              },
+              1.66
+            );
+          }
+        }
+      );
+
+      media.add(
+        "(max-width: 768px) and (prefers-reduced-motion: no-preference)",
+        () => {
+          gsap.set(meta, { opacity: 0, y: 18 });
+          gsap.set(statChunks, {
+            opacity: 0,
+            y: 24,
+            filter: "blur(10px)",
+          });
+          gsap.set(introCopy, {
+            opacity: 0,
+            y: 22,
+            filter: "blur(8px)",
+          });
+          gsap.set(halos, {
+            opacity: 0.16,
+            scale: 0.86,
+            transformOrigin: "center center",
+          });
+          gsap.set(lossCards, {
+            opacity: 0,
+            y: 28,
+            filter: "blur(10px)",
+          });
+          gsap.set(endScene, { opacity: 0, y: 34 });
+          gsap.set(endTitle, { opacity: 0, y: 22, filter: "blur(10px)" });
+          gsap.set(multiplyGraphic, {
+            opacity: 0,
+            scale: 0.94,
+            y: 26,
+            transformOrigin: "center top",
+          });
+          gsap.set(endCaption, { opacity: 0, y: 18 });
+          gsap.set(multiplyNodes, {
+            opacity: 0,
+            scale: 0.76,
+            transformOrigin: "center center",
+          });
+          gsap.set(orbits, {
+            opacity: 0,
+            scale: 0.82,
+            transformOrigin: "center center",
+          });
+
+          multiplyPaths.forEach((path) => {
+            const length = path.getTotalLength();
+            gsap.set(path, {
+              strokeDasharray: length,
+              strokeDashoffset: length,
+              opacity: 0.18,
+            });
+          });
+
+          gsap.timeline({
+            defaults: { ease: "power3.out" },
+            scrollTrigger: {
+              trigger: section,
+              start: "top 84%",
+            },
+          })
+            .to(meta, {
+              opacity: 1,
+              y: 0,
+              stagger: 0.06,
+              duration: 0.48,
+            })
+            .to(
+              statChunks,
+              {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+                stagger: 0.08,
+                duration: 0.58,
+              },
+              0.04
+            )
+            .to(
+              halos,
+              {
+                opacity: (_, target) =>
+                  Number((target as HTMLElement).dataset.opacity ?? 0.8),
+                scale: 1,
+                stagger: 0.05,
+                duration: 0.64,
+              },
+              0.08
+            )
+            .to(
+              introCopy,
+              {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+                stagger: 0.08,
+                duration: 0.54,
+              },
+              0.12
+            );
+
+          gsap.to(lossCards, {
             opacity: 1,
-            xPercent: 0,
+            y: 0,
+            filter: "blur(0px)",
+            stagger: 0.08,
+            duration: 0.62,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 62%",
+            },
+          });
+
+          gsap.to(lossCards, {
+            opacity: 0,
+            y: -18,
+            filter: "blur(10px)",
             stagger: 0.04,
             duration: 0.46,
-          }, 0.68)
-          .to(laneCores, {
-            opacity: 1,
-            scaleX: 1,
-            stagger: 0.03,
-            duration: 0.42,
-          }, 0.7)
-          .to(laneChips, {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            stagger: 0.02,
-            duration: 0.34,
-          }, 0.76)
-          .to(footer, {
-            opacity: 1,
-            y: 0,
-            stagger: 0.08,
-            duration: 0.38,
-          }, 0.82);
-
-        if (grid) {
-          timeline.to(
-            grid,
-            {
-              opacity: 0.22,
-              duration: 0.38,
+            ease: "power2.inOut",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 56%",
             },
-            0.72
-          );
-        }
-      });
+          });
 
-      media.add("(max-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
-        gsap.set(meta, { opacity: 0, y: 18 });
-        gsap.set(statChunks, { opacity: 0, y: 28 });
-        gsap.set(lossCards, { opacity: 0, y: 30, filter: "blur(10px)" });
-        gsap.set(halos, { opacity: 0.22, scale: 0.88, transformOrigin: "center center" });
-        gsap.set(lanes, {
-          opacity: 0.16,
-          xPercent: (_, target) =>
-            Number((target as HTMLElement).dataset.shift ?? 0) * 0.45,
-        });
-        gsap.set(laneCores, {
-          opacity: 0.3,
-          scaleX: 0.7,
-          transformOrigin: "center center",
-        });
-        gsap.set(laneChips, { opacity: 0, y: 16 });
-        gsap.set(footer, { opacity: 0, y: 20 });
+          gsap.to(centerpiece, {
+            opacity: 0.12,
+            scale: 0.95,
+            filter: "blur(10px)",
+            transformOrigin: "center center",
+            duration: 0.42,
+            ease: "power2.inOut",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 54%",
+            },
+          });
 
-        const introTimeline = gsap.timeline({
-          defaults: { ease: "power3.out" },
-          scrollTrigger: {
-            trigger: section,
-            start: "top 78%",
-          },
-        });
-
-        introTimeline
-          .to(meta, {
+          gsap.to(endScene, {
             opacity: 1,
             y: 0,
-            stagger: 0.08,
-            duration: 0.5,
-          })
-          .to(statChunks, {
+            duration: 0.52,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 40%",
+            },
+          });
+
+          gsap.to(endTitle, {
             opacity: 1,
             y: 0,
-            stagger: 0.08,
-            duration: 0.6,
-          }, 0.08)
-          .to(halos, {
-            opacity: (_, target) =>
-              Number((target as HTMLElement).dataset.opacity ?? 0.8),
+            filter: "blur(0px)",
+            duration: 0.46,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 38%",
+            },
+          });
+
+          gsap.to(multiplyGraphic, {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            duration: 0.54,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 34%",
+            },
+          });
+
+          gsap.to(orbits, {
+            opacity: 1,
             scale: 1,
             stagger: 0.05,
-            duration: 0.7,
-          }, 0.1);
+            duration: 0.44,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 32%",
+            },
+          });
 
-        gsap.to(lossCards, {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          stagger: 0.08,
-          duration: 0.65,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 64%",
-          },
-        });
+          gsap.to(multiplyPaths, {
+            strokeDashoffset: 0,
+            opacity: 1,
+            stagger: 0.03,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 30%",
+              end: "bottom 20%",
+              scrub: 0.9,
+            },
+          });
 
-        gsap.to(lanes, {
-          opacity: 1,
-          xPercent: 0,
-          stagger: 0.04,
-          ease: "none",
-          scrollTrigger: {
-            trigger: laneField,
-            start: "top 85%",
-            end: "bottom 42%",
-            scrub: 0.9,
-          },
-        });
+          gsap.to(multiplyNodes, {
+            opacity: 1,
+            scale: 1,
+            stagger: 0.04,
+            duration: 0.34,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 28%",
+            },
+          });
 
-        gsap.to(laneCores, {
-          opacity: 1,
-          scaleX: 1,
-          stagger: 0.03,
-          ease: "none",
-          scrollTrigger: {
-            trigger: laneField,
-            start: "top 82%",
-            end: "bottom 40%",
-            scrub: 0.9,
-          },
-        });
-
-        gsap.to(laneChips, {
-          opacity: 1,
-          y: 0,
-          stagger: 0.02,
-          duration: 0.4,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: laneField,
-            start: "top 80%",
-          },
-        });
-
-        gsap.to(footer, {
-          opacity: 1,
-          y: 0,
-          stagger: 0.08,
-          duration: 0.48,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "bottom 78%",
-          },
-        });
-      });
+          gsap.to(endCaption, {
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 24%",
+            },
+          });
+        }
+      );
 
       return () => media.revert();
     },
@@ -486,7 +749,7 @@ export default function Statement() {
         />
         <div
           data-halo
-          data-opacity="0.64"
+          data-opacity="0.68"
           className={`${styles.halo} ${styles.haloSecondary}`}
         />
 
@@ -501,12 +764,12 @@ export default function Statement() {
         </div>
 
         <div className={styles.centerpiece}>
-          <p data-meta className={styles.lead}>
+          <p data-lead className={styles.lead}>
             When context breaks, cost does not stay in one place.
           </p>
 
           <h2 className={styles.headline}>
-            <span data-stat-chunk data-amount-line className={styles.amountLine}>
+            <span data-stat-chunk className={styles.amountLine}>
               <span className={styles.amountSymbol}>$</span>
               <span className={styles.amountValue}>1.8</span>
               <span className={styles.amountUnit}>trillion</span>
@@ -519,7 +782,7 @@ export default function Statement() {
             </span>
           </h2>
 
-          <p data-meta className={styles.summary}>
+          <p data-summary className={styles.summary}>
             That loss is rarely one dramatic failure. It is thousands of small
             disconnects multiplying through naming, approvals, reporting,
             procurement, and site coordination until the whole programme is
@@ -553,44 +816,69 @@ export default function Statement() {
           ))}
         </div>
 
-        <div className={styles.laneField} aria-hidden="true">
-          <div className={styles.laneBeam} />
+        <div data-end-scene className={styles.endScene}>
+          <p className={styles.endEyebrow}>What broken information does next</p>
+          <h3 data-end-title className={styles.endTitle}>
+            Bad data does not break once.
+            <span className={styles.endTitleAccent}>It MULTIPLIES.</span>
+          </h3>
 
-          {LANES.map((lane, index) => (
-            <div key={`lane-${index}`} className={styles.laneWrap}>
-              <div
-                data-lane
-                data-shift={lane.shift}
-                className={styles.lane}
-              >
-                <span
-                  data-lane-core
-                  className={styles.laneCore}
-                  style={{ "--lane-width": lane.width } as CSSProperties}
+          <div data-multiply-graphic className={styles.multiplyGraphic}>
+            <div
+              data-orbit
+              className={`${styles.orbit} ${styles.orbitOuter}`}
+            />
+            <div
+              data-orbit
+              className={`${styles.orbit} ${styles.orbitMiddle}`}
+            />
+            <div
+              data-orbit
+              className={`${styles.orbit} ${styles.orbitInner}`}
+            />
+
+            <svg
+              className={styles.multiplySvg}
+              viewBox="0 0 800 460"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              {MULTIPLY_PATHS.map((path) => (
+                <path
+                  key={path.d}
+                  d={path.d}
+                  data-multiply-path
+                  className={`${styles.multiplyPath} ${getToneClassName(path.tone)}`}
                 />
+              ))}
+            </svg>
 
-                {lane.chips.map((chip) => (
-                  <span
-                    key={`${index}-${chip.label}`}
-                    data-lane-chip
-                    className={styles.laneChip}
-                    style={{ "--chip-left": chip.left } as CSSProperties}
-                  >
-                    {chip.label}
-                  </span>
-                ))}
-              </div>
+            <div className={styles.multiplyCore}>
+              <p className={styles.coreKicker}>1 bad record</p>
+              <p className={styles.coreTitle}>spreads through the job</p>
             </div>
-          ))}
-        </div>
 
-        <div className={styles.footerCopy}>
-          <p data-footer className={styles.footerLabel}>
-            Bad data does not break once. It multiplies.
-          </p>
-          <p data-footer className={styles.footerText}>
-            Structured information management matters because it turns invisible
-            leakage back into something delivery teams can actually control.
+            {MULTIPLY_NODES.map((node) => (
+              <div
+                key={node.label}
+                data-multiply-node
+                className={`${styles.multiplyNode} ${getToneClassName(node.tone)}`}
+                style={
+                  {
+                    "--node-top": node.top,
+                    "--node-left": node.left,
+                  } as CSSProperties
+                }
+              >
+                <span>{node.label}</span>
+              </div>
+            ))}
+          </div>
+
+          <p data-end-caption className={styles.endCaption}>
+            One broken piece of information branches into schedule drag, field
+            hesitation, approval loops, rework, cost exposure, and weaker
+            handover confidence across the entire programme.
           </p>
         </div>
       </div>
