@@ -4,107 +4,69 @@
   overflow: hidden;
   background: #f8f8f8;
   z-index: 2;
-  box-shadow: 0 -40px 80px rgba(7, 18, 31, 0.12);
-}
-
-/* Subtle grid texture */
-.section::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(rgba(8, 18, 37, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(8, 18, 37, 0.025) 1px, transparent 1px);
-  background-size: 152px 152px;
-  opacity: 0.12;
-  mask-image: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.14) 22%,
-    rgba(0, 0, 0, 0.28) 44%,
-    rgba(0, 0, 0, 0.52) 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.14) 22%,
-    rgba(0, 0, 0, 0.28) 44%,
-    rgba(0, 0, 0, 0.52) 100%
-  );
-  pointer-events: none;
+  box-shadow: 0 -40px 80px rgba(7, 18, 31, 0.1);
 }
 
 /* ─── Layout ─── */
 
-.panel {
-  position: relative;
-  z-index: 1;
-  min-height: 100svh;
-  display: grid;
-  place-items: center;
-  padding: 0 clamp(28px, 4vw, 72px);
-  box-sizing: border-box;
-}
-
-/* ─── Text layer ─── */
-
 .copy {
   position: relative;
   z-index: 2;
-  max-width: min(64rem, 80vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  padding: 0 clamp(32px, 6vw, 120px);
   text-align: center;
 }
 
-/* Soft halo behind text for readability over data rows */
+/* Soft halo behind text for readability */
 .copy::before {
   content: "";
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(80vw, 960px);
-  height: 420px;
+  width: min(90vw, 1100px);
+  height: 50vh;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: radial-gradient(
-    circle,
-    rgba(248, 248, 248, 0.92) 0%,
-    rgba(248, 248, 248, 0.78) 30%,
-    rgba(248, 248, 248, 0.4) 55%,
-    rgba(248, 248, 248, 0) 75%
+    ellipse,
+    rgba(248, 248, 248, 0.95) 0%,
+    rgba(248, 248, 248, 0.8) 28%,
+    rgba(248, 248, 248, 0.45) 52%,
+    rgba(248, 248, 248, 0) 72%
   );
-  filter: blur(20px);
   z-index: -1;
 }
 
 .kicker {
-  margin: 0 0 24px;
+  margin: 0 0 28px;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(8, 18, 37, 0.4);
+  color: rgba(8, 18, 37, 0.36);
 }
 
 .headline {
   margin: 0;
+  max-width: 18ch;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(2.8rem, 4.6vw, 5.2rem);
-  line-height: 1.08;
+  font-size: clamp(3.2rem, 5.6vw, 6.4rem);
+  line-height: 1.05;
   letter-spacing: -0.045em;
-}
-
-.line {
-  display: block;
+  text-wrap: balance;
 }
 
 .char {
-  display: inline-block;
-  color: rgba(8, 18, 37, 0.14);
-  transition: none;
+  display: inline;
+  color: rgba(8, 18, 37, 0.12);
 }
 
-/* ─── Data field (background) ─── */
+/* ─── Data field (full background) ─── */
 
 .field {
   position: absolute;
@@ -112,31 +74,31 @@
   z-index: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: clamp(18px, 2.2vh, 28px);
-  padding: 13svh 0 12svh;
+  justify-content: space-between;
+  padding: 6svh 0;
 }
 
 .centerBeam {
   position: absolute;
   left: 50%;
-  top: 14%;
-  bottom: 12%;
+  top: 8%;
+  bottom: 8%;
   width: 1px;
   transform: translateX(-50%);
   background: linear-gradient(
     180deg,
     rgba(71, 181, 255, 0) 0%,
-    rgba(71, 181, 255, 0.18) 18%,
-    rgba(71, 181, 255, 0.36) 52%,
-    rgba(71, 181, 255, 0.18) 84%,
+    rgba(71, 181, 255, 0.14) 20%,
+    rgba(71, 181, 255, 0.3) 50%,
+    rgba(71, 181, 255, 0.14) 80%,
     rgba(71, 181, 255, 0) 100%
   );
 }
 
 .rowWrap {
   position: relative;
-  height: clamp(18px, 2vh, 24px);
+  height: clamp(16px, 1.8vh, 22px);
+  flex-shrink: 0;
 }
 
 .row {
@@ -146,7 +108,7 @@
   margin-left: -30vw;
 }
 
-/* Horizontal track line */
+/* Horizontal track */
 .row::before {
   content: "";
   position: absolute;
@@ -158,14 +120,14 @@
   background: linear-gradient(
     90deg,
     rgba(8, 18, 37, 0) 0%,
-    rgba(8, 18, 37, 0.05) 12%,
-    rgba(8, 18, 37, 0.14) 48%,
-    rgba(8, 18, 37, 0.05) 88%,
+    rgba(8, 18, 37, 0.04) 10%,
+    rgba(8, 18, 37, 0.1) 50%,
+    rgba(8, 18, 37, 0.04) 90%,
     rgba(8, 18, 37, 0) 100%
   );
 }
 
-/* Signal segment — the "data" line */
+/* Signal bar */
 .signal {
   position: absolute;
   left: 50%;
@@ -177,41 +139,32 @@
   background: linear-gradient(
     90deg,
     rgba(71, 181, 255, 0) 0%,
-    rgba(71, 181, 255, 0.65) 18%,
-    rgba(160, 220, 255, 1) 50%,
-    rgba(71, 181, 255, 0.65) 82%,
+    rgba(71, 181, 255, 0.55) 20%,
+    rgba(140, 210, 255, 0.9) 50%,
+    rgba(71, 181, 255, 0.55) 80%,
     rgba(71, 181, 255, 0) 100%
   );
-  box-shadow:
-    0 0 18px rgba(71, 181, 255, 0.18),
-    0 0 40px rgba(71, 181, 255, 0.08);
+  box-shadow: 0 0 14px rgba(71, 181, 255, 0.12);
 }
 
-/* End dots on signal */
+/* End dots */
 .signal::before,
 .signal::after {
   content: "";
   position: absolute;
   top: 50%;
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  background: rgba(10, 22, 38, 0.7);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.8),
-    0 0 12px rgba(71, 181, 255, 0.14);
+  background: rgba(10, 22, 38, 0.6);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7);
   transform: translateY(-50%);
 }
 
-.signal::before {
-  left: -2px;
-}
+.signal::before { left: -1px; }
+.signal::after { right: -1px; }
 
-.signal::after {
-  right: -2px;
-}
-
-/* Scattered particles — the "noise" */
+/* Noise particles */
 .particle {
   position: absolute;
   left: var(--particle-x);
@@ -221,34 +174,27 @@
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: rgba(8, 18, 37, var(--particle-opacity));
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.6),
-    0 6px 14px rgba(8, 18, 37, 0.06);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
 /* ─── Mobile ─── */
 
 @media (max-width: 768px) {
-  .panel {
-    min-height: 80svh;
-    padding: 96px 24px;
-  }
-
   .copy {
-    max-width: 100%;
+    padding: 0 24px;
   }
 
   .headline {
-    font-size: clamp(2.2rem, 7.5vw, 3.4rem);
+    max-width: 14ch;
+    font-size: clamp(2.4rem, 8vw, 3.6rem);
   }
 
   .field {
-    padding: 86px 0 76px;
-    gap: 16px;
+    padding: 10svh 0;
   }
 
   .row {
-    width: 200vw;
-    margin-left: -50vw;
+    width: 220vw;
+    margin-left: -60vw;
   }
 }
