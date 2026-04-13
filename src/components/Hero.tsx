@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
-import FloatingLines from "./FloatingLines";
 import styles from "./Hero.module.css";
 
 export default function Hero() {
@@ -38,8 +37,8 @@ export default function Hero() {
         },
       });
 
-      gsap.to(`.${styles.linesLayer}`, {
-        yPercent: -4,
+      gsap.to(`.${styles.siteGrid}`, {
+        yPercent: -2,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -108,51 +107,25 @@ export default function Hero() {
         {/* Gradient veils */}
         <div className={styles.imageVeil} />
         <div className={styles.atmosphere} />
-
-        {/* Floating lines shader */}
-        <div className={styles.linesLayer}>
-          <FloatingLines
-            linesGradient={[
-              "#1a3a5c",
-              "#2a5a8a",
-              "#47b5ff",
-              "#5ac0ff",
-              "#47b5ff",
-              "#2a5a8a",
-              "#1a3a5c",
-            ]}
-            enabledWaves={["top", "middle", "bottom"]}
-            lineCount={[5, 4, 6]}
-            lineDistance={[5, 5, 4]}
-            topWavePosition={{ x: 10.0, y: 0.5, rotate: -0.4 }}
-            middleWavePosition={{ x: 5.0, y: 0.1, rotate: 0.15 }}
-            bottomWavePosition={{ x: 2.0, y: -0.7, rotate: -1.0 }}
-            animationSpeed={0.6}
-            interactive={true}
-            bendRadius={4.0}
-            bendStrength={-0.4}
-            mouseDamping={0.035}
-            parallax={true}
-            parallaxStrength={0.15}
-            mixBlendMode="screen"
-          />
-        </div>
+        <div className={styles.siteGrid} />
       </div>
 
       <div className={styles.inner}>
         <div className={styles.layout}>
           <div className={styles.headlineWrap} data-copy-item>
+            <p className={styles.eyebrow}>Heavy Civil Information Management</p>
             <h1 className={styles.headline}>
-              <span>Human-Led,</span>
-              <span>Digitally Enabled.</span>
+              <span>Information Engineered</span>
+              <span>For Heavy Civil.</span>
             </h1>
           </div>
 
           <div className={styles.bodyWrap} data-copy-item>
             <p className={styles.body}>
-              Infraforma brings fragmented construction information into a
-              disciplined flow so project teams can make clearer decisions,
-              maintain context, and deliver with greater control.
+              Infraforma structures design, field, schedule, and commercial
+              information so infrastructure teams can make clearer decisions,
+              manage handoffs with less friction, and deliver major works with
+              stronger control from intake to handover.
             </p>
           </div>
         </div>
