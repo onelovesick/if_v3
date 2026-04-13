@@ -5,160 +5,111 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import styles from "./Statement.module.css";
 
-interface LossCard {
-  tag: string;
-  title: string;
-  text: string;
-  top: string;
-  left: string;
-  width: string;
-  floatX: number;
-  floatY: number;
-  rotate: number;
-  collapseX: number;
-  collapseY: number;
+type Tone = "primary" | "steel" | "ghost";
+
+interface PositionLabel {
+  label: string;
+  top?: string;
+  left?: string;
 }
 
-interface MultiplyPath {
-  d: string;
-  tone: "primary" | "steel" | "ghost";
-}
-
-interface MultiplyNode {
+interface TonePosition {
   label: string;
   top: string;
   left: string;
-  tone: "primary" | "steel" | "ghost";
+  tone: Tone;
 }
 
-const LOSS_CARDS: LossCard[] = [
-  {
-    tag: "01 / Version drift",
-    title: "Near-matching information",
-    text: "Teams move from files that look aligned but no longer mean the same thing once they cross a tool, package, or approval step.",
-    top: "14%",
-    left: "9%",
-    width: "clamp(220px, 18vw, 292px)",
-    floatX: 110,
-    floatY: 48,
-    rotate: -8,
-    collapseX: 150,
-    collapseY: 132,
-  },
-  {
-    tag: "02 / Duplicate capture",
-    title: "Re-entered context",
-    text: "The same fact gets captured again and again by different owners, each with slightly different names, timing, and assumptions.",
-    top: "15%",
-    left: "69%",
-    width: "clamp(220px, 18vw, 286px)",
-    floatX: -106,
-    floatY: 44,
-    rotate: 8,
-    collapseX: -152,
-    collapseY: 128,
-  },
-  {
-    tag: "03 / Schedule drag",
-    title: "Delay compounds quietly",
-    text: "A broken handoff becomes waiting time, resequencing, clarification loops, and avoidable coordination debt across the programme.",
-    top: "38%",
-    left: "4%",
-    width: "clamp(232px, 19vw, 308px)",
-    floatX: 126,
-    floatY: 20,
-    rotate: -6,
-    collapseX: 180,
-    collapseY: 22,
-  },
-  {
-    tag: "04 / Commercial leakage",
-    title: "Risk hides in the gaps",
-    text: "Bad structure obscures entitlement, status, and exposure until teams are reacting to cost instead of controlling it.",
-    top: "39%",
-    left: "74%",
-    width: "clamp(228px, 19vw, 300px)",
-    floatX: -122,
-    floatY: 16,
-    rotate: 7,
-    collapseX: -182,
-    collapseY: 18,
-  },
-  {
-    tag: "05 / Field uncertainty",
-    title: "Crews stop to verify",
-    text: "Execution slows down when people on site need to validate what is current before they can act with confidence.",
-    top: "66%",
-    left: "12%",
-    width: "clamp(218px, 18vw, 284px)",
-    floatX: 96,
-    floatY: -42,
-    rotate: -5,
-    collapseX: 138,
-    collapseY: -126,
-  },
-  {
-    tag: "06 / Handover risk",
-    title: "Operations inherit doubt",
-    text: "Disconnected records mean the final asset lands with information that is incomplete, duplicated, or no longer trusted.",
-    top: "66%",
-    left: "66%",
-    width: "clamp(220px, 18vw, 288px)",
-    floatX: -94,
-    floatY: -44,
-    rotate: 5,
-    collapseX: -140,
-    collapseY: -128,
-  },
+interface PathDef {
+  d: string;
+  tone: Tone;
+}
+
+const ISSUE_ORGS: PositionLabel[] = [
+  { label: "Client", top: "22%" },
+  { label: "Designer", top: "38%" },
+  { label: "Constructor", top: "56%" },
+  { label: "Delivery", top: "74%" },
 ];
 
-const MULTIPLY_PATHS: MultiplyPath[] = [
-  {
-    d: "M 400 230 C 350 190, 284 144, 182 102",
-    tone: "steel",
-  },
-  {
-    d: "M 400 230 C 400 182, 400 136, 400 82",
-    tone: "ghost",
-  },
-  {
-    d: "M 400 230 C 450 190, 516 144, 618 102",
-    tone: "primary",
-  },
-  {
-    d: "M 400 230 C 324 228, 244 226, 138 224",
-    tone: "ghost",
-  },
-  {
-    d: "M 400 230 C 476 228, 556 226, 662 224",
-    tone: "steel",
-  },
-  {
-    d: "M 400 230 C 352 282, 290 328, 206 364",
-    tone: "primary",
-  },
-  {
-    d: "M 400 230 C 400 286, 400 334, 400 390",
-    tone: "ghost",
-  },
-  {
-    d: "M 400 230 C 448 282, 510 328, 594 364",
-    tone: "steel",
-  },
+const ISSUE_ROLES: PositionLabel[] = [
+  { label: "Estimating", left: "19%" },
+  { label: "Planning", left: "35%" },
+  { label: "Risk", left: "50%" },
+  { label: "Construction", left: "68%" },
+  { label: "Leadership", left: "83%" },
 ];
 
-const MULTIPLY_NODES: MultiplyNode[] = [
-  { label: "Planning lag", top: "16%", left: "18%", tone: "steel" },
-  { label: "Approval delay", top: "10%", left: "50%", tone: "ghost" },
-  { label: "Commercial uncertainty", top: "16%", left: "82%", tone: "primary" },
-  { label: "Site clarifications", top: "48%", left: "12%", tone: "ghost" },
-  { label: "Estimator rework", top: "48%", left: "88%", tone: "steel" },
-  { label: "Leadership blind spots", top: "80%", left: "22%", tone: "primary" },
-  { label: "Handover doubt", top: "88%", left: "50%", tone: "ghost" },
-  { label: "Coordination drag", top: "80%", left: "78%", tone: "steel" },
+const ISSUE_SIGNALS: TonePosition[] = [
+  { label: "Pricing", top: "26%", left: "31%", tone: "steel" },
+  { label: "Design revisions", top: "34%", left: "63%", tone: "primary" },
+  { label: "Programme risk", top: "48%", left: "41%", tone: "ghost" },
+  { label: "Site constraints", top: "56%", left: "74%", tone: "steel" },
+  { label: "Reporting", top: "22%", left: "78%", tone: "ghost" },
+  { label: "Temporary works", top: "68%", left: "27%", tone: "primary" },
+  { label: "Approvals", top: "70%", left: "58%", tone: "ghost" },
+  { label: "Commercial", top: "44%", left: "21%", tone: "primary" },
 ];
 
-function getToneClassName(tone: MultiplyPath["tone"]) {
+const ISSUE_PATHS: PathDef[] = [
+  { d: "M 138 126 C 198 126, 250 128, 294 130", tone: "ghost" },
+  { d: "M 606 130 C 656 128, 704 128, 762 126", tone: "ghost" },
+  { d: "M 138 216 C 206 214, 256 216, 294 220", tone: "steel" },
+  { d: "M 606 220 C 652 216, 702 214, 762 214", tone: "primary" },
+  { d: "M 138 314 C 206 314, 256 314, 294 314", tone: "ghost" },
+  { d: "M 606 314 C 652 314, 702 314, 762 314", tone: "steel" },
+  { d: "M 138 408 C 206 410, 256 408, 294 404", tone: "primary" },
+  { d: "M 606 404 C 652 408, 704 410, 762 412", tone: "ghost" },
+  { d: "M 190 72 C 190 112, 190 148, 190 182", tone: "steel" },
+  { d: "M 190 392 C 190 432, 190 468, 190 510", tone: "ghost" },
+  { d: "M 324 72 C 324 114, 324 150, 324 184", tone: "ghost" },
+  { d: "M 324 392 C 324 432, 324 468, 324 510", tone: "primary" },
+  { d: "M 450 72 C 450 112, 450 148, 450 182", tone: "steel" },
+  { d: "M 450 392 C 450 432, 450 468, 450 510", tone: "ghost" },
+  { d: "M 612 72 C 612 114, 612 150, 612 184", tone: "ghost" },
+  { d: "M 612 392 C 612 432, 612 468, 612 510", tone: "steel" },
+  { d: "M 750 72 C 750 112, 750 148, 750 182", tone: "primary" },
+  { d: "M 750 392 C 750 432, 750 468, 750 510", tone: "ghost" },
+];
+
+const SOLUTION_COLS: PositionLabel[] = [
+  { label: "Client", left: "22%" },
+  { label: "Designer", left: "42%" },
+  { label: "Constructor", left: "62%" },
+  { label: "Delivery", left: "82%" },
+];
+
+const SOLUTION_ROWS: PositionLabel[] = [
+  { label: "Estimating", top: "25%" },
+  { label: "Planning", top: "38%" },
+  { label: "Risk", top: "50%" },
+  { label: "Construction", top: "62%" },
+  { label: "Leadership", top: "75%" },
+];
+
+const SOLUTION_TAGS: TonePosition[] = [
+  { label: "Project requirements", top: "19%", left: "21%", tone: "steel" },
+  { label: "Leadership needs", top: "16%", left: "70%", tone: "ghost" },
+  { label: "Design information", top: "34%", left: "80%", tone: "primary" },
+  { label: "Commercial controls", top: "64%", left: "19%", tone: "primary" },
+  { label: "Field conditions", top: "74%", left: "76%", tone: "steel" },
+  { label: "Programme logic", top: "82%", left: "48%", tone: "ghost" },
+];
+
+const SOLUTION_PATHS: PathDef[] = [
+  { d: "M 186 90 C 248 132, 294 178, 350 238", tone: "steel" },
+  { d: "M 360 90 C 390 150, 408 188, 430 238", tone: "ghost" },
+  { d: "M 540 90 C 510 150, 492 188, 470 238", tone: "primary" },
+  { d: "M 714 90 C 652 132, 606 178, 550 238", tone: "steel" },
+  { d: "M 110 198 C 188 214, 248 230, 334 256", tone: "ghost" },
+  { d: "M 110 268 C 188 268, 248 268, 334 268", tone: "primary" },
+  { d: "M 110 338 C 188 322, 248 306, 334 280", tone: "steel" },
+  { d: "M 568 256 C 648 232, 708 214, 792 196", tone: "ghost" },
+  { d: "M 568 280 C 648 280, 708 280, 792 280", tone: "steel" },
+  { d: "M 568 304 C 648 328, 708 350, 792 384", tone: "primary" },
+];
+
+function getToneClassName(tone: Tone) {
   if (tone === "primary") {
     return styles.tonePrimary;
   }
@@ -178,40 +129,50 @@ export default function Statement() {
       const section = sectionRef.current;
       if (!section) return;
 
-      const meta = Array.from(
-        section.querySelectorAll<HTMLElement>("[data-meta]")
-      );
+      const meta = Array.from(section.querySelectorAll<HTMLElement>("[data-meta]"));
       const statChunks = Array.from(
         section.querySelectorAll<HTMLElement>("[data-stat-chunk]")
       );
       const lead = section.querySelector<HTMLElement>("[data-lead]");
       const summary = section.querySelector<HTMLElement>("[data-summary]");
       const centerpiece = section.querySelector<HTMLElement>(`.${styles.centerpiece}`);
-      const lossCards = Array.from(
-        section.querySelectorAll<HTMLElement>("[data-loss-card]")
-      );
-      const halos = Array.from(
-        section.querySelectorAll<HTMLElement>("[data-halo]")
-      );
-      const endScene = section.querySelector<HTMLElement>("[data-end-scene]");
-      const endTitle = section.querySelector<HTMLElement>("[data-end-title]");
-      const endTitleMain = section.querySelector<HTMLElement>("[data-end-title-main]");
-      const endTitleAccent = section.querySelector<HTMLElement>("[data-end-title-accent]");
-      const endCaption = section.querySelector<HTMLElement>("[data-end-caption]");
-      const multiplyGraphic = section.querySelector<HTMLElement>(
-        "[data-multiply-graphic]"
-      );
-      const multiplyCore = section.querySelector<HTMLElement>("[data-multiply-core]");
-      const multiplyPaths = Array.from(
-        section.querySelectorAll<SVGPathElement>("[data-multiply-path]")
-      );
-      const multiplyNodes = Array.from(
-        section.querySelectorAll<HTMLElement>("[data-multiply-node]")
-      );
-      const orbits = Array.from(
-        section.querySelectorAll<HTMLElement>("[data-orbit]")
-      );
+      const halos = Array.from(section.querySelectorAll<HTMLElement>("[data-halo]"));
       const grid = section.querySelector<HTMLElement>(`.${styles.grid}`);
+
+      const issueMatrix = section.querySelector<HTMLElement>("[data-issue-matrix]");
+      const issueLabels = Array.from(
+        section.querySelectorAll<HTMLElement>("[data-issue-label]")
+      );
+      const issueSignals = Array.from(
+        section.querySelectorAll<HTMLElement>("[data-issue-signal]")
+      );
+      const issueCallout = section.querySelector<HTMLElement>("[data-issue-callout]");
+      const issuePaths = Array.from(
+        section.querySelectorAll<SVGPathElement>("[data-issue-path]")
+      );
+
+      const solutionScene = section.querySelector<HTMLElement>("[data-solution-scene]");
+      const solutionTitleMain = section.querySelector<HTMLElement>(
+        "[data-solution-title-main]"
+      );
+      const solutionTitleAccent = section.querySelector<HTMLElement>(
+        "[data-solution-title-accent]"
+      );
+      const solutionLead = section.querySelector<HTMLElement>("[data-solution-lead]");
+      const solutionPanel = section.querySelector<HTMLElement>("[data-solution-panel]");
+      const sharedLayer = section.querySelector<HTMLElement>("[data-shared-layer]");
+      const solutionAxis = Array.from(
+        section.querySelectorAll<HTMLElement>("[data-solution-axis]")
+      );
+      const solutionTags = Array.from(
+        section.querySelectorAll<HTMLElement>("[data-solution-tag]")
+      );
+      const solutionCaption = section.querySelector<HTMLElement>(
+        "[data-solution-caption]"
+      );
+      const solutionPaths = Array.from(
+        section.querySelectorAll<SVGPathElement>("[data-solution-path]")
+      );
 
       const introCopy = [lead, summary].filter(
         (item): item is HTMLElement => Boolean(item)
@@ -219,19 +180,23 @@ export default function Statement() {
 
       if (
         !centerpiece ||
-        !endScene ||
-        !endTitle ||
-        !endCaption ||
-        !multiplyGraphic ||
-        !multiplyCore
+        !issueMatrix ||
+        !solutionScene ||
+        !solutionPanel ||
+        !sharedLayer ||
+        !solutionLead ||
+        !solutionCaption ||
+        !solutionTitleMain ||
+        !solutionTitleAccent
       ) {
         return;
       }
 
+      const allPaths = [...issuePaths, ...solutionPaths];
       const media = gsap.matchMedia();
 
       media.add("(prefers-reduced-motion: reduce)", () => {
-        multiplyPaths.forEach((path) => {
+        allPaths.forEach((path) => {
           gsap.set(path, {
             strokeDasharray: "none",
             strokeDashoffset: 0,
@@ -244,17 +209,20 @@ export default function Statement() {
             ...meta,
             ...statChunks,
             ...introCopy,
-            ...lossCards,
             ...halos,
-            endScene,
-            endTitle,
-            endTitleMain,
-            endTitleAccent,
-            endCaption,
-            multiplyGraphic,
-            multiplyCore,
-            ...multiplyNodes,
-            ...orbits,
+            issueMatrix,
+            ...issueLabels,
+            ...issueSignals,
+            issueCallout,
+            solutionScene,
+            solutionTitleMain,
+            solutionTitleAccent,
+            solutionLead,
+            solutionPanel,
+            sharedLayer,
+            ...solutionAxis,
+            ...solutionTags,
+            solutionCaption,
           ],
           { clearProps: "all" }
         );
@@ -275,88 +243,108 @@ export default function Statement() {
             filter: "blur(10px)",
           });
           gsap.set(halos, {
-            opacity: 0.14,
+            opacity: 0.16,
             scale: 0.82,
             transformOrigin: "center center",
           });
-          gsap.set(lossCards, {
+          gsap.set(issueMatrix, {
             opacity: 0,
-            x: (_, target) =>
-              Number((target as HTMLElement).dataset.floatX ?? 0),
-            y: (_, target) =>
-              Number((target as HTMLElement).dataset.floatY ?? 0),
-            rotate: (_, target) =>
-              Number((target as HTMLElement).dataset.rotate ?? 0),
-            scale: 0.92,
+            scale: 0.97,
             filter: "blur(14px)",
             transformOrigin: "center center",
           });
-          gsap.set(endScene, {
+          gsap.set(issueLabels, {
+            opacity: 0,
+            y: 14,
+            filter: "blur(8px)",
+          });
+          gsap.set(issueSignals, {
+            opacity: 0,
+            scale: 0.82,
+            filter: "blur(10px)",
+            transformOrigin: "center center",
+          });
+          gsap.set(issueCallout, {
+            opacity: 0,
+            y: 14,
+            filter: "blur(8px)",
+          });
+          gsap.set(solutionScene, {
             opacity: 0,
             y: 20,
             scale: 0.985,
             filter: "blur(12px)",
             pointerEvents: "none",
           });
-          gsap.set(endTitle, {
-            opacity: 1,
-          });
-          gsap.set(endTitleMain, {
+          gsap.set(solutionTitleMain, {
             opacity: 0,
             y: 18,
             filter: "blur(10px)",
           });
-          gsap.set(endTitleAccent, {
+          gsap.set(solutionTitleAccent, {
             opacity: 0,
-            y: 10,
-            scale: 0.94,
+            y: 12,
+            scale: 0.96,
             filter: "blur(8px)",
           });
-          gsap.set(multiplyGraphic, {
+          gsap.set(solutionLead, {
             opacity: 0,
-            scale: 0.965,
-            y: 18,
+            y: 16,
+            filter: "blur(8px)",
+          });
+          gsap.set(solutionPanel, {
+            opacity: 0,
+            y: 24,
+            scale: 0.975,
             filter: "blur(10px)",
             transformOrigin: "center top",
           });
-          gsap.set(multiplyCore, {
-            scale: 0.92,
+          gsap.set(sharedLayer, {
+            opacity: 0,
+            y: 10,
+            scale: 0.96,
             transformOrigin: "center center",
           });
-          gsap.set(endCaption, { opacity: 0, y: 14, filter: "blur(8px)" });
-          gsap.set(multiplyNodes, {
+          gsap.set(solutionAxis, {
             opacity: 0,
-            scale: 0.72,
+            y: 12,
+            filter: "blur(8px)",
+          });
+          gsap.set(solutionTags, {
+            opacity: 0,
+            scale: 0.84,
+            filter: "blur(8px)",
             transformOrigin: "center center",
           });
-          gsap.set(orbits, {
+          gsap.set(solutionCaption, {
             opacity: 0,
-            scale: 0.78,
-            transformOrigin: "center center",
+            y: 14,
+            filter: "blur(8px)",
           });
 
-          multiplyPaths.forEach((path) => {
+          allPaths.forEach((path) => {
             const length = path.getTotalLength();
             gsap.set(path, {
               strokeDasharray: length,
               strokeDashoffset: length,
-              opacity: 0.18,
+              opacity: 0.16,
             });
           });
 
           if (grid) {
-            gsap.set(grid, { opacity: 0.1 });
+            gsap.set(grid, { opacity: 0.12 });
           }
 
-          gsap.timeline({
-            defaults: { ease: "none" },
-            scrollTrigger: {
-              trigger: section,
-              start: "top bottom",
-              end: "top top",
-              scrub: 0.8,
-            },
-          })
+          gsap
+            .timeline({
+              defaults: { ease: "none" },
+              scrollTrigger: {
+                trigger: section,
+                start: "top bottom",
+                end: "top top",
+                scrub: 0.8,
+              },
+            })
             .to(
               statChunks,
               {
@@ -395,6 +383,55 @@ export default function Statement() {
                 stagger: 0.08,
               },
               0.16
+            )
+            .to(
+              issueMatrix,
+              {
+                opacity: 1,
+                scale: 1,
+                filter: "blur(0px)",
+              },
+              0.18
+            )
+            .to(
+              issueLabels,
+              {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+                stagger: 0.03,
+              },
+              0.22
+            )
+            .to(
+              issuePaths,
+              {
+                strokeDashoffset: 0,
+                opacity: 0.72,
+                stagger: 0.02,
+                duration: 0.24,
+              },
+              0.24
+            )
+            .to(
+              issueSignals,
+              {
+                opacity: 1,
+                scale: 1,
+                filter: "blur(0px)",
+                stagger: 0.04,
+                duration: 0.26,
+              },
+              0.28
+            )
+            .to(
+              issueCallout,
+              {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+              },
+              0.32
             );
 
           const timeline = gsap.timeline({
@@ -402,7 +439,7 @@ export default function Statement() {
             scrollTrigger: {
               trigger: section,
               start: "top top",
-              end: "+=2200",
+              end: "+=2350",
               scrub: 0.9,
               pin: true,
               anticipatePin: 1,
@@ -412,155 +449,149 @@ export default function Statement() {
 
           timeline
             .to(
-              lossCards,
+              issueSignals,
               {
-                opacity: 1,
-                x: 0,
-                y: 0,
-                rotate: 0,
-                scale: 1,
-                filter: "blur(0px)",
-                stagger: 0.04,
-                duration: 0.36,
+                opacity: 0.2,
+                scale: 0.84,
+                filter: "blur(10px)",
+                stagger: 0.02,
+                duration: 0.18,
               },
-              0.08
+              0.48
+            )
+            .to(issueLabels, { opacity: 0.3, duration: 0.16 }, 0.5)
+            .to(
+              issueCallout,
+              {
+                opacity: 0,
+                y: -10,
+                filter: "blur(8px)",
+                duration: 0.16,
+              },
+              0.52
             )
             .to(
-              lossCards,
+              issueMatrix,
               {
-                x: (_, target) =>
-                  Number((target as HTMLElement).dataset.collapseX ?? 0),
-                y: (_, target) =>
-                  Number((target as HTMLElement).dataset.collapseY ?? 0),
-                scale: 0.72,
-                opacity: 0,
+                opacity: 0.24,
+                scale: 0.985,
                 filter: "blur(12px)",
-                stagger: 0.02,
-                duration: 0.28,
+                duration: 0.22,
               },
-              0.78
+              0.56
             )
             .to(
               centerpiece,
               {
-                opacity: 0.14,
+                opacity: 0.12,
                 scale: 0.94,
                 filter: "blur(12px)",
                 transformOrigin: "center center",
                 duration: 0.22,
               },
-              0.94
+              0.58
             )
+            .to(meta, { opacity: 0.3, duration: 0.16 }, 0.6)
             .to(
-              meta,
-              {
-                opacity: 0.3,
-                duration: 0.18,
-              },
-              0.98
-            )
-            .to(
-              endScene,
+              solutionScene,
               {
                 opacity: 1,
                 y: 0,
                 scale: 1,
                 filter: "blur(0px)",
-                duration: 0.24,
+                duration: 0.26,
                 pointerEvents: "auto",
               },
-              1.18
+              0.86
             )
             .to(
-              endTitleMain,
+              solutionTitleMain,
               {
                 opacity: 1,
                 y: 0,
                 filter: "blur(0px)",
                 duration: 0.18,
               },
-              1.22
+              0.92
             )
             .to(
-              endTitleAccent,
+              solutionTitleAccent,
               {
                 opacity: 1,
                 y: 0,
                 scale: 1,
                 filter: "blur(0px)",
-                duration: 0.14,
+                duration: 0.16,
               },
-              1.26
+              0.96
             )
             .to(
-              multiplyGraphic,
+              solutionLead,
               {
                 opacity: 1,
-                scale: 1,
                 y: 0,
+                filter: "blur(0px)",
+                duration: 0.18,
+              },
+              1
+            )
+            .to(
+              solutionPanel,
+              {
+                opacity: 1,
+                y: 0,
+                scale: 1,
                 filter: "blur(0px)",
                 duration: 0.24,
               },
-              1.24
+              1
             )
+            .to(sharedLayer, { opacity: 1, y: 0, scale: 1, duration: 0.18 }, 1.06)
             .to(
-              multiplyCore,
-              {
-                scale: 1,
-                duration: 0.18,
-              },
-              1.26
-            )
-            .to(
-              orbits,
+              solutionAxis,
               {
                 opacity: 1,
-                scale: 1,
-                stagger: 0.05,
-                duration: 0.22,
+                y: 0,
+                filter: "blur(0px)",
+                stagger: 0.03,
+                duration: 0.18,
               },
-              1.28
+              1.08
             )
             .to(
-              multiplyPaths,
+              solutionPaths,
               {
                 strokeDashoffset: 0,
                 opacity: 1,
                 stagger: 0.03,
-                duration: 0.34,
+                duration: 0.28,
               },
-              1.32
+              1.12
             )
             .to(
-              multiplyNodes,
+              solutionTags,
               {
                 opacity: 1,
                 scale: 1,
+                filter: "blur(0px)",
                 stagger: 0.04,
                 duration: 0.2,
               },
-              1.36
+              1.16
             )
             .to(
-              endCaption,
+              solutionCaption,
               {
                 opacity: 1,
                 y: 0,
                 filter: "blur(0px)",
                 duration: 0.2,
               },
-              1.42
+              1.2
             );
 
           if (grid) {
-            timeline.to(
-              grid,
-              {
-                opacity: 0.2,
-                duration: 0.22,
-              },
-              1.3
-            );
+            timeline.to(grid, { opacity: 0.2, duration: 0.2 }, 1.08);
           }
         }
       );
@@ -569,68 +600,52 @@ export default function Statement() {
         "(max-width: 768px) and (prefers-reduced-motion: no-preference)",
         () => {
           gsap.set(meta, { opacity: 0, y: 18 });
-          gsap.set(statChunks, {
-            opacity: 0,
-            y: 24,
-            filter: "blur(10px)",
-          });
-          gsap.set(introCopy, {
-            opacity: 0,
-            y: 22,
-            filter: "blur(8px)",
-          });
+          gsap.set(statChunks, { opacity: 0, y: 24, filter: "blur(10px)" });
+          gsap.set(introCopy, { opacity: 0, y: 22, filter: "blur(8px)" });
           gsap.set(halos, {
             opacity: 0.16,
             scale: 0.86,
             transformOrigin: "center center",
           });
-          gsap.set(lossCards, {
+          gsap.set(issueMatrix, {
             opacity: 0,
-            y: 28,
+            y: 20,
+            scale: 0.98,
             filter: "blur(10px)",
           });
-          gsap.set(endScene, {
+          gsap.set(issueLabels, { opacity: 0, y: 10, filter: "blur(8px)" });
+          gsap.set(issueSignals, { opacity: 0, y: 18, filter: "blur(8px)" });
+          gsap.set(issueCallout, { opacity: 0, y: 12, filter: "blur(8px)" });
+          gsap.set(solutionScene, {
             opacity: 0,
             y: 18,
             scale: 0.985,
             filter: "blur(10px)",
           });
-          gsap.set(endTitle, { opacity: 1 });
-          gsap.set(endTitleMain, {
+          gsap.set(solutionTitleMain, { opacity: 0, y: 18, filter: "blur(8px)" });
+          gsap.set(solutionTitleAccent, {
+            opacity: 0,
+            y: 10,
+            scale: 0.96,
+            filter: "blur(8px)",
+          });
+          gsap.set(solutionLead, { opacity: 0, y: 14, filter: "blur(8px)" });
+          gsap.set(solutionPanel, {
             opacity: 0,
             y: 18,
+            scale: 0.985,
             filter: "blur(8px)",
           });
-          gsap.set(endTitleAccent, {
+          gsap.set(sharedLayer, { opacity: 0, scale: 0.96 });
+          gsap.set(solutionAxis, { opacity: 0, y: 10, filter: "blur(8px)" });
+          gsap.set(solutionTags, { opacity: 0, y: 14, filter: "blur(8px)" });
+          gsap.set(solutionCaption, {
             opacity: 0,
-            y: 8,
-            scale: 0.95,
+            y: 14,
             filter: "blur(8px)",
-          });
-          gsap.set(multiplyGraphic, {
-            opacity: 0,
-            scale: 0.97,
-            y: 18,
-            filter: "blur(8px)",
-            transformOrigin: "center top",
-          });
-          gsap.set(multiplyCore, {
-            scale: 0.94,
-            transformOrigin: "center center",
-          });
-          gsap.set(endCaption, { opacity: 0, y: 14, filter: "blur(8px)" });
-          gsap.set(multiplyNodes, {
-            opacity: 0,
-            scale: 0.76,
-            transformOrigin: "center center",
-          });
-          gsap.set(orbits, {
-            opacity: 0,
-            scale: 0.82,
-            transformOrigin: "center center",
           });
 
-          multiplyPaths.forEach((path) => {
+          allPaths.forEach((path) => {
             const length = path.getTotalLength();
             gsap.set(path, {
               strokeDasharray: length,
@@ -639,18 +654,19 @@ export default function Statement() {
             });
           });
 
-          gsap.timeline({
-            defaults: { ease: "power3.out" },
-            scrollTrigger: {
-              trigger: section,
-              start: "top 84%",
-            },
-          })
+          gsap
+            .timeline({
+              defaults: { ease: "power3.out" },
+              scrollTrigger: {
+                trigger: section,
+                start: "top 84%",
+              },
+            })
             .to(meta, {
               opacity: 1,
               y: 0,
               stagger: 0.06,
-              duration: 0.48,
+              duration: 0.46,
             })
             .to(
               statChunks,
@@ -659,7 +675,7 @@ export default function Statement() {
                 y: 0,
                 filter: "blur(0px)",
                 stagger: 0.08,
-                duration: 0.58,
+                duration: 0.56,
               },
               0.04
             )
@@ -670,7 +686,7 @@ export default function Statement() {
                   Number((target as HTMLElement).dataset.opacity ?? 0.8),
                 scale: 1,
                 stagger: 0.05,
-                duration: 0.64,
+                duration: 0.62,
               },
               0.08
             )
@@ -681,34 +697,73 @@ export default function Statement() {
                 y: 0,
                 filter: "blur(0px)",
                 stagger: 0.08,
+                duration: 0.52,
+              },
+              0.1
+            )
+            .to(
+              issueMatrix,
+              {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                filter: "blur(0px)",
                 duration: 0.54,
               },
-              0.12
+              0.14
+            )
+            .to(
+              issueLabels,
+              {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+                stagger: 0.03,
+                duration: 0.34,
+              },
+              0.18
+            )
+            .to(
+              issuePaths,
+              {
+                strokeDashoffset: 0,
+                opacity: 0.7,
+                stagger: 0.02,
+                duration: 0.3,
+              },
+              0.2
+            )
+            .to(
+              issueSignals,
+              {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+                stagger: 0.05,
+                duration: 0.34,
+              },
+              0.24
+            )
+            .to(
+              issueCallout,
+              {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+                duration: 0.28,
+              },
+              0.28
             );
 
-          gsap.to(lossCards, {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            stagger: 0.08,
-            duration: 0.62,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 62%",
-            },
-          });
-
-          gsap.to(lossCards, {
-            opacity: 0,
-            y: -18,
+          gsap.to(issueMatrix, {
+            opacity: 0.26,
+            y: -12,
             filter: "blur(10px)",
-            stagger: 0.04,
-            duration: 0.46,
+            duration: 0.4,
             ease: "power2.inOut",
             scrollTrigger: {
               trigger: section,
-              start: "center 56%",
+              start: "center 58%",
             },
           });
 
@@ -721,11 +776,11 @@ export default function Statement() {
             ease: "power2.inOut",
             scrollTrigger: {
               trigger: section,
-              start: "center 54%",
+              start: "center 56%",
             },
           });
 
-          gsap.to(endScene, {
+          gsap.to(solutionScene, {
             opacity: 1,
             y: 0,
             scale: 1,
@@ -738,92 +793,7 @@ export default function Statement() {
             },
           });
 
-          gsap.to(endTitleMain, {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.3,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "center 38%",
-            },
-          });
-
-          gsap.to(endTitleAccent, {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            filter: "blur(0px)",
-            duration: 0.2,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "center 36%",
-            },
-          });
-
-          gsap.to(multiplyGraphic, {
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.36,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "center 34%",
-            },
-          });
-
-          gsap.to(multiplyCore, {
-            scale: 1,
-            duration: 0.24,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "center 33%",
-            },
-          });
-
-          gsap.to(orbits, {
-            opacity: 1,
-            scale: 1,
-            stagger: 0.05,
-            duration: 0.44,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "center 32%",
-            },
-          });
-
-          gsap.to(multiplyPaths, {
-            strokeDashoffset: 0,
-            opacity: 1,
-            stagger: 0.03,
-            ease: "none",
-            scrollTrigger: {
-              trigger: section,
-              start: "center 30%",
-              end: "bottom 20%",
-              scrub: 0.9,
-            },
-          });
-
-          gsap.to(multiplyNodes, {
-            opacity: 1,
-            scale: 1,
-            stagger: 0.04,
-            duration: 0.34,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "center 28%",
-            },
-          });
-
-          gsap.to(endCaption, {
+          gsap.to(solutionTitleMain, {
             opacity: 1,
             y: 0,
             filter: "blur(0px)",
@@ -831,7 +801,107 @@ export default function Statement() {
             ease: "power3.out",
             scrollTrigger: {
               trigger: section,
+              start: "center 38%",
+            },
+          });
+
+          gsap.to(solutionTitleAccent, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.22,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 36%",
+            },
+          });
+
+          gsap.to(solutionLead, {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.28,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 34%",
+            },
+          });
+
+          gsap.to(solutionPanel, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.36,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 32%",
+            },
+          });
+
+          gsap.to(sharedLayer, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.22,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 30%",
+            },
+          });
+
+          gsap.to(solutionAxis, {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            stagger: 0.03,
+            duration: 0.3,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 28%",
+            },
+          });
+
+          gsap.to(solutionPaths, {
+            strokeDashoffset: 0,
+            opacity: 1,
+            stagger: 0.03,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 26%",
+              end: "bottom 24%",
+              scrub: 0.9,
+            },
+          });
+
+          gsap.to(solutionTags, {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            stagger: 0.04,
+            duration: 0.32,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
               start: "center 24%",
+            },
+          });
+
+          gsap.to(solutionCaption, {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.28,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "center 22%",
             },
           });
         }
@@ -848,28 +918,37 @@ export default function Statement() {
         <div className={styles.grid} />
         <div
           data-halo
-          data-opacity="0.84"
+          data-opacity="0.8"
           className={`${styles.halo} ${styles.haloPrimary}`}
         />
         <div
           data-halo
-          data-opacity="0.68"
+          data-opacity="0.66"
           className={`${styles.halo} ${styles.haloSecondary}`}
         />
+        <div className={styles.datumField} aria-hidden="true">
+          <div className={`${styles.datumRing} ${styles.datumRingOuter}`} />
+          <div className={`${styles.datumRing} ${styles.datumRingInner}`} />
+          <div className={`${styles.datumAxis} ${styles.datumAxisHorizontal}`} />
+          <div className={`${styles.datumAxis} ${styles.datumAxisVertical}`} />
+          <div className={`${styles.datumArc} ${styles.datumArcLeft}`} />
+          <div className={`${styles.datumArc} ${styles.datumArcRight}`} />
+        </div>
 
         <div className={styles.metaRow}>
           <p data-meta className={styles.kicker}>
-            The Industry Problem
+            The Industry Gap
           </p>
           <p data-meta className={styles.microStat}>
-            Bad data behaves like a hidden tax across schedule, commercial
-            risk, field execution, and handover.
+            Fragmented information disconnects client, designer, constructor,
+            and delivery teams long before the project feels it in the field.
           </p>
         </div>
 
         <div className={styles.centerpiece}>
           <p data-lead className={styles.lead}>
-            When context breaks, cost does not stay in one place.
+            When every organisation carries its own picture of the job,
+            alignment happens too late.
           </p>
 
           <h2 className={styles.headline}>
@@ -887,110 +966,168 @@ export default function Statement() {
           </h2>
 
           <p data-summary className={styles.summary}>
-            That loss is rarely one dramatic failure. It is thousands of small
-            disconnects multiplying through naming, approvals, reporting,
-            procurement, and site coordination until the whole programme is
-            paying for missing context.
+            The loss compounds when client, designer, constructor, and delivery
+            teams all manage valid requirements in parallel, but the
+            information needed to satisfy them stays siloed until meetings,
+            follow-up, and manual coordination reconnect it.
           </p>
         </div>
 
-        <div className={styles.cardField}>
-          {LOSS_CARDS.map((card) => (
-            <article
-              key={card.tag}
-              data-loss-card
-              data-float-x={card.floatX}
-              data-float-y={card.floatY}
-              data-rotate={card.rotate}
-              data-collapse-x={card.collapseX}
-              data-collapse-y={card.collapseY}
-              className={styles.card}
+        <div data-issue-matrix className={styles.issueMatrix}>
+          <div className={styles.issueFrame} />
+          <svg
+            className={styles.issueSvg}
+            viewBox="0 0 900 580"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            {ISSUE_PATHS.map((path) => (
+              <path
+                key={path.d}
+                d={path.d}
+                data-issue-path
+                className={`${styles.issuePath} ${getToneClassName(path.tone)}`}
+              />
+            ))}
+          </svg>
+
+          {ISSUE_ORGS.map((org) => (
+            <div
+              key={org.label}
+              data-issue-label
+              className={styles.issueOrg}
+              style={{ "--issue-top": org.top } as CSSProperties}
+            >
+              <span>{org.label}</span>
+            </div>
+          ))}
+
+          {ISSUE_ROLES.map((role) => (
+            <div
+              key={role.label}
+              data-issue-label
+              className={styles.issueRole}
+              style={{ "--issue-left": role.left } as CSSProperties}
+            >
+              <span>{role.label}</span>
+            </div>
+          ))}
+
+          {ISSUE_SIGNALS.map((signal) => (
+            <div
+              key={signal.label}
+              data-issue-signal
+              className={`${styles.issueSignal} ${getToneClassName(signal.tone)}`}
               style={
                 {
-                  "--card-top": card.top,
-                  "--card-left": card.left,
-                  "--card-width": card.width,
+                  "--signal-top": signal.top,
+                  "--signal-left": signal.left,
                 } as CSSProperties
               }
             >
-              <p className={styles.cardTag}>{card.tag}</p>
-              <h3 className={styles.cardTitle}>{card.title}</h3>
-              <p className={styles.cardText}>{card.text}</p>
-            </article>
+              <span>{signal.label}</span>
+            </div>
           ))}
+
+          <div data-issue-callout className={styles.issueCallout}>
+            <span>The project gets reconnected manually, long after people needed shared visibility.</span>
+          </div>
         </div>
 
-        <div data-end-scene className={styles.endScene}>
-          <p className={styles.endEyebrow}>Why projects lose alignment</p>
-          <h3 data-end-title className={styles.endTitle}>
-            <span data-end-title-main className={styles.endTitleMain}>
-              The problem is not more data.
+        <div data-solution-scene className={styles.solutionScene}>
+          <p className={styles.solutionEyebrow}>How Infraforma closes the gap</p>
+          <h3 className={styles.solutionTitle}>
+            <span data-solution-title-main className={styles.solutionTitleMain}>
+              We organise the information
             </span>
             <span
-              data-end-title-accent
-              className={`${styles.endTitleAccent} ${styles.endTitleAccentLine}`}
+              data-solution-title-accent
+              className={`${styles.solutionTitleAccent} ${styles.solutionTitleAccentLine}`}
             >
-              It is disconnected information.
+              that keeps the whole project aligned.
             </span>
           </h3>
 
-          <div data-multiply-graphic className={styles.multiplyGraphic}>
-            <div
-              data-orbit
-              className={`${styles.orbit} ${styles.orbitOuter}`}
-            />
-            <div
-              data-orbit
-              className={`${styles.orbit} ${styles.orbitMiddle}`}
-            />
-            <div
-              data-orbit
-              className={`${styles.orbit} ${styles.orbitInner}`}
-            />
+          <p data-solution-lead className={styles.solutionLead}>
+            Infraforma maps project requirements, leadership needs, design
+            inputs, risk, programme, commercial, and field information into one
+            accessible structure so client, designer, constructor, and delivery
+            teams can coordinate continuously instead of reconnecting the job
+            later.
+          </p>
+
+          <div data-solution-panel className={styles.solutionPanel}>
+            <div className={styles.solutionPanelGrid} />
+
+            {SOLUTION_COLS.map((col) => (
+              <div
+                key={col.label}
+                data-solution-axis
+                className={styles.solutionCol}
+                style={{ "--col-left": col.left } as CSSProperties}
+              >
+                <span>{col.label}</span>
+              </div>
+            ))}
+
+            {SOLUTION_ROWS.map((row) => (
+              <div
+                key={row.label}
+                data-solution-axis
+                className={styles.solutionRow}
+                style={{ "--row-top": row.top } as CSSProperties}
+              >
+                <span>{row.label}</span>
+              </div>
+            ))}
 
             <svg
-              className={styles.multiplySvg}
-              viewBox="0 0 800 460"
+              className={styles.solutionSvg}
+              viewBox="0 0 900 540"
               preserveAspectRatio="none"
               aria-hidden="true"
             >
-              {MULTIPLY_PATHS.map((path) => (
+              {SOLUTION_PATHS.map((path) => (
                 <path
                   key={path.d}
                   d={path.d}
-                  data-multiply-path
-                  className={`${styles.multiplyPath} ${getToneClassName(path.tone)}`}
+                  data-solution-path
+                  className={`${styles.solutionPath} ${getToneClassName(path.tone)}`}
                 />
               ))}
             </svg>
 
-            <div data-multiply-core className={styles.multiplyCore}>
-              <p className={styles.coreKicker}>1 siloed update</p>
-              <p className={styles.coreTitle}>slows the whole job</p>
+            <div data-shared-layer className={styles.sharedLayer}>
+              <p className={styles.sharedLayerKicker}>
+                Shared information management layer
+              </p>
+              <p className={styles.sharedLayerText}>
+                Requirements, decisions, source information, and delivery needs
+                connected in one accessible project environment.
+              </p>
             </div>
 
-            {MULTIPLY_NODES.map((node) => (
+            {SOLUTION_TAGS.map((tag) => (
               <div
-                key={node.label}
-                data-multiply-node
-                className={`${styles.multiplyNode} ${getToneClassName(node.tone)}`}
+                key={tag.label}
+                data-solution-tag
+                className={`${styles.solutionTag} ${getToneClassName(tag.tone)}`}
                 style={
                   {
-                    "--node-top": node.top,
-                    "--node-left": node.left,
+                    "--tag-top": tag.top,
+                    "--tag-left": tag.left,
                   } as CSSProperties
                 }
               >
-                <span>{node.label}</span>
+                <span>{tag.label}</span>
               </div>
             ))}
           </div>
 
-          <p data-end-caption className={styles.endCaption}>
-            Estimators, planners, risk, construction, and leadership are all
-            working to satisfy real requirements, but when information stays in
-            silos the project reconnects itself late, manually, and usually in
-            meetings.
+          <p data-solution-caption className={styles.solutionCaption}>
+            Every organisation keeps its own responsibilities, but the
+            information required to satisfy them becomes visible, structured,
+            and usable across the project.
           </p>
         </div>
       </div>
