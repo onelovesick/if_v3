@@ -148,14 +148,14 @@ const MULTIPLY_PATHS: MultiplyPath[] = [
 ];
 
 const MULTIPLY_NODES: MultiplyNode[] = [
-  { label: "Schedule drag", top: "16%", left: "18%", tone: "steel" },
-  { label: "Approval loops", top: "10%", left: "50%", tone: "ghost" },
-  { label: "Cost leakage", top: "16%", left: "82%", tone: "primary" },
-  { label: "Field hesitation", top: "48%", left: "12%", tone: "ghost" },
-  { label: "Rework cycles", top: "48%", left: "88%", tone: "steel" },
-  { label: "Commercial risk", top: "80%", left: "22%", tone: "primary" },
+  { label: "Planning lag", top: "16%", left: "18%", tone: "steel" },
+  { label: "Approval delay", top: "10%", left: "50%", tone: "ghost" },
+  { label: "Commercial uncertainty", top: "16%", left: "82%", tone: "primary" },
+  { label: "Site clarifications", top: "48%", left: "12%", tone: "ghost" },
+  { label: "Estimator rework", top: "48%", left: "88%", tone: "steel" },
+  { label: "Leadership blind spots", top: "80%", left: "22%", tone: "primary" },
   { label: "Handover doubt", top: "88%", left: "50%", tone: "ghost" },
-  { label: "Trust erosion", top: "80%", left: "78%", tone: "steel" },
+  { label: "Coordination drag", top: "80%", left: "78%", tone: "steel" },
 ];
 
 function getToneClassName(tone: MultiplyPath["tone"]) {
@@ -921,16 +921,16 @@ export default function Statement() {
         </div>
 
         <div data-end-scene className={styles.endScene}>
-          <p className={styles.endEyebrow}>What broken information does next</p>
+          <p className={styles.endEyebrow}>Why projects lose alignment</p>
           <h3 data-end-title className={styles.endTitle}>
             <span data-end-title-main className={styles.endTitleMain}>
-              Bad data does not break once.
+              The problem is not more data.
             </span>
             <span
               data-end-title-accent
               className={`${styles.endTitleAccent} ${styles.endTitleAccentLine}`}
             >
-              It MULTIPLIES.
+              It is disconnected information.
             </span>
           </h3>
 
@@ -965,8 +965,8 @@ export default function Statement() {
             </svg>
 
             <div data-multiply-core className={styles.multiplyCore}>
-              <p className={styles.coreKicker}>1 bad record</p>
-              <p className={styles.coreTitle}>spreads through the job</p>
+              <p className={styles.coreKicker}>1 siloed update</p>
+              <p className={styles.coreTitle}>slows the whole job</p>
             </div>
 
             {MULTIPLY_NODES.map((node) => (
@@ -987,9 +987,10 @@ export default function Statement() {
           </div>
 
           <p data-end-caption className={styles.endCaption}>
-            One broken piece of information branches into schedule drag, field
-            hesitation, approval loops, rework, cost exposure, and weaker
-            handover confidence across the entire programme.
+            Estimators, planners, risk, construction, and leadership are all
+            working to satisfy real requirements, but when information stays in
+            silos the project reconnects itself late, manually, and usually in
+            meetings.
           </p>
         </div>
       </div>

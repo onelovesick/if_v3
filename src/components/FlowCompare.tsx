@@ -45,53 +45,53 @@ interface PathDef {
 const CHAPTERS: Chapter[] = [
   {
     step: "01",
-    label: "Capture",
-    title: "Capture every signal before it splinters.",
-    text: "Infraforma brings design updates, field conditions, schedule pressure, commercial movement, and handover obligations into one intake layer. The first record is created with context instead of being rebuilt downstream by each discipline.",
+    label: "Understand",
+    title: "We start with the real needs of each team.",
+    text: "Estimators, planners, risk leads, construction managers, and leadership are each trying to satisfy different requirements from the same project. We begin by understanding those concerns, decision points, and information needs instead of forcing everyone into one generic workflow.",
     detail:
-      "The point is not more collection. It is controlled capture: one place where the signal enters once, keeps its source, and stays tied to the package, asset, or decision it belongs to from the beginning.",
+      "That includes project requirements, leadership reporting needs, and the information each team must trust to do its job well.",
     bullets: [
-      "One intake layer for design, field, schedule, commercial, and handover information.",
-      "Source context stays attached from the first moment the record exists.",
+      "Estimator, planner, risk, construction, and leadership needs are defined up front.",
+      "Project requirements and reporting needs are mapped early.",
     ],
     visualStage: 0,
   },
   {
     step: "02",
-    label: "Structure",
-    title: "Structure it once so the meaning survives movement.",
-    text: "Every record is mapped to shared naming, ownership, revision, status, and delivery context. Teams are no longer working from near-matching versions with slightly different labels and hidden assumptions.",
+    label: "Organise",
+    title: "We organise the requirements and information in one structure.",
+    text: "Infraforma brings project requirements, delivery constraints, leadership needs, and source information into one shared information-management structure. Instead of each team holding its own partial picture, the project works from one organised view.",
     detail:
-      "Because the structure is applied once and carried forward, the same piece of information remains legible in coordination, approvals, reporting, and execution. That is where confusion starts to disappear.",
+      "The goal is not more documents. It is making sure the right information exists, is connected to the right requirement, and is easy to find when decisions need to be made.",
     bullets: [
-      "Naming, ownership, revision, and package logic move together as one governed thread.",
-      "Dependencies and approvals stop floating outside the record they affect.",
+      "Requirements, decisions, and supporting information are linked together.",
+      "One organised project picture replaces parallel discipline silos.",
     ],
     visualStage: 1,
   },
   {
     step: "03",
-    label: "Control",
-    title: "Control how information moves through the job.",
-    text: "Once the record is structured, Infraforma routes it through a governed delivery flow. Teams can see what changed, who owns the next action, what stage it is in, and what impact it has on downstream work.",
+    label: "Access",
+    title: "We make the information accessible so teams can help each other move.",
+    text: "Too often teams work internally and only share their information in weekly meetings. Infraforma makes the information available in the flow of work, so planners can see risk implications earlier, construction can see what estimating or design needs, and leadership can see what is really moving.",
     detail:
-      "That is how coordination becomes operational instead of reactive. The system turns information into a sequence of trusted actions, not another dashboard full of disconnected updates.",
+      "No-silo working is much easier said than done unless people can actually access the information they need from the rest of the project at the right time.",
     bullets: [
-      "Live status, ownership, and next action stay visible as work advances.",
-      "Delivery teams act from one operating picture instead of chasing clarification loops.",
+      "Less waiting for weekly meetings to reconnect the project.",
+      "Teams can unblock each other from the same information base.",
     ],
     visualStage: 2,
   },
   {
     step: "04",
-    label: "Outcome",
-    title: "The result is a delivery thread people can trust.",
-    text: "The gap closes when information enters once, keeps its meaning, and moves forward with accountability. Schedules tighten, approvals become clearer, field teams hesitate less, and handover stops inheriting doubt.",
+    label: "Align",
+    title: "This is information management built for delivery.",
+    text: "The result is better coordination across estimating, planning, risk, construction, and leadership. The project spends less time chasing information and more time using it to satisfy requirements, support decisions, and move the work forward together.",
     detail:
-      "What teams feel is not software. They feel fewer blind handoffs, cleaner timing, and a stronger operating picture across the programme. That is the shift from fragmented flow to controlled delivery.",
+      "That is how Infraforma helps: not by adding another silo, but by making project information accessible, organised, and useful to the people delivering the job.",
     bullets: [
-      "Fewer blind handoffs and less re-entry across the programme.",
-      "A stronger operating picture from intake through execution and handover.",
+      "Accessible information for the people delivering the project.",
+      "Stronger coordination, clearer visibility, and fewer silos.",
     ],
     visualStage: 2,
   },
@@ -99,7 +99,7 @@ const CHAPTERS: Chapter[] = [
 
 const SIGNAL_CHIPS: SignalChip[] = [
   {
-    label: "Design revision",
+    label: "Project requirements",
     top: "13%",
     left: "6%",
     tone: "primary",
@@ -111,7 +111,7 @@ const SIGNAL_CHIPS: SignalChip[] = [
     stage2Y: 82,
   },
   {
-    label: "Asset metadata",
+    label: "Leadership needs",
     top: "10%",
     left: "21%",
     tone: "ghost",
@@ -123,7 +123,7 @@ const SIGNAL_CHIPS: SignalChip[] = [
     stage2Y: 56,
   },
   {
-    label: "Field condition",
+    label: "Estimator inputs",
     top: "31%",
     left: "3%",
     tone: "steel",
@@ -135,7 +135,7 @@ const SIGNAL_CHIPS: SignalChip[] = [
     stage2Y: 30,
   },
   {
-    label: "Schedule pressure",
+    label: "Planning logic",
     top: "49%",
     left: "6%",
     tone: "ghost",
@@ -147,7 +147,7 @@ const SIGNAL_CHIPS: SignalChip[] = [
     stage2Y: -6,
   },
   {
-    label: "Commercial change",
+    label: "Risk controls",
     top: "68%",
     left: "9%",
     tone: "primary",
@@ -159,7 +159,7 @@ const SIGNAL_CHIPS: SignalChip[] = [
     stage2Y: -50,
   },
   {
-    label: "Handover evidence",
+    label: "Site constraints",
     top: "82%",
     left: "20%",
     tone: "steel",
@@ -173,40 +173,40 @@ const SIGNAL_CHIPS: SignalChip[] = [
 ];
 
 const META_CHIPS: FloatChip[] = [
-  { label: "Shared naming", top: "22%", left: "58%", tone: "steel" },
-  { label: "Owner + package", top: "34%", left: "72%", tone: "primary" },
-  { label: "Revision trace", top: "50%", left: "76%", tone: "ghost" },
-  { label: "Approval gate", top: "66%", left: "70%", tone: "steel" },
-  { label: "Status context", top: "76%", left: "56%", tone: "primary" },
-  { label: "Asset link", top: "22%", left: "42%", tone: "ghost" },
+  { label: "Shared requirement map", top: "22%", left: "58%", tone: "steel" },
+  { label: "Information ownership", top: "34%", left: "72%", tone: "primary" },
+  { label: "Decision context", top: "50%", left: "76%", tone: "ghost" },
+  { label: "Accessible source info", top: "66%", left: "70%", tone: "steel" },
+  { label: "Programme visibility", top: "76%", left: "56%", tone: "primary" },
+  { label: "Status + responsibility", top: "22%", left: "42%", tone: "ghost" },
 ];
 
 const OUTCOME_CHIPS: FloatChip[] = [
-  { label: "Clear ownership", top: "20%", left: "84%", tone: "primary" },
-  { label: "Next action visible", top: "38%", left: "88%", tone: "steel" },
-  { label: "Decision context", top: "58%", left: "84%", tone: "ghost" },
-  { label: "Reliable handover", top: "78%", left: "80%", tone: "primary" },
+  { label: "Teams help each other", top: "20%", left: "84%", tone: "primary" },
+  { label: "Fewer weekly surprises", top: "38%", left: "88%", tone: "steel" },
+  { label: "Faster handoffs", top: "58%", left: "84%", tone: "ghost" },
+  { label: "One project picture", top: "78%", left: "80%", tone: "primary" },
 ];
 
 const PROCESS_BANDS = [
   {
-    label: "Capture",
-    text: "Signals from design, field, schedule, commercial, and handover enter together.",
+    label: "Needs",
+    text: "Role needs, project requirements, and leadership asks are understood together.",
   },
   {
-    label: "Structure",
-    text: "Naming, ownership, status, package, and revision are applied once and retained.",
+    label: "Organise",
+    text: "Requirements, source information, ownership, and status are connected in one structure.",
   },
   {
-    label: "Control",
-    text: "Records move forward with governed actions, approvals, dependencies, and timing.",
+    label: "Access",
+    text: "Teams can find what they need early enough to help each other move the job.",
   },
 ];
 
 const METRICS = [
-  { value: "1", label: "shared intake layer" },
-  { value: "Live", label: "ownership + status context" },
-  { value: "Clear", label: "next action through delivery" },
+  { value: "1", label: "shared project picture" },
+  { value: "Live", label: "accessible information" },
+  { value: "Earlier", label: "cross-team coordination" },
 ];
 
 const INPUT_PATHS: PathDef[] = [
@@ -362,19 +362,21 @@ export default function FlowCompare() {
       <div className={`${styles.inner} page-container`}>
         <header className={styles.header}>
           <p data-intro-item className={styles.kicker}>
-            How Infraforma Closes The Gap
+            Information Management
           </p>
 
           <div className={styles.headingRow}>
             <h2 data-intro-item className={styles.headline}>
-              We close the gap between information and execution.
+              We organise project information so every team can move the job
+              forward together.
             </h2>
 
             <p data-intro-item className={styles.intro}>
-              Scroll through the operating layer. Each step shows how
-              fragmented project signals are captured, structured, and governed
-              so teams can act from the same truth instead of reconstructing it
-              on the fly.
+              Estimators, planners, risk, construction managers, and
+              leadership all have legitimate requirements. Infraforma brings
+              those needs and the information required to satisfy them into one
+              accessible environment, so the project does not have to reconnect
+              itself in weekly meetings.
             </p>
           </div>
         </header>
@@ -438,9 +440,10 @@ export default function FlowCompare() {
                   <div className={styles.coreRingInner} />
 
                   <div className={styles.coreHeader}>
-                    <p className={styles.coreKicker}>Infraforma operating layer</p>
+                    <p className={styles.coreKicker}>Infraforma information management</p>
                     <p className={styles.coreTitle}>
-                      Capture the signal. Keep the meaning. Move it forward.
+                      Project needs organised. Information accessible. Teams
+                      aligned.
                     </p>
                   </div>
 
