@@ -12,10 +12,35 @@ export default function Hero() {
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
+
     v.muted = true;
-    v.play().catch(() => {
-      // Autoplay was blocked — user will need to interact
-    });
+    v.defaultMuted = true;
+    v.setAttribute("muted", "");
+
+    const tryPlay = async () => {
+      try {
+        await v.play();
+      } catch (err) {
+        console.warn("[hero] autoplay blocked, waiting for interaction", err);
+        const onInteract = () => {
+          v.play().catch(() => {});
+          window.removeEventListener("pointerdown", onInteract);
+          window.removeEventListener("keydown", onInteract);
+          window.removeEventListener("scroll", onInteract);
+          window.removeEventListener("touchstart", onInteract);
+        };
+        window.addEventListener("pointerdown", onInteract, { once: true });
+        window.addEventListener("keydown", onInteract, { once: true });
+        window.addEventListener("scroll", onInteract, { once: true, passive: true });
+        window.addEventListener("touchstart", onInteract, { once: true, passive: true });
+      }
+    };
+
+    if (v.readyState >= 2) {
+      tryPlay();
+    } else {
+      v.addEventListener("loadeddata", tryPlay, { once: true });
+    }
   }, []);
 
   useGSAP(
