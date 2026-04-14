@@ -156,11 +156,15 @@ export default function Hero() {
           </div>
 
           <div className={styles.bodyWrap} data-copy-item>
+            <div className={styles.bodyDivider} aria-hidden="true" />
+            <p className={styles.bodyLead}>
+              One structured layer for <em>design, field, schedule,</em> and
+              commercial information.
+            </p>
             <p className={styles.body}>
-              Infraforma structures design, field, schedule, and commercial
-              information so infrastructure teams can make clearer decisions,
-              manage handoffs with less friction, and deliver major works with
-              stronger control from intake to handover.
+              So infrastructure teams coordinate earlier, move handoffs with
+              less friction, and deliver major works with stronger control —
+              from intake to handover.
             </p>
           </div>
         </div>
