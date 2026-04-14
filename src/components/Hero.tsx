@@ -104,23 +104,14 @@ export default function Hero() {
         {/* Background video */}
         <div className={styles.imageField}>
           <video
+            ref={videoRef}
             className={styles.image}
             src="/videos/hero.mp4"
             autoPlay
             muted
             loop
             playsInline
-            controls
-            onError={(e) => console.error("[hero video error]", e)}
-            onLoadedData={() => console.log("[hero video loaded]")}
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              border: "4px solid red",
-              zIndex: 10,
-            }}
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
           />
         </div>
 
