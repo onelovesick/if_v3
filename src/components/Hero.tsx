@@ -100,7 +100,17 @@ export default function Hero() {
             muted
             loop
             playsInline
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+            controls
+            onError={(e) => console.error("[hero video error]", e)}
+            onLoadedData={() => console.log("[hero video loaded]")}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              border: "4px solid red",
+              zIndex: 10,
+            }}
           />
         </div>
 
