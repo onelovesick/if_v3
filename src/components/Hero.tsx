@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
@@ -92,15 +91,16 @@ export default function Hero() {
   return (
     <section ref={sectionRef} className={styles.hero}>
       <div className={styles.backdrop} aria-hidden="true">
-        {/* Background image */}
+        {/* Background video */}
         <div className={styles.imageField}>
-          <Image
-            src="/images/bridge-hero.jpg"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
+          <video
             className={styles.image}
+            src="/videos/hero.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
           />
         </div>
 
