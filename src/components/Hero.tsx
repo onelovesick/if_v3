@@ -113,10 +113,10 @@ export default function Hero() {
       <div className={styles.inner}>
         <div className={styles.layout}>
           <div className={styles.headlineWrap} data-copy-item>
-            <p className={styles.eyebrow}>Heavy Civil Information Management</p>
+            <p className={styles.eyebrow}>Digital Delivery Partner</p>
             <h1 className={styles.headline}>
-              <span>Information Engineered</span>
-              <span>For Heavy Civil.</span>
+              <span>Human-Led,</span>
+              <span>Digitally Enabled.</span>
             </h1>
           </div>
 
