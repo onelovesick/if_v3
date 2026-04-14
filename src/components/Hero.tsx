@@ -10,6 +10,7 @@ export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    console.log("[hero] mount — videoRef:", videoRef.current);
     const v = videoRef.current;
     if (!v) return;
 
@@ -17,9 +18,16 @@ export default function Hero() {
     v.defaultMuted = true;
     v.setAttribute("muted", "");
 
+    v.addEventListener("loadstart", () => console.log("[hero] loadstart"));
+    v.addEventListener("loadeddata", () => console.log("[hero] loadeddata"));
+    v.addEventListener("canplay", () => console.log("[hero] canplay"));
+    v.addEventListener("playing", () => console.log("[hero] playing"));
+    v.addEventListener("error", (e) => console.error("[hero] error", v.error, e));
+
     const tryPlay = async () => {
       try {
         await v.play();
+        console.log("[hero] play() succeeded");
       } catch (err) {
         console.warn("[hero] autoplay blocked, waiting for interaction", err);
         const onInteract = () => {
@@ -136,7 +144,14 @@ export default function Hero() {
             muted
             loop
             playsInline
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              zIndex: 999,
+              outline: "6px solid lime",
+            }}
           />
         </div>
 
