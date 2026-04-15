@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import FloatingLinesScroll from './FloatingLinesScroll';
+import FloatingLinesScroll, { type FloatingLinesScrollHandle } from './FloatingLinesScroll';
+import GapDebugControls from './GapDebugControls';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -23,10 +24,25 @@ gsap.registerPlugin(ScrollTrigger);
    - Lines fade → bridge takes over
    ═══════════════════════════════════════════════════════════════ */
 
+/* Two horizontal lines meeting at center:
+ *  - Top wave = LEFT line (rotation curls right half off-screen at start,
+ *    flattens to full width at end)
+ *  - Bottom wave = RIGHT line (rotation curls left half off-screen at start,
+ *    flattens to full width at end)
+ * Tune with the debug panel, then paste values back into this constant.
+ */
+const INITIAL_POSITIONS = {
+  topStart: { x: 8.0, y: 0.0, rotate: -0.8 },
+  topEnd: { x: 5.0, y: 0.0, rotate: 0.0 },
+  bottomStart: { x: 2.0, y: 0.0, rotate: 0.8 },
+  bottomEnd: { x: 5.0, y: 0.0, rotate: 0.0 },
+};
+
 export default function SectionClosingGap() {
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
-  const linesRef = useRef<any>(null);
+  const linesRef = useRef<FloatingLinesScrollHandle | null>(null);
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -49,6 +65,7 @@ export default function SectionClosingGap() {
           anticipatePin: 1,
         }
       });
+      tlRef.current = tl;
 
       /* ═══════════════════════════════════════════════
          CONTINUOUS SHADER MOTION
@@ -146,13 +163,20 @@ export default function SectionClosingGap() {
           lineCount={[10, 10]}
           lineDistance={[6, 5]}
           linesGradient={['#5a5a60', '#3a3a42', '#4a4a52', '#2e2e36']}
-          topWavePosition={{ x: 8.0, y: 0.0, rotate: -0.55 }}
-          bottomWavePosition={{ x: 2.0, y: -0.65, rotate: 0.45 }}
-          topConvergedPos={{ x: 5.0, y: 0.0, rotate: 0.0 }}
-          bottomConvergedPos={{ x: 5.0, y: 0.0, rotate: 0.05 }}
+          topWavePosition={INITIAL_POSITIONS.topStart}
+          bottomWavePosition={INITIAL_POSITIONS.bottomStart}
+          topConvergedPos={INITIAL_POSITIONS.topEnd}
+          bottomConvergedPos={INITIAL_POSITIONS.bottomEnd}
           interactive={false}
           parallax={false}
           animationSpeed={0.8}
+        />
+
+        {/* Dev-only live tuning panel */}
+        <GapDebugControls
+          linesRef={linesRef}
+          tlRef={tlRef}
+          initial={INITIAL_POSITIONS}
         />
 
         {/* BEAT 1 */}
