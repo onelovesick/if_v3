@@ -24,17 +24,15 @@ gsap.registerPlugin(ScrollTrigger);
    - Lines fade → bridge takes over
    ═══════════════════════════════════════════════════════════════ */
 
-/* Two horizontal lines meeting at center:
- *  - Top wave = LEFT line (rotation curls right half off-screen at start,
- *    flattens to full width at end)
- *  - Bottom wave = RIGHT line (rotation curls left half off-screen at start,
- *    flattens to full width at end)
- * Tune with the debug panel, then paste values back into this constant.
+/* One horizontal line, disconnected at center, closing on scroll.
+ *  - Top wave  = LEFT HALF   (strong negative rotate curls right side away)
+ *  - Bottom wave = RIGHT HALF (strong positive rotate curls left side away)
+ *  - Both converge to y=0, rotate=0 → overlap into one unbroken line.
  */
 const INITIAL_POSITIONS = {
-  topStart: { x: 8.0, y: 0.0, rotate: -0.8 },
+  topStart: { x: 5.0, y: 0.0, rotate: -0.9 },
   topEnd: { x: 5.0, y: 0.0, rotate: 0.0 },
-  bottomStart: { x: 2.0, y: 0.0, rotate: 0.8 },
+  bottomStart: { x: 5.0, y: 0.0, rotate: 0.9 },
   bottomEnd: { x: 5.0, y: 0.0, rotate: 0.0 },
 };
 
@@ -160,9 +158,9 @@ export default function SectionClosingGap() {
         <FloatingLinesScroll
           ref={linesRef}
           enabledWaves={['top', 'bottom']}
-          lineCount={[10, 10]}
+          lineCount={[1, 1]}
           lineDistance={[6, 5]}
-          linesGradient={['#5a5a60', '#3a3a42', '#4a4a52', '#2e2e36']}
+          linesGradient={['#1c1c1c']}
           topWavePosition={INITIAL_POSITIONS.topStart}
           bottomWavePosition={INITIAL_POSITIONS.bottomStart}
           topConvergedPos={INITIAL_POSITIONS.topEnd}
