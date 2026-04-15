@@ -158,9 +158,9 @@ export default function SectionClosingGap() {
         <FloatingLinesScroll
           ref={linesRef}
           enabledWaves={['top', 'bottom']}
-          lineCount={[1, 1]}
-          lineDistance={[6, 5]}
-          linesGradient={['#1c1c1c']}
+          lineCount={[10, 10]}
+          lineDistance={[6, 6]}
+          linesGradient={['#5a5a60', '#3a3a42', '#4a4a52', '#2e2e36']}
           topWavePosition={INITIAL_POSITIONS.topStart}
           bottomWavePosition={INITIAL_POSITIONS.bottomStart}
           topConvergedPos={INITIAL_POSITIONS.topEnd}
