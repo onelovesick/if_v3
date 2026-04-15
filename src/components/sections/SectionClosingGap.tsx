@@ -45,73 +45,74 @@ export default function SectionClosingGap() {
           start: 'top top',
           end: 'bottom bottom',
           pin: pin,
-          scrub: 0.8,
+          scrub: 0.3,
           anticipatePin: 1,
         }
       });
 
-      // ── BEAT 1: THE PROBLEM (0–20%) ──
+      /* ═══════════════════════════════════════════════
+         CONTINUOUS SHADER MOTION
+         Uniforms animate linearly across the full scroll
+         range so the lines are always responding to the
+         scroll — never idle between text beats.
+         ═══════════════════════════════════════════════ */
+      tl.to(uniforms.uConverge, { value: 1.0, duration: 72, ease: 'sine.inOut' }, 0);
+      tl.to(uniforms.uColorMix, { value: 1.0, duration: 72, ease: 'power1.inOut' }, 0);
+
+      /* ═══════════════════════════════════════════════
+         TEXT BEATS — crossfade overlap
+         Each beat begins fading in before the previous
+         has finished fading out, so the viewer always
+         sees motion.
+         ═══════════════════════════════════════════════ */
+
+      // ── BEAT 1: THE PROBLEM ──
       tl.fromTo('.gap-beat-1',
-        { opacity: 0 }, { opacity: 1, duration: 3 }, 0)
+        { opacity: 0 }, { opacity: 1, duration: 4, ease: 'power2.out' }, 0)
         .fromTo('.gap-beat-1 .gap-stat',
-          { y: 25 }, { y: 0, duration: 4, ease: 'power2.out' }, 0.5)
+          { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: 5.5, ease: 'power3.out' }, 0.8)
         .fromTo('.gap-beat-1 .gap-rest',
-          { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 4, ease: 'power2.out' }, 1.5)
-        .to('.gap-beat-1', { opacity: 0, duration: 3 }, 12);
+          { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 5.5, ease: 'power3.out' }, 2.4)
+        .to('.gap-beat-1', { opacity: 0, duration: 5, ease: 'power2.in' }, 13);
 
-      // ── BEAT 2: THE PIVOT (20–38%) ──
+      // ── BEAT 2: THE PIVOT (starts while beat 1 still dimming) ──
       tl.fromTo('.gap-beat-2',
-        { opacity: 0 }, { opacity: 1, duration: 3 }, 14)
+        { opacity: 0 }, { opacity: 1, duration: 4, ease: 'power2.out' }, 15)
         .fromTo('.gap-beat-2 .gap-pivot-text',
-          { y: 12 }, { y: 0, duration: 3, ease: 'power2.out' }, 14)
+          { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 5, ease: 'power3.out' }, 15.5)
         .fromTo('.gap-beat-2 .gap-rule',
-          { width: 0 }, { width: 80, duration: 5, ease: 'power2.inOut' }, 15)
-        .to('.gap-beat-2', { opacity: 0, duration: 3 }, 25);
+          { width: 0 }, { width: 80, duration: 7, ease: 'power2.inOut' }, 16)
+        .to('.gap-beat-2', { opacity: 0, duration: 5, ease: 'power2.in' }, 27);
 
-      // Lines converge 0→0.35, color 0→0.15
-      tl.to(uniforms.uConverge, { value: 0.35, duration: 14, ease: 'none' }, 10);
-      tl.to(uniforms.uColorMix, { value: 0.15, duration: 14, ease: 'none' }, 10);
-
-      // ── BEAT 3: THE DISCONNECT (38–62%) ──
+      // ── BEAT 3: THE DISCONNECT — staggered lines, crossfades with beat 2 ──
       tl.fromTo('.gap-beat-3',
-        { opacity: 0 }, { opacity: 1, duration: 2 }, 27);
+        { opacity: 0 }, { opacity: 1, duration: 4, ease: 'power2.out' }, 29);
 
-      document.querySelectorAll('.gap-role-line').forEach((el, i) => {
-        tl.fromTo(el,
-          { opacity: 0, y: 22 },
-          { opacity: 1, y: 0, duration: 3, ease: 'power2.out' },
-          28 + i * 3
-        );
-      });
-      document.querySelectorAll('.gap-cons-line').forEach((el, i) => {
-        tl.fromTo(el,
-          { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 3, ease: 'power2.out' },
-          38 + i * 3
-        );
-      });
-      tl.to('.gap-beat-3', { opacity: 0, duration: 3 }, 47);
+      tl.fromTo('.gap-role-line',
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 4, stagger: 1.8, ease: 'power3.out' },
+        30
+      );
 
-      // Lines converge 0.35→0.7, color 0.15→0.55
-      tl.to(uniforms.uConverge, { value: 0.7, duration: 22, ease: 'power1.inOut' }, 24);
-      tl.to(uniforms.uColorMix, { value: 0.55, duration: 22, ease: 'power1.inOut' }, 24);
+      tl.fromTo('.gap-cons-line',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 4, stagger: 1.8, ease: 'power3.out' },
+        41
+      );
 
-      // ── BEAT 4: THE RESOLUTION (62–82%) ──
+      tl.to('.gap-beat-3', { opacity: 0, duration: 5, ease: 'power2.in' }, 50);
+
+      // ── BEAT 4: THE RESOLUTION — crossfades with beat 3 ──
       tl.fromTo('.gap-beat-4',
-        { opacity: 0 }, { opacity: 1, duration: 3 }, 49)
+        { opacity: 0 }, { opacity: 1, duration: 4, ease: 'power2.out' }, 52)
         .fromTo('.gap-beat-4 .gap-resolve-text',
-          { y: 18 }, { y: 0, duration: 4, ease: 'power2.out' }, 49)
+          { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 6, ease: 'power3.out' }, 53)
         .fromTo('.gap-beat-4 .gap-resolve-sub',
-          { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 4, ease: 'power2.out' }, 53)
-        .to('.gap-beat-4', { opacity: 0, duration: 4 }, 63);
+          { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 6, ease: 'power3.out' }, 56.5)
+        .to('.gap-beat-4', { opacity: 0, duration: 6, ease: 'power2.in' }, 66);
 
-      // Lines fully converge, full blue
-      tl.to(uniforms.uConverge, { value: 1.0, duration: 16, ease: 'power1.inOut' }, 46);
-      tl.to(uniforms.uColorMix, { value: 1.0, duration: 16, ease: 'power1.inOut' }, 46);
-
-      // ── EXIT (82–100%) ──
-      tl.to(uniforms.uFade, { value: 1.0, duration: 12, ease: 'power2.in' }, 66);
-      tl.to(pin, { backgroundColor: '#030305', duration: 14, ease: 'none' }, 64);
+      // ── EXIT: lines fade only, background stays white for bridge handoff ──
+      tl.to(uniforms.uFade, { value: 1.0, duration: 10, ease: 'power2.inOut' }, 66);
 
       return () => {
         tl.kill();
