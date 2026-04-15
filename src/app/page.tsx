@@ -1,4 +1,5 @@
 import Pillars from "@/components/Pillars";
+import SectionClosingGap from "@/components/sections/SectionClosingGap";
 import TopScene from "@/components/TopScene";
 
 const PROOF_POINTS = [
@@ -27,6 +28,8 @@ export default function Home() {
   return (
     <main>
       <TopScene />
+
+      <SectionClosingGap />
 
       <Pillars />
 
