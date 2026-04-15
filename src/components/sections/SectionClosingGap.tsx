@@ -148,8 +148,8 @@ export default function SectionClosingGap() {
           linesGradient={['#5a5a60', '#3a3a42', '#4a4a52', '#2e2e36']}
           topWavePosition={{ x: 8.0, y: 0.55, rotate: -0.5 }}
           bottomWavePosition={{ x: 2.0, y: -0.65, rotate: 0.45 }}
-          topConvergedPos={{ x: 2.0, y: -0.55, rotate: 0.35 }}
-          bottomConvergedPos={{ x: 8.0, y: 0.55, rotate: -0.35 }}
+          topConvergedPos={{ x: 5.0, y: 0.0, rotate: -0.05 }}
+          bottomConvergedPos={{ x: 5.0, y: 0.0, rotate: 0.05 }}
           interactive={false}
           parallax={false}
           animationSpeed={0.8}
