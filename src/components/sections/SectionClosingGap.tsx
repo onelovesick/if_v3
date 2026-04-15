@@ -146,9 +146,9 @@ export default function SectionClosingGap() {
           lineCount={[10, 10]}
           lineDistance={[6, 5]}
           linesGradient={['#5a5a60', '#3a3a42', '#4a4a52', '#2e2e36']}
-          topWavePosition={{ x: 8.0, y: 0.55, rotate: -0.5 }}
+          topWavePosition={{ x: 8.0, y: 0.0, rotate: -0.55 }}
           bottomWavePosition={{ x: 2.0, y: -0.65, rotate: 0.45 }}
-          topConvergedPos={{ x: 5.0, y: 0.0, rotate: -0.05 }}
+          topConvergedPos={{ x: 5.0, y: 0.0, rotate: 0.0 }}
           bottomConvergedPos={{ x: 5.0, y: 0.0, rotate: 0.05 }}
           interactive={false}
           parallax={false}
