@@ -4,8 +4,8 @@ import { useState } from "react";
 import styles from "./Header.module.css";
 
 const NAV_LINKS = [
-  { label: "Platform", href: "#platform" },
-  { label: "Workflow", href: "#workflow" },
+  { label: "Capabilities", href: "#platform" },
+  { label: "Approach", href: "#workflow" },
   { label: "Outcomes", href: "#outcomes" },
 ];
 
@@ -27,7 +27,7 @@ export default function Header() {
           ))}
         </nav>
         <a href="#contact" className={styles.cta}>
-          Start a Project
+          Contact
         </a>
       </div>
 
@@ -59,7 +59,7 @@ export default function Header() {
             className={styles.mobileCta}
             onClick={() => setMenuOpen(false)}
           >
-            Start a Project
+            Contact
           </a>
         </div>
       )}

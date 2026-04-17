@@ -44,7 +44,7 @@ function createTower({
   const lineMaterial = new THREE.LineBasicMaterial({
     color,
     transparent: true,
-    opacity: 0.52,
+    opacity: 0.24,
   });
 
   for (let level = 0; level <= levels; level += 1) {
@@ -91,7 +91,7 @@ function createConnector(
     new THREE.LineBasicMaterial({
       color,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.22,
     }),
   );
 
@@ -100,7 +100,7 @@ function createConnector(
     new THREE.MeshBasicMaterial({
       color,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.38,
     }),
   );
 
@@ -148,9 +148,9 @@ function createParticleField(count: number) {
   geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
   const material = new THREE.PointsMaterial({
-    size: 0.04,
+    size: 0.025,
     transparent: true,
-    opacity: 0.92,
+    opacity: 0.42,
     sizeAttenuation: true,
     depthWrite: false,
     vertexColors: true,
@@ -198,10 +198,10 @@ export default function ConstructionScene() {
     );
     camera.position.set(0, 1.9, 8.5);
 
-    const ambientLight = new THREE.AmbientLight(0xb7d8ff, 0.5);
-    const coolLight = new THREE.PointLight(0x79dfff, 14, 28, 2);
-    const warmLight = new THREE.PointLight(0xf4c98b, 10, 24, 2);
-    const rimLight = new THREE.DirectionalLight(0xdaf4ff, 1.35);
+    const ambientLight = new THREE.AmbientLight(0xb7d8ff, 0.36);
+    const coolLight = new THREE.PointLight(0x79dfff, 7, 24, 2);
+    const warmLight = new THREE.PointLight(0xf4c98b, 4, 18, 2);
+    const rimLight = new THREE.DirectionalLight(0xdaf4ff, 0.82);
 
     coolLight.position.set(5.5, 6.5, 5.5);
     warmLight.position.set(-5, 1.5, 4);
@@ -213,34 +213,10 @@ export default function ConstructionScene() {
     scene.add(root);
 
     const grid = new THREE.GridHelper(34, 30, 0x2b8aa5, 0x11283c);
-    setMaterialOpacity(grid.material, 0.2);
+    setMaterialOpacity(grid.material, 0.12);
     grid.position.y = -2.35;
     grid.rotation.x = Math.PI * 0.02;
     root.add(grid);
-
-    const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(4.5, 0.04, 16, 120),
-      new THREE.MeshBasicMaterial({
-        color: "#15374b",
-        transparent: true,
-        opacity: 0.35,
-      }),
-    );
-    ring.position.set(0.9, 1.15, -1.2);
-    ring.rotation.x = Math.PI / 2.35;
-    root.add(ring);
-
-    const sphere = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1.6, 1),
-      new THREE.MeshBasicMaterial({
-        color: "#15374b",
-        wireframe: true,
-        transparent: true,
-        opacity: 0.2,
-      }),
-    );
-    sphere.position.set(-3.8, 2.4, -1.6);
-    root.add(sphere);
 
     const mainTower = createTower({
       width: 3.7,
@@ -313,14 +289,14 @@ export default function ConstructionScene() {
         return {
           curve,
           marker,
-          speed: 0.04 + index * 0.013,
+          speed: 0.024 + index * 0.008,
           offset: index * 0.24,
         };
       },
     );
 
     const { basePositions, field } = createParticleField(
-      prefersReducedMotion ? 520 : 1250,
+      prefersReducedMotion ? 220 : 640,
     );
     root.add(field);
 
@@ -375,28 +351,25 @@ export default function ConstructionScene() {
       scrollProgress += (scrollTarget - scrollProgress) * 0.045;
 
       root.rotation.y +=
-        (-0.24 + scrollProgress * 1.08 + pointer.x * 0.18 - root.rotation.y) *
+        (-0.12 + scrollProgress * 0.34 + pointer.x * 0.06 - root.rotation.y) *
         0.035;
       root.rotation.x +=
-        (0.06 + pointer.y * 0.08 - root.rotation.x) * 0.03;
-      root.position.y += (-0.45 + scrollProgress * 3.4 - root.position.y) * 0.03;
+        (0.02 + pointer.y * 0.03 - root.rotation.x) * 0.03;
+      root.position.y += (-0.18 + scrollProgress * 1.1 - root.position.y) * 0.03;
 
-      camera.position.x += (pointer.x * 0.85 - camera.position.x) * 0.025;
+      camera.position.x += (pointer.x * 0.32 - camera.position.x) * 0.025;
       camera.position.y +=
-        (1.9 + scrollProgress * 1.7 + pointer.y * 0.4 - camera.position.y) *
+        (1.9 + scrollProgress * 0.45 + pointer.y * 0.15 - camera.position.y) *
         0.03;
-      camera.position.z += (8.5 - scrollProgress * 1.25 - camera.position.z) * 0.03;
-      camera.lookAt(pointer.x * 0.7, 0.8 + scrollProgress * 1.2, 0);
+      camera.position.z += (8.5 - scrollProgress * 0.4 - camera.position.z) * 0.03;
+      camera.lookAt(pointer.x * 0.18, 0.78 + scrollProgress * 0.32, 0);
 
-      ring.rotation.z = elapsed * 0.11;
-      sphere.rotation.x = elapsed * 0.15;
-      sphere.rotation.y = elapsed * 0.12;
-      grid.rotation.z = elapsed * 0.018;
+      grid.rotation.z = elapsed * 0.006;
 
       streamMarkers.forEach(({ curve, marker, speed, offset }, index) => {
         const t = (elapsed * speed + offset + scrollProgress * 0.12) % 1;
         marker.position.copy(curve.getPointAt(t));
-        marker.scale.setScalar(1 + Math.sin(elapsed * 2 + index) * 0.12);
+        marker.scale.setScalar(0.82 + Math.sin(elapsed * 1.3 + index) * 0.06);
       });
 
       for (let index = 0; index < positionAttribute.count; index += 1) {
@@ -406,18 +379,18 @@ export default function ConstructionScene() {
         const baseZ = basePositions[stride + 2];
 
         positionAttribute.array[stride] =
-          baseX + Math.sin(elapsed * 0.35 + baseY * 0.4) * 0.035;
+          baseX + Math.sin(elapsed * 0.25 + baseY * 0.4) * 0.015;
         positionAttribute.array[stride + 1] =
           baseY +
-          Math.cos(elapsed * 0.4 + baseX * 0.22 + baseZ * 0.17) * 0.055 +
-          scrollProgress * 0.32;
+          Math.cos(elapsed * 0.28 + baseX * 0.22 + baseZ * 0.17) * 0.02 +
+          scrollProgress * 0.12;
         positionAttribute.array[stride + 2] =
-          baseZ + Math.sin(elapsed * 0.28 + baseX * 0.18) * 0.03;
+          baseZ + Math.sin(elapsed * 0.21 + baseX * 0.18) * 0.015;
       }
 
       positionAttribute.needsUpdate = true;
-      field.rotation.y = elapsed * 0.02;
-      field.rotation.x = elapsed * 0.01;
+      field.rotation.y = elapsed * 0.006;
+      field.rotation.x = elapsed * 0.003;
 
       renderer.render(scene, camera);
     };

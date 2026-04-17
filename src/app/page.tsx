@@ -385,7 +385,7 @@ export default function Home() {
         <div className={styles.shell}>
           <div className={styles.contactPanel}>
             <div>
-              <span className={styles.darkLabel}>Contact</span>
+              <span className={styles.sectionLabel}>Contact</span>
               <h2 className={styles.contactTitle}>
                 Bring digital delivery into the project early enough for it to matter.
               </h2>

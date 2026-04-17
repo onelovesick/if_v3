@@ -6,7 +6,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Infraforma | Digital Delivery for Engineering and Construction",
   description:
-    "A digital delivery experience for engineering and construction teams, connecting models, documents, field data, and handover into one controlled project layer.",
+    "Digital delivery, information management, and handover strategy for engineering and construction teams working on complex projects.",
 };
 
 export default function RootLayout({

@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 28px;
+  padding: 20px 24px;
   pointer-events: none;
 }
 
@@ -20,16 +20,16 @@
   font-weight: 900;
   font-size: 18px;
   letter-spacing: -0.02em;
-  color: #edf5ff;
+  color: #10263d;
   text-decoration: none;
   text-transform: uppercase;
   padding: 12px 18px;
   border-radius: 999px;
-  background: rgba(8, 20, 34, 0.52);
-  border: 1px solid rgba(143, 229, 255, 0.14);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(16, 38, 61, 0.08);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 24px 60px rgba(3, 10, 19, 0.28);
+  box-shadow: 0 20px 48px rgba(15, 31, 48, 0.08);
 }
 
 .navGroup {
@@ -42,13 +42,13 @@
   display: flex;
   align-items: center;
   gap: 0;
-  background: rgba(8, 20, 34, 0.48);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(143, 229, 255, 0.14);
+  border: 1px solid rgba(16, 38, 61, 0.08);
   border-radius: 100px;
   padding: 10px 8px;
-  box-shadow: 0 24px 60px rgba(3, 10, 19, 0.28);
+  box-shadow: 0 20px 48px rgba(15, 31, 48, 0.08);
 }
 
 .navLink {
@@ -57,14 +57,14 @@
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(237, 245, 255, 0.68);
+  color: rgba(16, 38, 61, 0.62);
   text-decoration: none;
   padding: 4px 18px;
   transition: color 0.2s ease;
 }
 
 .navLink:hover {
-  color: #edf5ff;
+  color: #10263d;
 }
 
 .cta {
@@ -73,18 +73,18 @@
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #04111d;
-  background: linear-gradient(135deg, #8fe5ff 0%, #5fe4d5 100%);
+  color: #f5f8fb;
+  background: #10263d;
   text-decoration: none;
   padding: 14px 24px;
   border-radius: 100px;
   transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-  box-shadow: 0 24px 60px rgba(3, 10, 19, 0.24);
+  box-shadow: 0 20px 48px rgba(15, 31, 48, 0.12);
 }
 
 .cta:hover {
-  background: linear-gradient(135deg, #b3f0ff 0%, #7df0d2 100%);
-  color: #04111d;
+  background: #183654;
+  color: #f5f8fb;
   transform: translateY(-1px);
 }
 
@@ -92,21 +92,21 @@
   display: none;
   flex-direction: column;
   gap: 6px;
-  background: rgba(8, 20, 34, 0.52);
-  border: 1px solid rgba(143, 229, 255, 0.14);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(16, 38, 61, 0.08);
   border-radius: 999px;
   cursor: pointer;
   padding: 14px 12px;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 24px 60px rgba(3, 10, 19, 0.28);
+  box-shadow: 0 20px 48px rgba(15, 31, 48, 0.08);
 }
 
 .bar {
   display: block;
   width: 24px;
   height: 1.5px;
-  background: #edf5ff;
+  background: #10263d;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -124,9 +124,7 @@
   inset: 0;
   top: 86px;
   margin: 0 20px 20px;
-  background:
-    radial-gradient(circle at top left, rgba(143, 229, 255, 0.1), transparent 42%),
-    rgba(6, 17, 31, 0.94);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
   flex-direction: column;
@@ -135,8 +133,8 @@
   gap: 24px;
   z-index: 99;
   border-radius: 28px;
-  border: 1px solid rgba(143, 229, 255, 0.14);
-  box-shadow: 0 30px 80px rgba(3, 10, 19, 0.32);
+  border: 1px solid rgba(16, 38, 61, 0.08);
+  box-shadow: 0 30px 80px rgba(15, 31, 48, 0.12);
 }
 
 .mobileLink {
@@ -144,7 +142,7 @@
   font-weight: 700;
   font-size: 28px;
   letter-spacing: -0.02em;
-  color: #edf5ff;
+  color: #10263d;
   text-decoration: none;
 }
 
@@ -154,8 +152,8 @@
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #04111d;
-  background: linear-gradient(135deg, #8fe5ff 0%, #5fe4d5 100%);
+  color: #f5f8fb;
+  background: #10263d;
   text-decoration: none;
   padding: 16px 32px;
   border-radius: 100px;
