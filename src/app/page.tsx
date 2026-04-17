@@ -1,178 +1,129 @@
 import ConstructionScene from "@/components/ConstructionScene";
-import PortalTransition from "@/components/PortalTransition";
 import styles from "./page.module.css";
 
 const HERO_SIGNALS = [
-  "Common data environment",
-  "Model coordination",
-  "Field reporting",
-  "Asset-ready handover",
+  "Information management",
+  "Design coordination",
+  "Construction readiness",
+  "Operational handover",
 ];
 
-const HERO_STATS = [
+const HERO_FACTS = [
   {
-    value: "01",
-    label: "connected delivery thread across engineering, construction, and owner teams",
+    value: "Design",
+    label: "Structured information for issue, review, and release.",
   },
   {
-    value: "3D",
-    label: "project context layered with models, documents, and live delivery signals",
+    value: "Delivery",
+    label: "Current project information aligned with package status and site needs.",
   },
   {
-    value: "ISO 19650",
-    label: "information structure that keeps control, traceability, and accountability visible",
+    value: "Handover",
+    label: "Records prepared for owner use before project closeout.",
   },
 ];
 
-const SERVICES = [
+const STRIP_ITEMS = [
+  {
+    title: "Design information",
+    text: "Issued information stays tied to package status, discipline ownership, and review history.",
+  },
+  {
+    title: "Project controls",
+    text: "Commercial, technical, and delivery teams can work from the same project picture.",
+  },
+  {
+    title: "Site readiness",
+    text: "Outstanding constraints stay visible before the work front is opened to construction.",
+  },
+];
+
+const CAPABILITIES = [
   {
     index: "01",
-    title: "Digital delivery strategy for capital projects",
-    text: "We define how information should move from design to site to handover so the digital setup supports delivery instead of slowing it down.",
+    title: "Digital delivery strategy",
+    text: "We define the project operating model for how information should be named, reviewed, approved, issued, and governed across design, delivery, and turnover.",
     bullets: [
-      "Delivery operating model and information governance",
-      "CDE structure, naming logic, approval flows, and role mapping",
-      "Package sequencing aligned with real project milestones",
+      "Information management framework and governance structure",
+      "Common data environment logic, approvals, and role mapping",
+      "Package architecture aligned to project milestones and decision gates",
     ],
   },
   {
     index: "02",
-    title: "Engineering and construction coordination systems",
-    text: "We connect models, drawings, RFIs, technical queries, constraints, and field feedback into a single readable layer for the teams making decisions.",
+    title: "Coordination across engineering and construction",
+    text: "We connect models, documents, interfaces, issues, and site feedback into a delivery structure that helps teams act earlier and with better clarity.",
     bullets: [
-      "Federated model and document coordination",
-      "Issue management connected to package status and constraints",
-      "Dashboards that show what is blocked, exposed, and ready",
+      "Model and document coordination across disciplines",
+      "Issue and interface management linked to package status",
+      "Construction-facing views that support current delivery decisions",
     ],
   },
   {
     index: "03",
-    title: "Structured handover and asset information delivery",
-    text: "We help teams leave the project with usable operational data, not a last-minute scramble of disconnected files and spreadsheets.",
+    title: "Structured handover planning",
+    text: "We help teams build turnover requirements into delivery from the start so asset records, tagged information, and closeout evidence are prepared progressively.",
     bullets: [
-      "Asset data templates and information requirements",
-      "Progressive verification before turnover",
-      "Owner-ready digital records and closeout packs",
+      "Asset information requirements and handover planning",
+      "Verification routes for records, metadata, and closeout evidence",
+      "Owner-ready turnover information shaped before the end phase",
     ],
   },
 ];
 
-const PANORAMA_PANELS = [
-  {
-    value: "421",
-    label: "Issued packages",
-    title: "Engineering packages stay tied to the work fronts they affect.",
-    text: "Design releases, interfaces, and decisions can be read against the current construction picture instead of living in separate review loops.",
-  },
-  {
-    value: "17",
-    label: "Active interfaces",
-    title: "Discipline handoffs are visible before they become site friction.",
-    text: "The wide view keeps technical, commercial, and field dependencies in frame at the same time.",
-  },
-  {
-    value: "06",
-    label: "Readiness gates",
-    title: "Teams can see what is approved, exposed, blocked, and ready.",
-    text: "Status is organized around delivery flow, not just around document issuance or isolated dashboards.",
-  },
-];
-
-const WHITE_SPACE_CARDS = [
-  {
-    label: "Review Layer",
-    title: "A quiet white-space environment for approvals, planning, and alignment.",
-    text: "When teams need focus, the interface clears out and becomes a clean decision room for package review, change governance, and operational readiness conversations.",
-  },
-  {
-    label: "Change Control",
-    title: "Decisions captured with context, not just timestamps.",
-    text: "Every decision can stay connected to model status, package maturity, delivery consequences, and downstream owner impact.",
-  },
-  {
-    label: "Handover Logic",
-    title: "Turnover starts inside delivery, not at the end of it.",
-    text: "The same structure that supports construction control can also support validation, closeout, and asset information readiness.",
-  },
-];
-
-const PHASES = [
+const PROCESS = [
   {
     number: "01",
-    title: "Frame the delivery logic",
-    meta: "Mobilization",
-    text: "We map packages, decision gates, review loops, and responsibility boundaries so every digital workflow reflects how the project will actually be delivered.",
-    bullets: [
-      "Baseline delivery architecture",
-      "Governance, reviews, and approval workflows",
-      "Priority use cases for engineers, contractors, and owner teams",
-    ],
+    title: "Define the project information model",
+    text: "We start with project structure: packages, roles, review routes, issue paths, and turnover requirements. The digital layer has to follow the delivery logic, not sit beside it.",
   },
   {
     number: "02",
-    title: "Connect the live project signals",
-    meta: "Active delivery",
-    text: "Models, drawings, constraints, field observations, and commercial priorities become a shared operating picture instead of separate status trackers.",
-    bullets: [
-      "Model and document coordination",
-      "Site-to-office reporting loops",
-      "Issue, risk, and status visibility by package",
-    ],
+    title: "Connect the active delivery information",
+    text: "Design outputs, coordination issues, approvals, and site-facing information are organized so teams can understand what is current, what is blocked, and what is ready.",
   },
   {
     number: "03",
-    title: "Control readiness and change",
-    meta: "Execution control",
-    text: "We make package maturity, scope movement, and delivery readiness visible early enough for the team to act before the consequences hit site.",
-    bullets: [
-      "Readiness checks linked to constraints",
-      "Change traceability across disciplines",
-      "Decision support for leaders running complex work fronts",
-    ],
+    title: "Support decisions during execution",
+    text: "The system should help teams see consequences early. That means clearer visibility into package maturity, interface risk, constraints, and downstream owner impact.",
   },
   {
     number: "04",
-    title: "Deliver clean handover data",
-    meta: "Turnover",
-    text: "The same delivery thread that supports execution also supports closeout, so handover becomes a controlled outcome rather than a rescue effort.",
-    bullets: [
-      "Progressive asset information validation",
-      "Structured digital turnover packages",
-      "Owner-facing documentation with traceable provenance",
-    ],
+    title: "Prepare handover as part of delivery",
+    text: "Turnover data is shaped progressively rather than collected at the end. The outcome is a cleaner closeout process and a more usable record for operations.",
   },
 ];
 
 const OUTCOMES = [
   {
-    metric: "Design to field",
-    title: "Clearer package readiness before work reaches site",
-    text: "Engineering intent, outstanding constraints, and latest approvals stay visible where delivery teams need them, reducing last-minute interpretation and rework.",
+    label: "Project clarity",
+    title: "A more readable delivery picture for engineering, construction, and owner teams.",
+    text: "Information is structured around the way the project is delivered, which improves visibility into status, accountability, and outstanding actions.",
   },
   {
-    metric: "Commercial to technical",
-    title: "Better decisions because the project context is connected",
-    text: "Programme controls, technical teams, and construction leaders can see the same delivery picture and understand how one decision shifts downstream risk.",
+    label: "Earlier intervention",
+    title: "Delivery issues become visible before they become field problems.",
+    text: "Package readiness, review status, and unresolved interfaces can be understood in time for teams to change course with less disruption.",
   },
   {
-    metric: "Turnover",
-    title: "Handover prepared during delivery, not after it",
-    text: "Asset information, tagged records, and closeout evidence are captured progressively so operational handover becomes more predictable and less manual.",
+    label: "Better closeout",
+    title: "Handover requirements are built into the job instead of left to the end.",
+    text: "Owner-facing records, tagged data, and delivery evidence are prepared through the life of the project, not assembled after the fact.",
   },
 ];
 
 const SECTORS = [
   {
-    title: "Industrial and process facilities",
-    text: "For projects where engineering packages, construction sequencing, and operational requirements all need to stay aligned.",
+    title: "Major buildings and campus programmes",
+    text: "For projects where coordination quality and clean information flow have direct programme impact.",
   },
   {
     title: "Infrastructure and transportation",
-    text: "For multi-stakeholder programmes that require traceable information flow across designers, contractors, and owners.",
+    text: "For multi-stakeholder projects that need stronger delivery control across owners, designers, and contractors.",
   },
   {
-    title: "Owner-side digital transformation",
-    text: "For organizations that want stronger delivery control without introducing another disconnected technology stack.",
+    title: "Industrial and process facilities",
+    text: "For programmes where engineering packages, field execution, and operational readiness need to stay connected.",
   },
 ];
 
@@ -181,27 +132,34 @@ export default function Home() {
     <main className={styles.page} id="top">
       <ConstructionScene />
 
-      <section className={`${styles.section} ${styles.hero}`}>
+      <section className={styles.hero}>
+        <div className={styles.heroSurface} />
         <div className={styles.shell}>
-          <div className={styles.heroInner}>
+          <p className={styles.kicker}>
+            Engineering Information Management / Digital Delivery
+          </p>
+
+          <div className={styles.heroGrid}>
             <div>
-              <p className={styles.eyebrow}>Engineering + Construction Digital Delivery</p>
-              <h1 className={styles.title}>
-                We build the digital delivery layer behind complex construction
-                programs.
+              <h1 className={styles.heroTitle}>
+                Digital delivery for construction projects that need clarity,
+                structure, and control.
               </h1>
-              <p className={styles.lead}>
-                From design coordination to field execution and asset-ready
-                handover, we connect models, documents, decisions, and site
-                reality into one controlled delivery system.
+            </div>
+
+            <div className={styles.heroPanel}>
+              <p className={styles.heroLead}>
+                We help engineering, construction, and owner teams structure
+                information across design, coordination, delivery, and handover
+                so the project can move with fewer blind spots.
               </p>
 
               <div className={styles.heroActions}>
                 <a href="#platform" className={styles.primaryButton}>
-                  Explore the platform
+                  Explore capabilities
                 </a>
                 <a href="#contact" className={styles.secondaryButton}>
-                  Start a delivery conversation
+                  Start a conversation
                 </a>
               </div>
 
@@ -213,233 +171,207 @@ export default function Home() {
                 ))}
               </div>
             </div>
-
-            <div className={styles.heroAside}>
-              <article className={styles.hudCard}>
-                <span className={styles.hudLabel}>Live Delivery View</span>
-                <h2 className={styles.hudTitle}>
-                  Construction context rendered as one readable operating layer.
-                </h2>
-                <p className={styles.hudBody}>
-                  The experience is designed to feel like a digital twin of the
-                  delivery workflow itself: structural, connected, and always in
-                  motion.
-                </p>
-                <ul className={styles.hudList}>
-                  <li>
-                    <strong>Inputs</strong>
-                    <span>Models, drawings, field signals, approvals</span>
-                  </li>
-                  <li>
-                    <strong>Control</strong>
-                    <span>Reviews, readiness, traceability, governance</span>
-                  </li>
-                  <li>
-                    <strong>Outcome</strong>
-                    <span>Faster coordination and cleaner turnover</span>
-                  </li>
-                </ul>
-              </article>
-            </div>
           </div>
 
-          <div className={styles.heroStats}>
-            {HERO_STATS.map((stat) => (
-              <article key={stat.label} className={styles.heroStat}>
-                <p className={styles.statValue}>{stat.value}</p>
-                <span className={styles.statLabel}>{stat.label}</span>
+          <div className={styles.heroFacts}>
+            {HERO_FACTS.map((fact) => (
+              <article key={fact.value} className={styles.heroFact}>
+                <p className={styles.factValue}>{fact.value}</p>
+                <p className={styles.factLabel}>{fact.label}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className={styles.section} id="platform">
+      <section className={`${styles.section} ${styles.whiteSection}`} id="platform">
         <div className={styles.shell}>
           <div className={styles.sectionHeader}>
             <div>
-              <span className={styles.sectionLabel}>What We Deliver</span>
+              <span className={styles.sectionLabel}>What We Do</span>
               <h2 className={styles.sectionTitle}>
-                Digital delivery built for engineering and construction teams.
+                A digital delivery approach built for real project work.
               </h2>
             </div>
             <p className={styles.sectionIntro}>
-              This is not another generic dashboard layer. It is a project-wide
-              delivery system that gives teams a clearer view of package status,
-              decision history, field impact, and handover readiness.
+              This is an explanation-led offer. We help clients structure
+              information, coordination, and delivery control across the life of
+              the project so teams can work from a clearer and more consistent
+              operating picture.
             </p>
           </div>
 
-          <div className={styles.serviceGrid}>
-            {SERVICES.map((service) => (
-              <article key={service.title} className={styles.serviceCard}>
-                <span className={styles.cardIndex}>{service.index}</span>
-                <h3 className={styles.cardTitle}>{service.title}</h3>
-                <p className={styles.cardText}>{service.text}</p>
-                <ul className={styles.cardList}>
-                  {service.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
-                  ))}
-                </ul>
-              </article>
-            ))}
+          <div className={styles.statement}>
+            <p className={styles.statementText}>
+              The objective is straightforward: better-issued information, clearer
+              accountability, stronger delivery visibility, and a more reliable
+              path from design through construction to owner handover.
+            </p>
           </div>
         </div>
       </section>
 
       <section className={`${styles.section} ${styles.wideSection}`}>
         <div className={styles.wideShell}>
-          <div className={styles.wideHeader}>
-            <div>
-              <span className={styles.sectionLabel}>Wide Project View</span>
-              <h2 className={styles.sectionTitle}>
-                A panoramic section that feels closer to a live coordination wall.
+          <div className={styles.explanationStrip}>
+            <article className={styles.stripLead}>
+              <span className={styles.sectionLabel}>Wide View</span>
+              <h2 className={styles.stripLeadTitle}>
+                One readable thread across design, delivery, and closeout.
               </h2>
-            </div>
-            <p className={styles.sectionIntro}>
-              This wider band keeps more of the project in frame at once, so the
-              page can briefly feel like a command surface instead of a standard
-              marketing layout.
-            </p>
-          </div>
-
-          <div className={styles.wideTrack}>
-            <article className={`${styles.wideCard} ${styles.wideLeadCard}`}>
-              <span className={styles.wideLeadLabel}>Delivery Panorama</span>
-              <h3 className={styles.wideLeadTitle}>
-                One wide visual lane for engineering, site, and owner signals.
-              </h3>
-              <p className={styles.wideLeadText}>
-                The layout opens up here on purpose. It gives the story room to
-                breathe and mirrors the kind of large-format project view teams
-                use when they need to understand how decisions ripple across the
-                whole delivery chain.
+              <p className={styles.stripLeadText}>
+                The wider section is intentional. It lets the site feel more like
+                an engineering and programme overview than a conventional
+                marketing page.
               </p>
-              <div className={styles.wideRibbon}>
-                <span>Design intent</span>
-                <span>Interface risk</span>
-                <span>Construction readiness</span>
-                <span>Owner handover</span>
-              </div>
             </article>
 
-            {PANORAMA_PANELS.map((panel) => (
-              <article key={panel.title} className={styles.wideCard}>
-                <span className={styles.wideMetric}>{panel.value}</span>
-                <span className={styles.wideCardLabel}>{panel.label}</span>
-                <h3 className={styles.wideCardTitle}>{panel.title}</h3>
-                <p className={styles.wideCardText}>{panel.text}</p>
+            {STRIP_ITEMS.map((item) => (
+              <article key={item.title} className={styles.stripCard}>
+                <h3 className={styles.stripCardTitle}>{item.title}</h3>
+                <p className={styles.stripCardText}>{item.text}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className={`${styles.section} ${styles.lightSection}`}>
-        <div className={styles.lightShell}>
-          <div className={styles.lightHeader}>
-            <div>
-              <span className={styles.lightLabel}>Transition to White Space</span>
-              <h2 className={styles.lightTitle}>
-                Then the page steps into a lighter review layer.
-              </h2>
-            </div>
-            <p className={styles.lightIntro}>
-              The dark 3D environment falls back and the content moves into a
-              calmer white field for approvals, decision-making, and structured
-              review. That contrast makes the return to the live model world feel
-              intentional.
-            </p>
-          </div>
-
-          <div className={styles.lightGrid}>
-            {WHITE_SPACE_CARDS.map((card) => (
-              <article key={card.title} className={styles.lightCard}>
-                <span className={styles.lightCardLabel}>{card.label}</span>
-                <h3 className={styles.lightCardTitle}>{card.title}</h3>
-                <p className={styles.lightCardText}>{card.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <PortalTransition />
-
-      <section className={styles.section} id="workflow">
-        <div className={styles.shell}>
-          <div className={styles.workflowGrid}>
-            <aside className={styles.workflowLead}>
-              <span className={styles.sectionLabel}>How It Works</span>
-              <h2 className={styles.workflowLeadTitle}>
-                A delivery workflow that stays useful from mobilization to handover.
-              </h2>
-              <p className={styles.workflowLeadText}>
-                We structure the system around the real lifecycle of the job,
-                so project teams are not asked to adopt one tool for design,
-                another for execution, and a third for turnover.
-              </p>
-              <div className={styles.workflowBadges}>
-                <span className={styles.workflowBadge}>Design Management</span>
-                <span className={styles.workflowBadge}>Construction Control</span>
-                <span className={styles.workflowBadge}>Operational Readiness</span>
-              </div>
-            </aside>
-
-            <div className={styles.phaseList}>
-              {PHASES.map((phase) => (
-                <article key={phase.title} className={styles.phaseCard}>
-                  <div className={styles.phaseHeader}>
-                    <div>
-                      <span className={styles.cardIndex}>{phase.number}</span>
-                      <h3 className={styles.phaseTitle}>{phase.title}</h3>
-                    </div>
-                    <span className={styles.phaseMeta}>{phase.meta}</span>
-                  </div>
-                  <p className={styles.phaseText}>{phase.text}</p>
-                  <ul className={styles.phaseListItems}>
-                    {phase.bullets.map((bullet) => (
-                      <li key={bullet}>{bullet}</li>
-                    ))}
-                  </ul>
-                </article>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.section} id="outcomes">
+      <section className={`${styles.section} ${styles.whiteSection}`}>
         <div className={styles.shell}>
           <div className={styles.sectionHeader}>
             <div>
-              <span className={styles.sectionLabel}>Why Teams Buy In</span>
+              <span className={styles.sectionLabel}>Capabilities</span>
               <h2 className={styles.sectionTitle}>
-                The digital layer is only valuable if the project can act on it.
+                Clear service lines for complex engineering and construction work.
               </h2>
             </div>
             <p className={styles.sectionIntro}>
-              The goal is not more reporting. The goal is a stronger delivery
-              signal: what is ready, what is exposed, what changed, and what
-              needs attention before the next work front moves.
+              We focus on delivery structure, coordination logic, and handover
+              readiness. The work is not about adding noise to the project. It is
+              about creating a cleaner delivery environment around it.
             </p>
           </div>
 
-          <div className={styles.outcomeGrid}>
-            <div className={styles.outcomeStack}>
+          <div className={styles.serviceRows}>
+            {CAPABILITIES.map((capability) => (
+              <article key={capability.title} className={styles.serviceRow}>
+                <p className={styles.serviceNumber}>{capability.index}</p>
+                <div>
+                  <h3 className={styles.serviceTitle}>{capability.title}</h3>
+                </div>
+                <div>
+                  <p className={styles.serviceText}>{capability.text}</p>
+                  <ul className={styles.serviceList}>
+                    {capability.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.darkBand} id="workflow">
+        <div className={styles.darkBandShell}>
+          <div className={styles.darkBandHeader}>
+            <div>
+              <span className={styles.darkLabel}>Approach</span>
+              <h2 className={styles.darkTitle}>
+                Structure first. Visibility second. Better decisions after that.
+              </h2>
+            </div>
+            <p className={styles.darkIntro}>
+              Digital delivery works when the project structure is clear:
+              package logic, review routes, information ownership, and turnover
+              requirements. Once that is in place, the project becomes easier to
+              read and easier to manage.
+            </p>
+          </div>
+
+          <div className={styles.darkMetrics}>
+            <article className={styles.darkMetric}>
+              <p className={styles.darkMetricTitle}>Design to delivery</p>
+              <p className={styles.darkMetricText}>
+                Current information can be read against the work it supports.
+              </p>
+            </article>
+            <article className={styles.darkMetric}>
+              <p className={styles.darkMetricTitle}>Commercial to technical</p>
+              <p className={styles.darkMetricText}>
+                Project controls and technical teams can work from the same
+                delivery picture.
+              </p>
+            </article>
+            <article className={styles.darkMetric}>
+              <p className={styles.darkMetricTitle}>Execution to handover</p>
+              <p className={styles.darkMetricText}>
+                Owner-facing records are shaped during delivery, not only at the end.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className={`${styles.section} ${styles.whiteSection}`}>
+        <div className={styles.shell}>
+          <div className={styles.sectionHeader}>
+            <div>
+              <span className={styles.sectionLabel}>How We Work</span>
+              <h2 className={styles.sectionTitle}>
+                A straightforward process from framework to handover.
+              </h2>
+            </div>
+            <p className={styles.sectionIntro}>
+              The process is meant to be clear to read. Each step builds on the
+              one before it so the project gains structure, then visibility, then
+              stronger execution support.
+            </p>
+          </div>
+
+          <div className={styles.processRows}>
+            {PROCESS.map((step) => (
+              <article key={step.title} className={styles.processRow}>
+                <p className={styles.processNumber}>{step.number}</p>
+                <h3 className={styles.processTitle}>{step.title}</h3>
+                <p className={styles.processText}>{step.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className={`${styles.section} ${styles.whiteSection}`} id="outcomes">
+        <div className={styles.shell}>
+          <div className={styles.sectionHeader}>
+            <div>
+              <span className={styles.sectionLabel}>Outcomes</span>
+              <h2 className={styles.sectionTitle}>
+                Stronger delivery information where the project actually needs it.
+              </h2>
+            </div>
+            <p className={styles.sectionIntro}>
+              The result is a more usable delivery environment for project teams
+              and a cleaner handover position for owners.
+            </p>
+          </div>
+
+          <div className={styles.outcomeColumns}>
+            <div className={styles.outcomeList}>
               {OUTCOMES.map((outcome) => (
-                <article key={outcome.title} className={styles.outcomeCard}>
-                  <span className={styles.outcomeMetric}>{outcome.metric}</span>
+                <article key={outcome.title} className={styles.outcomeItem}>
+                  <span className={styles.outcomeLabel}>{outcome.label}</span>
                   <h3 className={styles.outcomeTitle}>{outcome.title}</h3>
                   <p className={styles.outcomeText}>{outcome.text}</p>
                 </article>
               ))}
             </div>
 
-            <div className={styles.sectorStack}>
+            <div className={styles.sectorList}>
               {SECTORS.map((sector) => (
-                <article key={sector.title} className={styles.sectorCard}>
-                  <span className={styles.contactMeta}>Ideal Fit</span>
+                <article key={sector.title} className={styles.sectorItem}>
+                  <span className={styles.outcomeLabel}>Project Type</span>
                   <h3 className={styles.sectorTitle}>{sector.title}</h3>
                   <p className={styles.sectorText}>{sector.text}</p>
                 </article>
@@ -449,37 +381,28 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={`${styles.section} ${styles.contactSection}`} id="contact">
+      <section className={styles.contactSection} id="contact">
         <div className={styles.shell}>
           <div className={styles.contactPanel}>
             <div>
-              <span className={styles.contactMeta}>Next Step</span>
+              <span className={styles.darkLabel}>Contact</span>
               <h2 className={styles.contactTitle}>
-                Bring digital delivery in when the project still has room to move.
+                Bring digital delivery into the project early enough for it to matter.
               </h2>
               <p className={styles.contactText}>
-                We help engineering and construction teams shape the delivery
-                system early enough that it can actually influence package flow,
-                site readiness, and turnover quality.
+                We work with clients who want clearer information structure,
+                better coordination logic, and a more reliable handover path
+                across complex construction programmes.
               </p>
-              <div className={styles.contactActions}>
-                <a href="#top" className={styles.primaryButton}>
-                  Return to the live view
-                </a>
-                <a href="#platform" className={styles.secondaryButton}>
-                  Review our delivery scope
-                </a>
-              </div>
             </div>
 
-            <div>
-              <span className={styles.contactMeta}>Typical Engagements</span>
-              <ul className={styles.contactList}>
-                <li>Project mobilization and delivery framework definition</li>
-                <li>Model, document, and field workflow integration</li>
-                <li>Digital handover planning for owners and operators</li>
-                <li>Recovery support when delivery signals are fragmented</li>
-              </ul>
+            <div className={styles.contactActions}>
+              <a href="#top" className={styles.primaryButton}>
+                Return to top
+              </a>
+              <a href="#platform" className={styles.secondaryButton}>
+                Review capabilities
+              </a>
             </div>
           </div>
         </div>
