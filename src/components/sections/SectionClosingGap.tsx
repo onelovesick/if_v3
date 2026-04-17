@@ -9,6 +9,40 @@ import './SectionClosingGap.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+/* ── Beat-to-photo mapping (narrative pairing) ── */
+const FRAMES = [
+  {
+    src: '/images/gap/02-structure.jpg',
+    no: '01',
+    label: 'Pier 7 — Lift in progress',
+    coords: '46.81N / 71.21W',
+  },
+  {
+    src: '/images/gap/01-aerial-network.jpg',
+    no: '02',
+    label: 'Span gap — North approach',
+    coords: '46.81N / 71.21W',
+  },
+  {
+    src: '/images/gap/03-corridor.jpg',
+    no: '03',
+    label: 'Cable-stay deck — three trades',
+    coords: '46.81N / 71.21W',
+  },
+  {
+    src: '/images/gap/04-overview.jpg',
+    no: '04',
+    label: 'Tower complete — west elevation',
+    coords: '46.81N / 71.21W',
+  },
+  {
+    src: '/images/gap/05-converged.jpg',
+    no: '05',
+    label: 'Approach merged — handover',
+    coords: '46.81N / 71.21W',
+  },
+] as const;
+
 /* ═══════════════════════════════════════════════════════════════
    SectionClosingGap
 
@@ -114,6 +148,43 @@ export default function SectionClosingGap() {
       // ── EXIT: lines fade only, background stays white for bridge handoff ──
       tl.to(uniforms.uFade, { value: 1.0, duration: 10, ease: 'power2.inOut' }, 66);
 
+      /* ═══════════════════════════════════════════════
+         PHOTO LAYER — crossfade per beat
+         Frames 0..3 anchor beats 1..4. Frame 4 reveals
+         on the final exit hand-off. Each photo gets a
+         slow Ken Burns scale to feel alive.
+         ═══════════════════════════════════════════════ */
+      const photoBeats = [0, 15, 29, 52, 66];
+      photoBeats.forEach((start, i) => {
+        tl.to(`.gap-photo-${i}`, { opacity: 1, duration: 4, ease: 'power2.out' }, start);
+        tl.fromTo(`.gap-photo-${i} > div`,
+          { scale: 1.04 },
+          { scale: 1.12, duration: 14, ease: 'none' }, start);
+        if (i < photoBeats.length - 1) {
+          tl.to(`.gap-photo-${i}`, { opacity: 0, duration: 4, ease: 'power2.in' }, photoBeats[i + 1] - 1);
+        }
+      });
+
+      /* ═══════════════════════════════════════════════
+         FRAME SLATE — mono metadata card
+         Same crossfade rhythm but reveals after the
+         photo so it reads as commentary on the image.
+         ═══════════════════════════════════════════════ */
+      photoBeats.forEach((start, i) => {
+        tl.fromTo(`.gap-slate-${i}`,
+          { opacity: 0, x: 24 },
+          { opacity: 1, x: 0, duration: 4, ease: 'power3.out' }, start + 1.2);
+        if (i < photoBeats.length - 1) {
+          tl.to(`.gap-slate-${i}`,
+            { opacity: 0, x: -16, duration: 3.2, ease: 'power2.in' }, photoBeats[i + 1] - 1);
+        }
+      });
+
+      // Frame counter ticks alongside slate
+      tl.fromTo('.gap-counter',
+        { opacity: 0, y: -8 },
+        { opacity: 1, y: 0, duration: 3, ease: 'power2.out' }, 0.5);
+
       return () => {
         tl.kill();
       };
@@ -139,6 +210,16 @@ export default function SectionClosingGap() {
           background: 'var(--white, #f8f8f8)',
         }}
       >
+        {/* Photo layers — stacked, crossfaded by GSAP */}
+        <div className="gap-photo-stack" aria-hidden="true">
+          {FRAMES.map((frame, i) => (
+            <div key={frame.no} className={`gap-photo gap-photo-${i}`}>
+              <div style={{ backgroundImage: `url('${frame.src}')` }} />
+            </div>
+          ))}
+          <div className="gap-photo-veil" />
+        </div>
+
         {/* FloatingLines shader background */}
         <FloatingLinesScroll
           ref={linesRef}
@@ -193,6 +274,30 @@ export default function SectionClosingGap() {
               one coordinated model of truth.
             </p>
           </div>
+        </div>
+
+        {/* Frame counter — top-left */}
+        <div className="gap-counter">
+          <span className="gap-counter-label">Field record</span>
+          <span className="gap-counter-track">
+            {FRAMES.map((f) => (
+              <span key={f.no} className="gap-counter-tick">{f.no}</span>
+            ))}
+          </span>
+        </div>
+
+        {/* Frame slates — bottom-right, one per beat */}
+        <div className="gap-slate-stack">
+          {FRAMES.map((frame, i) => (
+            <figure key={frame.no} className={`gap-slate gap-slate-${i}`}>
+              <div className="gap-slate-thumb" style={{ backgroundImage: `url('${frame.src}')` }} />
+              <figcaption className="gap-slate-meta">
+                <span className="gap-slate-no">FRAME {frame.no}</span>
+                <span className="gap-slate-label">{frame.label}</span>
+                <span className="gap-slate-coords">{frame.coords}</span>
+              </figcaption>
+            </figure>
+          ))}
         </div>
       </div>
     </section>

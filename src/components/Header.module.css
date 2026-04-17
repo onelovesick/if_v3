@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 32px;
+  padding: 22px 28px;
   pointer-events: none;
 }
 
@@ -20,16 +20,16 @@
   font-weight: 900;
   font-size: 18px;
   letter-spacing: -0.02em;
-  color: var(--navy);
+  color: #edf5ff;
   text-decoration: none;
   text-transform: uppercase;
   padding: 12px 18px;
   border-radius: 999px;
-  background: rgba(248, 251, 255, 0.72);
-  border: 1px solid rgba(8, 18, 37, 0.08);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 24px 60px rgba(8, 18, 37, 0.08);
+  background: rgba(8, 20, 34, 0.52);
+  border: 1px solid rgba(143, 229, 255, 0.14);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 24px 60px rgba(3, 10, 19, 0.28);
 }
 
 .navGroup {
@@ -42,13 +42,13 @@
   display: flex;
   align-items: center;
   gap: 0;
-  background: rgba(248, 251, 255, 0.64);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(8, 18, 37, 0.08);
+  background: rgba(8, 20, 34, 0.48);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(143, 229, 255, 0.14);
   border-radius: 100px;
   padding: 10px 8px;
-  box-shadow: 0 24px 60px rgba(8, 18, 37, 0.08);
+  box-shadow: 0 24px 60px rgba(3, 10, 19, 0.28);
 }
 
 .navLink {
@@ -57,14 +57,14 @@
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(8, 18, 37, 0.62);
+  color: rgba(237, 245, 255, 0.68);
   text-decoration: none;
   padding: 4px 18px;
   transition: color 0.2s ease;
 }
 
 .navLink:hover {
-  color: var(--navy);
+  color: #edf5ff;
 }
 
 .cta {
@@ -73,18 +73,18 @@
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--white);
-  background: var(--navy);
+  color: #04111d;
+  background: linear-gradient(135deg, #8fe5ff 0%, #5fe4d5 100%);
   text-decoration: none;
   padding: 14px 24px;
   border-radius: 100px;
   transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-  box-shadow: 0 24px 60px rgba(8, 18, 37, 0.12);
+  box-shadow: 0 24px 60px rgba(3, 10, 19, 0.24);
 }
 
 .cta:hover {
-  background: var(--blue-deep);
-  color: var(--white);
+  background: linear-gradient(135deg, #b3f0ff 0%, #7df0d2 100%);
+  color: #04111d;
   transform: translateY(-1px);
 }
 
@@ -92,21 +92,21 @@
   display: none;
   flex-direction: column;
   gap: 6px;
-  background: rgba(248, 251, 255, 0.72);
-  border: 1px solid rgba(8, 18, 37, 0.08);
+  background: rgba(8, 20, 34, 0.52);
+  border: 1px solid rgba(143, 229, 255, 0.14);
   border-radius: 999px;
   cursor: pointer;
   padding: 14px 12px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 24px 60px rgba(8, 18, 37, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 24px 60px rgba(3, 10, 19, 0.28);
 }
 
 .bar {
   display: block;
   width: 24px;
   height: 1.5px;
-  background: var(--navy);
+  background: #edf5ff;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -124,7 +124,9 @@
   inset: 0;
   top: 86px;
   margin: 0 20px 20px;
-  background: rgba(248, 251, 255, 0.94);
+  background:
+    radial-gradient(circle at top left, rgba(143, 229, 255, 0.1), transparent 42%),
+    rgba(6, 17, 31, 0.94);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
   flex-direction: column;
@@ -133,8 +135,8 @@
   gap: 24px;
   z-index: 99;
   border-radius: 28px;
-  border: 1px solid rgba(8, 18, 37, 0.08);
-  box-shadow: 0 30px 80px rgba(8, 18, 37, 0.12);
+  border: 1px solid rgba(143, 229, 255, 0.14);
+  box-shadow: 0 30px 80px rgba(3, 10, 19, 0.32);
 }
 
 .mobileLink {
@@ -142,7 +144,7 @@
   font-weight: 700;
   font-size: 28px;
   letter-spacing: -0.02em;
-  color: var(--navy);
+  color: #edf5ff;
   text-decoration: none;
 }
 
@@ -152,8 +154,8 @@
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--white);
-  background: var(--navy);
+  color: #04111d;
+  background: linear-gradient(135deg, #8fe5ff 0%, #5fe4d5 100%);
   text-decoration: none;
   padding: 16px 32px;
   border-radius: 100px;

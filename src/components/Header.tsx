@@ -4,9 +4,9 @@ import { useState } from "react";
 import styles from "./Header.module.css";
 
 const NAV_LINKS = [
-  { label: "Solutions", href: "/solutions" },
-  { label: "Industries", href: "/industries" },
-  { label: "About", href: "/about" },
+  { label: "Platform", href: "#platform" },
+  { label: "Workflow", href: "#workflow" },
+  { label: "Outcomes", href: "#outcomes" },
 ];
 
 export default function Header() {
@@ -14,7 +14,7 @@ export default function Header() {
 
   return (
     <header className={styles.header}>
-      <a href="/" className={styles.logo}>
+      <a href="#top" className={styles.logo}>
         Infraforma
       </a>
 
@@ -26,8 +26,8 @@ export default function Header() {
             </a>
           ))}
         </nav>
-        <a href="/contact" className={styles.cta}>
-          Work With Us
+        <a href="#contact" className={styles.cta}>
+          Start a Project
         </a>
       </div>
 
@@ -45,12 +45,21 @@ export default function Header() {
       {menuOpen && (
         <div className={styles.mobileMenu}>
           {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href} className={styles.mobileLink}>
+            <a
+              key={link.href}
+              href={link.href}
+              className={styles.mobileLink}
+              onClick={() => setMenuOpen(false)}
+            >
               {link.label}
             </a>
           ))}
-          <a href="/contact" className={styles.mobileCta}>
-            Work With Us
+          <a
+            href="#contact"
+            className={styles.mobileCta}
+            onClick={() => setMenuOpen(false)}
+          >
+            Start a Project
           </a>
         </div>
       )}
