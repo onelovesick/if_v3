@@ -1,4 +1,5 @@
 import ConstructionScene from "@/components/ConstructionScene";
+import PortalTransition from "@/components/PortalTransition";
 import styles from "./page.module.css";
 
 const HERO_SIGNALS = [
@@ -53,6 +54,45 @@ const SERVICES = [
       "Progressive verification before turnover",
       "Owner-ready digital records and closeout packs",
     ],
+  },
+];
+
+const PANORAMA_PANELS = [
+  {
+    value: "421",
+    label: "Issued packages",
+    title: "Engineering packages stay tied to the work fronts they affect.",
+    text: "Design releases, interfaces, and decisions can be read against the current construction picture instead of living in separate review loops.",
+  },
+  {
+    value: "17",
+    label: "Active interfaces",
+    title: "Discipline handoffs are visible before they become site friction.",
+    text: "The wide view keeps technical, commercial, and field dependencies in frame at the same time.",
+  },
+  {
+    value: "06",
+    label: "Readiness gates",
+    title: "Teams can see what is approved, exposed, blocked, and ready.",
+    text: "Status is organized around delivery flow, not just around document issuance or isolated dashboards.",
+  },
+];
+
+const WHITE_SPACE_CARDS = [
+  {
+    label: "Review Layer",
+    title: "A quiet white-space environment for approvals, planning, and alignment.",
+    text: "When teams need focus, the interface clears out and becomes a clean decision room for package review, change governance, and operational readiness conversations.",
+  },
+  {
+    label: "Change Control",
+    title: "Decisions captured with context, not just timestamps.",
+    text: "Every decision can stay connected to model status, package maturity, delivery consequences, and downstream owner impact.",
+  },
+  {
+    label: "Handover Logic",
+    title: "Turnover starts inside delivery, not at the end of it.",
+    text: "The same structure that supports construction control can also support validation, closeout, and asset information readiness.",
   },
 ];
 
@@ -246,6 +286,85 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <section className={`${styles.section} ${styles.wideSection}`}>
+        <div className={styles.wideShell}>
+          <div className={styles.wideHeader}>
+            <div>
+              <span className={styles.sectionLabel}>Wide Project View</span>
+              <h2 className={styles.sectionTitle}>
+                A panoramic section that feels closer to a live coordination wall.
+              </h2>
+            </div>
+            <p className={styles.sectionIntro}>
+              This wider band keeps more of the project in frame at once, so the
+              page can briefly feel like a command surface instead of a standard
+              marketing layout.
+            </p>
+          </div>
+
+          <div className={styles.wideTrack}>
+            <article className={`${styles.wideCard} ${styles.wideLeadCard}`}>
+              <span className={styles.wideLeadLabel}>Delivery Panorama</span>
+              <h3 className={styles.wideLeadTitle}>
+                One wide visual lane for engineering, site, and owner signals.
+              </h3>
+              <p className={styles.wideLeadText}>
+                The layout opens up here on purpose. It gives the story room to
+                breathe and mirrors the kind of large-format project view teams
+                use when they need to understand how decisions ripple across the
+                whole delivery chain.
+              </p>
+              <div className={styles.wideRibbon}>
+                <span>Design intent</span>
+                <span>Interface risk</span>
+                <span>Construction readiness</span>
+                <span>Owner handover</span>
+              </div>
+            </article>
+
+            {PANORAMA_PANELS.map((panel) => (
+              <article key={panel.title} className={styles.wideCard}>
+                <span className={styles.wideMetric}>{panel.value}</span>
+                <span className={styles.wideCardLabel}>{panel.label}</span>
+                <h3 className={styles.wideCardTitle}>{panel.title}</h3>
+                <p className={styles.wideCardText}>{panel.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className={`${styles.section} ${styles.lightSection}`}>
+        <div className={styles.lightShell}>
+          <div className={styles.lightHeader}>
+            <div>
+              <span className={styles.lightLabel}>Transition to White Space</span>
+              <h2 className={styles.lightTitle}>
+                Then the page steps into a lighter review layer.
+              </h2>
+            </div>
+            <p className={styles.lightIntro}>
+              The dark 3D environment falls back and the content moves into a
+              calmer white field for approvals, decision-making, and structured
+              review. That contrast makes the return to the live model world feel
+              intentional.
+            </p>
+          </div>
+
+          <div className={styles.lightGrid}>
+            {WHITE_SPACE_CARDS.map((card) => (
+              <article key={card.title} className={styles.lightCard}>
+                <span className={styles.lightCardLabel}>{card.label}</span>
+                <h3 className={styles.lightCardTitle}>{card.title}</h3>
+                <p className={styles.lightCardText}>{card.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <PortalTransition />
 
       <section className={styles.section} id="workflow">
         <div className={styles.shell}>

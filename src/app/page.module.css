@@ -299,6 +299,225 @@
   gap: 1rem;
 }
 
+.wideSection {
+  padding-top: clamp(2rem, 5vw, 4rem);
+}
+
+.wideShell {
+  width: min(1540px, calc(100vw - 32px));
+  margin: 0 auto;
+}
+
+.wideHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: 1.5rem 2rem;
+  align-items: end;
+  margin-bottom: 2rem;
+}
+
+.wideTrack {
+  display: grid;
+  grid-template-columns: minmax(340px, 1.35fr) repeat(3, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.wideCard {
+  min-height: 24rem;
+  padding: 1.6rem;
+  border: 1px solid rgba(143, 229, 255, 0.14);
+  border-radius: 1.7rem;
+  background:
+    linear-gradient(180deg, rgba(12, 30, 49, 0.84), rgba(7, 17, 31, 0.72)),
+    radial-gradient(circle at top right, rgba(49, 207, 255, 0.12), transparent 32%);
+  box-shadow: 0 24px 80px rgba(3, 10, 19, 0.32);
+  backdrop-filter: blur(18px);
+}
+
+.wideLeadCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 32rem;
+  background:
+    radial-gradient(circle at top right, rgba(49, 207, 255, 0.18), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(244, 201, 139, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(14, 34, 56, 0.92), rgba(7, 17, 31, 0.78));
+}
+
+.wideLeadLabel,
+.wideCardLabel,
+.lightLabel,
+.lightCardLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.wideLeadLabel,
+.wideCardLabel {
+  color: var(--page-cyan);
+}
+
+.wideLeadTitle {
+  max-width: 12ch;
+  margin: 1rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4vw, 3.7rem);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+}
+
+.wideLeadText {
+  max-width: 36rem;
+  margin: 1rem 0 0;
+  color: var(--page-muted);
+  line-height: 1.8;
+}
+
+.wideRibbon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.4rem;
+}
+
+.wideRibbon span {
+  padding: 0.65rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(143, 229, 255, 0.14);
+  background: rgba(7, 17, 31, 0.24);
+  color: rgba(237, 245, 255, 0.82);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.wideMetric {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.wideCardTitle {
+  margin: 0.9rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.wideCardText {
+  margin: 1rem 0 0;
+  color: var(--page-muted);
+  line-height: 1.78;
+}
+
+.lightSection {
+  position: relative;
+  z-index: 2;
+  padding-top: clamp(8rem, 12vw, 11rem);
+  padding-bottom: clamp(8rem, 12vw, 10rem);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(247, 242, 233, 0) 0%,
+      rgba(247, 242, 233, 0.92) 16%,
+      #f7f2e9 32%,
+      #fbfaf7 100%
+    );
+  color: #10202c;
+}
+
+.lightSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(16, 32, 44, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 32, 44, 0.04) 1px, transparent 1px);
+  background-size: 96px 96px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.lightShell {
+  position: relative;
+  width: min(1320px, calc(100vw - 32px));
+  margin: 0 auto;
+}
+
+.lightHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: 1.5rem 2rem;
+  align-items: end;
+  margin-bottom: 2rem;
+}
+
+.lightLabel,
+.lightCardLabel {
+  color: #5c7380;
+}
+
+.lightTitle {
+  max-width: 12ch;
+  margin: 0.8rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4.4rem);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+  color: #10202c;
+}
+
+.lightIntro {
+  margin: 0;
+  max-width: 38rem;
+  color: rgba(16, 32, 44, 0.72);
+  font-size: 1.05rem;
+  line-height: 1.84;
+}
+
+.lightGrid {
+  display: grid;
+  grid-template-columns: minmax(340px, 1.15fr) repeat(2, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.lightCard {
+  min-height: 20rem;
+  padding: 1.6rem;
+  border: 1px solid rgba(16, 32, 44, 0.08);
+  border-radius: 1.7rem;
+  background:
+    radial-gradient(circle at top right, rgba(49, 207, 255, 0.08), transparent 34%),
+    rgba(255, 255, 255, 0.82);
+  box-shadow: 0 30px 80px rgba(17, 31, 45, 0.08);
+}
+
+.lightCardTitle {
+  margin: 1rem 0 0;
+  max-width: 13ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: #10202c;
+}
+
+.lightCardText {
+  margin: 1rem 0 0;
+  color: rgba(16, 32, 44, 0.72);
+  line-height: 1.78;
+}
+
 .serviceCard {
   padding: 1.45rem;
   border-radius: 1.45rem;
@@ -542,6 +761,8 @@
 @media (max-width: 1040px) {
   .heroInner,
   .sectionHeader,
+  .wideHeader,
+  .lightHeader,
   .workflowGrid,
   .outcomeGrid,
   .contactPanel {
@@ -549,8 +770,18 @@
   }
 
   .heroStats,
-  .serviceGrid {
+  .serviceGrid,
+  .lightGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wideTrack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wideLeadCard {
+    grid-column: 1 / -1;
+    min-height: 28rem;
   }
 
   .workflowLead {
@@ -572,7 +803,9 @@
   }
 
   .heroStats,
-  .serviceGrid {
+  .serviceGrid,
+  .wideTrack,
+  .lightGrid {
     grid-template-columns: 1fr;
   }
 
@@ -594,6 +827,8 @@
   .hudCard,
   .heroStat,
   .serviceCard,
+  .wideCard,
+  .lightCard,
   .phaseCard,
   .outcomeCard,
   .sectorCard,
