@@ -127,8 +127,8 @@ Do not animate gradient stop percentages — that triggers full-layer repaints e
 - Mask renders directly at settled gradient (no retraction).
 - Content renders at final opacity/position (no stagger).
 - Pulse animations disabled (already covered by `@media (prefers-reduced-motion: reduce)` at globals).
-- Scroll parallax: skipped — content is static within the pin.
-- Pin and `pinSpacing` still apply (so Promise still appears 100vh below as expected).
+- Scroll parallax: skipped — content is static within the page.
+- Pin is **also skipped**. A pinned scene with no animation provides no value to a reduced-motion user; pinning it would just hold the viewport on a static image for 100vh of scroll. The Hero scrolls past normally and Promise appears below as a regular page section.
 
 ---
 
