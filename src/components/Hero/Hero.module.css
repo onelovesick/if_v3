@@ -136,6 +136,35 @@
   .crossfade {
     display: none;
   }
+
+  /* Vertical-mask variant for mobile */
+  .mask {
+    background: linear-gradient(
+      180deg,
+      rgba(10, 11, 13, 0.9) 0%,
+      rgba(10, 11, 13, 0.55) 45%,
+      rgba(10, 11, 13, 0.2) 75%,
+      rgba(10, 11, 13, 0) 100%
+    );
+  }
+
+  /* Hide ink overlay — page renders in settled state on mobile */
+  .inkOverlay {
+    display: none;
+  }
+
+  /* Hide phase C light mask — no release flip on mobile */
+  .maskLight {
+    display: none;
+  }
+
+  /* Single-viewport scene on mobile (no pin) */
+  .scene {
+    height: 100vh;
+  }
+  .pin {
+    height: 100vh;
+  }
 }
 
 /* ─── DUAL EXPOSURE MASK ─── */

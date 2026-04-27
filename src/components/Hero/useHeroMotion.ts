@@ -17,6 +17,10 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
     const scene = sceneRef.current;
     if (!scene) return;
 
+    const isMobile =
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 980px)").matches;
+
     let entranceTl: gsap.core.Timeline | null = null;
     let flipTl: gsap.core.Timeline | null = null;
 
@@ -25,7 +29,7 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
     /* ── A. ENTRANCE ── */
     const inkOverlay = scene.querySelector("[data-ink-overlay]") as HTMLElement | null;
 
-    if (reduced) {
+    if (reduced || isMobile) {
       // Snap content to settled state immediately, no animation.
       // Editorial chrome (frame meta / edge label / spine / crossfade) was
       // never animated away from its natural state in this branch (the
@@ -106,7 +110,7 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
     }
 
     /* ── B. SCROLL CHOREOGRAPHY ── */
-    if (reduced) return;
+    if (reduced || isMobile) return;
 
     const triggers: ScrollTrigger[] = [];
 
