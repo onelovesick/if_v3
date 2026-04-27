@@ -73,6 +73,19 @@
   background: var(--c-blue-bright);
   box-shadow: 0 0 14px var(--c-blue-glow);
   flex-shrink: 0;
+  animation: spineBreath 3s ease-in-out infinite;
+}
+
+@keyframes spineBreath {
+  0%, 100% { opacity: 0.7; }
+  50%      { opacity: 1.0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spineNode {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 .spineLine {

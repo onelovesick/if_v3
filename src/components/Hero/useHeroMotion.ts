@@ -110,9 +110,10 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
     const triggers: ScrollTrigger[] = [];
 
     /* Subtle parallax — video drifts slightly slower than scroll */
+    // Layer 1 was removed in Task 1; mask now carries the parallax.
     const layers: { sel: string; speed: number; scale?: number }[] = [
       { sel: "[data-depth='0']", speed: 0.15 },
-      { sel: "[data-depth='1']", speed: 0.30 },
+      { sel: "[data-mask]", speed: 0.30 },
     ];
 
     layers.forEach(({ sel, speed, scale }) => {
