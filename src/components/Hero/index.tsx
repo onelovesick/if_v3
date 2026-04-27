@@ -31,6 +31,9 @@ export default function Hero() {
           {/* Dual-exposure mask: ink-left to clear-right */}
           <div data-mask className={styles.mask} aria-hidden="true" />
 
+          {/* Phase C: vertical light gradient that cross-fades in at end of pin */}
+          <div data-mask-light className={styles.maskLight} aria-hidden="true" />
+
           {/* Film grain: unifies dark + footage as one image */}
           <div className={styles.grain} aria-hidden="true" />
 

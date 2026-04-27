@@ -215,3 +215,20 @@
   will-change: transform;
   transform-origin: right center;
 }
+
+/* ─── MASK LIGHT — phase C release gradient ─── */
+.maskLight {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 11, 13, 0.97) 0%,
+    rgba(10, 11, 13, 0.6) 30%,
+    rgba(250, 249, 245, 0.4) 60%,
+    rgba(250, 249, 245, 1) 100%
+  );
+  will-change: opacity;
+}

@@ -134,22 +134,51 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
       if (st) triggers.push(st);
     });
 
-    /* Content drifts up + fades as user scrolls past */
+    /* Content drifts up across the pin, then fades fully out during release */
     const content = scene.querySelector("[data-anim='content']");
     if (content) {
-      const tween = gsap.to(content, {
+      const driftTween = gsap.to(content, {
         yPercent: -20,
-        opacity: 0.2,
+        opacity: 0.4,
         ease: "none",
         scrollTrigger: {
           trigger: scene,
           start: "top top",
-          end: "bottom top",
+          end: "75% top",
           scrub: 0.4,
         },
       });
-      const st = tween.scrollTrigger;
-      if (st) triggers.push(st);
+      if (driftTween.scrollTrigger) triggers.push(driftTween.scrollTrigger);
+
+      const releaseTween = gsap.to(content, {
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: scene,
+          start: "75% top",
+          end: "bottom top",
+          scrub: 0.6,
+        },
+      });
+      if (releaseTween.scrollTrigger) triggers.push(releaseTween.scrollTrigger);
+    }
+
+    /* ── C. RELEASE — polarity flip last 25% of pin ── */
+    const maskLight = scene.querySelector("[data-mask-light]");
+    const mask = scene.querySelector("[data-mask]");
+    if (maskLight && mask) {
+      // Fade horizontal mask out, vertical light mask in
+      const flipTween = gsap.timeline({
+        scrollTrigger: {
+          trigger: scene,
+          start: "75% top",
+          end: "bottom top",
+          scrub: 0.6,
+        },
+      });
+      flipTween.to(mask, { opacity: 0, ease: "none" }, 0);
+      flipTween.to(maskLight, { opacity: 1, ease: "none" }, 0);
+      if (flipTween.scrollTrigger) triggers.push(flipTween.scrollTrigger);
     }
 
     /* Pin the scene for 200vh */
