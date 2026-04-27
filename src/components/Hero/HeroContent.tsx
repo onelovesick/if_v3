@@ -46,29 +46,6 @@ export default function HeroContent() {
           View work
         </a>
       </div>
-
-      <div data-anim="strip" className={styles.strip}>
-        <div className={styles.stripCol}>
-          <span className={styles.stripLabel}>For</span>
-          <span className={styles.stripValue}>
-            Owners · GCs · designers · engineers
-          </span>
-        </div>
-        <div className={styles.stripCol}>
-          <span className={styles.stripLabel}>Where</span>
-          <span className={styles.stripValue}>North America</span>
-        </div>
-        <div className={styles.stripCol}>
-          <span className={styles.stripLabel}>Embed</span>
-          <span className={styles.stripValue}>
-            Pre-construction through handover
-          </span>
-        </div>
-        <div className={styles.stripCol}>
-          <span className={styles.stripLabel}>Status</span>
-          <span className={styles.stripValue}>Practice in formation</span>
-        </div>
-      </div>
     </div>
   );
 }

@@ -57,27 +57,7 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
           opacity: 0,
           y: 18,
           duration: 0.85,
-        }, 1.2)
-        .from(scene.querySelector("[data-tag='1']"), {
-          opacity: 0,
-          y: 12,
-          duration: 0.6,
-        }, 1.4)
-        .from(scene.querySelector("[data-anim='strip']"), {
-          opacity: 0,
-          y: 12,
-          duration: 0.7,
-        }, 1.5)
-        .from(scene.querySelector("[data-tag='2']"), {
-          opacity: 0,
-          y: 12,
-          duration: 0.6,
-        }, 1.7)
-        .from(scene.querySelector("[data-tag='3']"), {
-          opacity: 0,
-          y: 12,
-          duration: 0.6,
-        }, 2.0);
+        }, 1.2);
     }
 
     /* ── B. SCROLL CHOREOGRAPHY ── */
@@ -92,7 +72,6 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
       { sel: "[data-depth='2']", speed: 0.50 },
       { sel: "[data-depth='3']", speed: 0.80, scale: 1.05 },
       { sel: "[data-depth='4']", speed: 1.00 },
-      { sel: "[data-depth='5']", speed: 1.20 },
     ];
 
     layers.forEach(({ sel, speed, scale }) => {
@@ -130,31 +109,6 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
       const st = tween.scrollTrigger;
       if (st) triggers.push(st);
     }
-
-    /* Floating tags drift in different directions */
-    const tagDrifts: { sel: string; x: number; y: number }[] = [
-      { sel: "[data-tag='1']", x: -60, y: -30 },
-      { sel: "[data-tag='2']", x: 80, y: 20 },
-      { sel: "[data-tag='3']", x: 100, y: -20 },
-    ];
-
-    tagDrifts.forEach(({ sel, x, y }) => {
-      const el = scene.querySelector(sel);
-      if (!el) return;
-      const tween = gsap.to(el, {
-        x,
-        y,
-        ease: "none",
-        scrollTrigger: {
-          trigger: scene,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.4,
-        },
-      });
-      const st = tween.scrollTrigger;
-      if (st) triggers.push(st);
-    });
 
     /* Bottom vignette deepens */
     const vignette = scene.querySelector("[data-anim='vignette']");

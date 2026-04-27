@@ -1,62 +1,46 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import styles from "./DepthLayers.module.css";
 
 /**
- * Six stacked depth layers, each parallaxing at a different speed.
+ * Five stacked depth layers, each parallaxing at a different speed.
  * The motion is wired in useHeroMotion via the [data-depth] attributes.
  */
 export default function DepthLayers() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    v.defaultMuted = true;
+    v.play().catch(() => {
+      const onInteract = () => {
+        v.play().catch(() => {});
+        window.removeEventListener("pointerdown", onInteract);
+        window.removeEventListener("scroll", onInteract);
+        window.removeEventListener("keydown", onInteract);
+      };
+      window.addEventListener("pointerdown", onInteract, { once: true });
+      window.addEventListener("scroll", onInteract, { once: true, passive: true });
+      window.addEventListener("keydown", onInteract, { once: true });
+    });
+  }, []);
+
   return (
     <>
-      {/* ─── DEPTH 0 — Video / fallback still ─── */}
+      {/* ─── DEPTH 0 — Background video ─── */}
       <div data-depth="0" className={styles.layer0} aria-hidden="true">
-        {/* SWAP THIS BLOCK FOR REAL VIDEO — see VIDEO.md
-            Replace the .fallbackStill div below with:
-
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              poster="/poster.jpg"
-              className={styles.video}
-            >
-              <source src="/hero.webm" type="video/webm" />
-              <source src="/hero.mp4" type="video/mp4" />
-            </video>
-        */}
-        <div className={styles.fallbackStill}>
-          <svg
-            className={styles.fallbackSvg}
-            viewBox="0 0 1920 1080"
-            preserveAspectRatio="xMidYMid slice"
-          >
-            <defs>
-              <linearGradient id="dusk-sky" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#0a0b14" />
-                <stop offset="40%" stopColor="#1a1820" />
-                <stop offset="78%" stopColor="#3a2c30" />
-                <stop offset="100%" stopColor="#503a36" />
-              </linearGradient>
-              <radialGradient id="dusk-sun" cx="0.78" cy="0.62" r="0.38">
-                <stop offset="0%" stopColor="rgba(255, 168, 88, 0.55)" />
-                <stop offset="60%" stopColor="rgba(255, 130, 70, 0.08)" />
-                <stop offset="100%" stopColor="rgba(255, 100, 60, 0)" />
-              </radialGradient>
-            </defs>
-            <rect width="1920" height="1080" fill="url(#dusk-sky)" />
-            <rect width="1920" height="1080" fill="url(#dusk-sun)" />
-            {/* horizon glow band */}
-            <rect
-              x="0"
-              y="660"
-              width="1920"
-              height="40"
-              fill="rgba(255, 158, 90, 0.18)"
-            />
-          </svg>
-        </div>
+        <video
+          ref={videoRef}
+          className={styles.video}
+          src="/videos/hero.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
       </div>
 
       {/* ─── DEPTH 1 — Atmospheric haze + gradients ─── */}
@@ -253,12 +237,6 @@ export default function DepthLayers() {
         </svg>
       </div>
 
-      {/* ─── DEPTH 5 — Foreground particles + scan line ─── */}
-      <div data-depth="5" className={styles.layer5} aria-hidden="true">
-        <div className={styles.scanLine} />
-        <div className={styles.particles} />
-      </div>
-
       {/* ─── Bottom vignette (deepens on scroll) ─── */}
       <div
         data-anim="vignette"
@@ -266,7 +244,7 @@ export default function DepthLayers() {
         aria-hidden="true"
       />
 
-      {/* ─── Section blend bleed (transparent → ink → white) ─── */}
+      {/* ─── Section blend bleed (ink → white, single clean fade) ─── */}
       <div className={styles.blend} aria-hidden="true" />
     </>
   );

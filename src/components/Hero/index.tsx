@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import DepthLayers from "./DepthLayers";
-import FloatingTags from "./FloatingTags";
 import HeroContent from "./HeroContent";
 import Topbar from "./Topbar";
 import { useHeroMotion } from "./useHeroMotion";
@@ -28,22 +27,11 @@ export default function Hero() {
       >
         <div data-pin className={styles.pin}>
           <DepthLayers />
-          <FloatingTags />
 
           {/* Frame metadata — top-right */}
           <div className={styles.frameMeta} aria-hidden="true">
             <span className={styles.frameDot} />
             In session · 27.04.2026 · 16:42 UTC
-          </div>
-
-          {/* Coordinate stamps — bottom-left + bottom-right */}
-          <div className={styles.coordsLeft} aria-hidden="true">
-            <div>N 45°27&apos;12&quot;</div>
-            <div>W 73°35&apos;45&quot;</div>
-          </div>
-          <div className={styles.coordsRight} aria-hidden="true">
-            <div>240 M</div>
-            <div>REV 04</div>
           </div>
 
           {/* Centered hero content */}
