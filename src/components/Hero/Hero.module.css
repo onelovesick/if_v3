@@ -132,8 +132,7 @@
 @media (max-width: 980px) {
   .frameMeta,
   .spine,
-  .edgeLabel,
-  .crossfade {
+  .edgeLabel {
     display: none;
   }
 
@@ -198,48 +197,6 @@
     transparent 0 2px,
     rgba(255, 255, 255, 0.05) 2px 3px
   );
-}
-
-/* ─── CROSSFADE MARK — conceptual anchor in the seam zone ─── */
-.crossfade {
-  position: absolute;
-  top: 42%;
-  left: 50%;
-  z-index: 12;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  border-left: 1px solid rgba(46, 124, 230, 0.5);
-  padding-left: 10px;
-  line-height: 1.7;
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-
-.crossfadeLabel {
-  display: block;
-  color: rgba(255, 255, 255, 0.7);
-  text-shadow: 0 1px 2px rgba(10, 11, 13, 0.6);
-}
-
-.crossfadeBlue {
-  display: block;
-  color: rgba(46, 124, 230, 1);
-  text-shadow: 0 1px 2px rgba(10, 11, 13, 0.6);
-}
-
-/* Suppress on narrow viewports (seam zone collapses) and short viewports
-   (vertical collision with content). */
-@media (max-width: 1100px) {
-  .crossfade {
-    display: none;
-  }
-}
-@media (max-height: 800px) {
-  .crossfade {
-    display: none;
-  }
 }
 
 /* ─── INK OVERLAY — entrance retraction layer ─── */

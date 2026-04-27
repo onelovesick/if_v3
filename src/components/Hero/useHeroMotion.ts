@@ -93,11 +93,10 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
         1.2
       );
 
-      // 6. Editorial chrome (frame meta, crossfade mark, edge label, spine)
+      // 6. Editorial chrome (frame meta, edge label, spine)
       // staggered from 1.4s
       const chromeTargets = [
         scene.querySelector("[data-frame-meta]"),
-        scene.querySelector("[data-anim='crossfade']"),
         scene.querySelector("[data-edge-label]"),
         scene.querySelector("[data-spine]"),
       ].filter(Boolean) as Element[];

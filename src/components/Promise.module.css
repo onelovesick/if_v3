@@ -90,7 +90,9 @@
    ═══════════════════════════════════════════════════════ */
 
 .statement {
-  max-width: 22ch;
+  /* No max-width here — the previous 22ch was in body-font context (~176px)
+     and forced one word per line. Width is controlled inside .statementText
+     where 22ch resolves in the display font. */
 }
 
 .statementText {
@@ -101,6 +103,7 @@
   line-height: 1.02;
   letter-spacing: -0.025em;
   text-wrap: balance;
+  max-width: 22ch;
 }
 
 .statementText span {
