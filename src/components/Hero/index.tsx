@@ -47,6 +47,12 @@ export default function Hero() {
             <span className={styles.spineLabel}>Project 04 · Cable-stayed · In progress</span>
           </div>
 
+          {/* Crossfade mark — conceptual anchor at vertical center, left edge */}
+          <div data-anim="crossfade" className={styles.crossfade} aria-hidden="true">
+            <span className={styles.crossfadeLabel}>Crossfade</span>
+            <span className={styles.crossfadeBlue}>digital ↔ construction</span>
+          </div>
+
           {/* Hero content (left column) */}
           <div className={styles.contentWrap}>
             <HeroContent />
