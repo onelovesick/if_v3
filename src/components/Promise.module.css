@@ -17,72 +17,41 @@
 }
 
 /* ═══════════════════════════════════════════════════════
-   WATERMARK — giant outlined section numeral
+   TITLE — one editorial word, mask-reveal entrance
    ═══════════════════════════════════════════════════════ */
 
-.watermark {
-  position: absolute;
-  top: clamp(40px, 6vw, 72px);
-  right: clamp(-30px, -1vw, 0px);
-  z-index: 0;
+.titleBlock {
+  position: relative;
+  margin-bottom: clamp(72px, 9vw, 128px);
+}
+
+.title {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(180px, 28vw, 480px);
+  font-size: clamp(80px, 13vw, 220px);
   line-height: 0.85;
-  letter-spacing: -0.05em;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(10, 11, 13, 0.08);
-  user-select: none;
-  pointer-events: none;
+  letter-spacing: -0.045em;
+  color: var(--c-ink);
+  /* Clip the inner span as it rises into view */
+  overflow: hidden;
+  /* Headroom for descenders so they don't get clipped at rest */
+  padding-bottom: 0.08em;
+}
+
+.titleInner {
+  display: inline-block;
   will-change: transform;
 }
 
-/* ═══════════════════════════════════════════════════════
-   EYEBROW — editorial signals row
-   ═══════════════════════════════════════════════════════ */
-
-.eyebrow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding-bottom: clamp(56px, 7vw, 96px);
-  border-bottom: 1px solid var(--c-rule);
-  margin-bottom: clamp(56px, 7vw, 96px);
-}
-
-.eyebrowLabel,
-.eyebrowMeta,
-.eyebrowIndex {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.eyebrowLabel {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--c-blue);
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--c-blue);
-  box-shadow: 0 0 0 4px rgba(24, 100, 200, 0.08);
-}
-
-.eyebrowMeta {
-  color: var(--c-muted);
-}
-
-.eyebrowIndex {
-  color: var(--c-muted);
-  font-feature-settings: "tnum";
+.titleRule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--c-ink);
+  margin-top: clamp(28px, 3.6vw, 48px);
+  transform-origin: left center;
+  will-change: transform;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -227,16 +196,6 @@
 }
 
 @media (max-width: 720px) {
-  .eyebrow {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .eyebrowMeta,
-  .eyebrowIndex {
-    flex-basis: 50%;
-  }
-
   .pillars {
     grid-template-columns: 1fr;
     row-gap: 40px;
@@ -250,9 +209,7 @@
     font-size: clamp(56px, 16vw, 80px);
   }
 
-  .watermark {
-    font-size: clamp(140px, 38vw, 240px);
-    top: clamp(20px, 6vw, 40px);
-    opacity: 0.7;
+  .title {
+    font-size: clamp(72px, 22vw, 140px);
   }
 }

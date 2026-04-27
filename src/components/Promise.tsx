@@ -27,8 +27,9 @@ const PILLARS = [
 ];
 
 /**
- * The Promise — the 20-second thesis. Typographic hero with two-tone
- * statement, giant outlined section numeral, indexed pillar grid.
+ * The Promise — the 20-second thesis. One editorial word ("Promise.") doing
+ * the heavy lifting at the top, a hairline rule drawing across, the two-tone
+ * statement below, and an indexed pillar grid as the operational answer.
  */
 export default function Promise() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -38,7 +39,11 @@ export default function Promise() {
     if (!section) return;
 
     if (prefersReducedMotion()) {
-      gsap.set(section.querySelectorAll("[data-anim]"), { opacity: 1, y: 0 });
+      gsap.set(section.querySelectorAll("[data-anim]"), {
+        opacity: 1,
+        yPercent: 0,
+        y: 0,
+      });
       gsap.set(section.querySelectorAll("[data-rule]"), { scaleX: 1 });
       return;
     }
@@ -46,13 +51,12 @@ export default function Promise() {
     const triggers: ScrollTrigger[] = [];
     const ease = "cubic-bezier(0.2, 0.8, 0.2, 1)";
 
-    // Watermark drifts in slowly + slight upward parallax through the section
-    const watermark = section.querySelector("[data-anim='watermark']");
-    if (watermark) {
-      const t1 = gsap.from(watermark, {
-        opacity: 0,
-        x: 60,
-        duration: 1.6,
+    // Title — mask-reveal: the word rises into the H2's clipped frame
+    const title = section.querySelector("[data-anim='title']");
+    if (title) {
+      const t = gsap.from(title, {
+        yPercent: 110,
+        duration: 1.1,
         ease,
         scrollTrigger: {
           trigger: section,
@@ -60,35 +64,26 @@ export default function Promise() {
           toggleActions: "play none none none",
         },
       });
-      if (t1.scrollTrigger) triggers.push(t1.scrollTrigger);
-
-      const t2 = gsap.to(watermark, {
-        yPercent: -18,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 0.6,
-        },
-      });
-      if (t2.scrollTrigger) triggers.push(t2.scrollTrigger);
+      if (t.scrollTrigger) triggers.push(t.scrollTrigger);
     }
 
-    // Eyebrow row
-    const eyebrow = gsap.from(section.querySelectorAll("[data-anim='eyebrow']"), {
-      opacity: 0,
-      y: 12,
-      duration: 0.7,
-      stagger: 0.06,
-      ease,
-      scrollTrigger: {
-        trigger: section,
-        start: "top 78%",
-        toggleActions: "play none none none",
-      },
-    });
-    if (eyebrow.scrollTrigger) triggers.push(eyebrow.scrollTrigger);
+    // Title rule — draws across left → right after the word lands
+    const titleRule = section.querySelector("[data-title-rule]");
+    if (titleRule) {
+      const t = gsap.from(titleRule, {
+        scaleX: 0,
+        transformOrigin: "left center",
+        duration: 1.0,
+        ease,
+        delay: 0.4,
+        scrollTrigger: {
+          trigger: section,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      });
+      if (t.scrollTrigger) triggers.push(t.scrollTrigger);
+    }
 
     // Statement — sentence-by-sentence with staggered settle
     const statement = gsap.from(section.querySelectorAll("[data-anim='line']"), {
@@ -160,28 +155,19 @@ export default function Promise() {
 
   return (
     <section ref={sectionRef} className={styles.promise} aria-label="The promise">
-      {/* Giant outlined section numeral — silent typographic anchor */}
-      <span
-        data-anim="watermark"
-        className={styles.watermark}
-        aria-hidden="true"
-      >
-        01
-      </span>
-
       <div className={styles.container}>
-        {/* Eyebrow row — three editorial signals */}
-        <header className={styles.eyebrow}>
-          <p data-anim="eyebrow" className={styles.eyebrowLabel}>
-            <span className={styles.dot} aria-hidden="true" />
-            The Promise
-          </p>
-          <p data-anim="eyebrow" className={styles.eyebrowMeta}>
-            Read in 20 seconds
-          </p>
-          <p data-anim="eyebrow" className={styles.eyebrowIndex}>
-            01 / 12
-          </p>
+        {/* Editorial title — one word, doing all the work */}
+        <header className={styles.titleBlock}>
+          <h2 className={styles.title}>
+            <span data-anim="title" className={styles.titleInner}>
+              Promise.
+            </span>
+          </h2>
+          <span
+            data-title-rule
+            className={styles.titleRule}
+            aria-hidden="true"
+          />
         </header>
 
         {/* Two-tone statement — muted negation, ink declaration */}
