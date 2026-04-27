@@ -20,40 +20,86 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
     const reduced = prefersReducedMotion();
 
     /* ── A. ENTRANCE ── */
+    const inkOverlay = scene.querySelector("[data-ink-overlay]") as HTMLElement | null;
+
     if (reduced) {
-      // Snap everything to its visible state — no animation
-      gsap.set(
-        scene.querySelectorAll(
-          "[data-anim]"
-        ),
-        { opacity: 1, y: 0, filter: "blur(0px)" }
-      );
+      // Snap content to settled state immediately, no animation.
+      // Editorial chrome (frame meta / edge label / spine / crossfade) was
+      // never animated away from its natural state in this branch (the
+      // timeline below never runs), so it's already correct — no manual set
+      // needed for those targets.
+      gsap.set(scene.querySelectorAll("[data-anim]"), {
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+      });
+      if (inkOverlay) {
+        // Hide ink overlay so the settled mask is visible
+        inkOverlay.style.display = "none";
+      }
     } else {
       const tl = gsap.timeline({
         defaults: { ease: "cubic-bezier(0.2, 0.8, 0.2, 1)" },
       });
 
-      tl.from(scene.querySelector("[data-anim='eyebrow']"), {
-        opacity: 0,
-        y: 14,
-        duration: 0.7,
-      }, 0.2)
-        .from(scene.querySelectorAll("[data-anim='word']"), {
-          opacity: 0,
-          y: 28,
-          duration: 0.85,
-          stagger: 0.12,
-        }, 0.4)
-        .from(scene.querySelector("[data-anim='sub']"), {
-          opacity: 0,
-          y: 18,
-          duration: 0.85,
-        }, 1.05)
-        .from(scene.querySelector("[data-anim='cta']"), {
-          opacity: 0,
-          y: 18,
-          duration: 0.85,
-        }, 1.2);
+      // 1. Ink overlay retracts right over 1.0s starting at 0.3s
+      if (inkOverlay) {
+        tl.fromTo(
+          inkOverlay,
+          { xPercent: 0 },
+          {
+            xPercent: 100,
+            duration: 1.0,
+            onComplete: () => {
+              inkOverlay.style.display = "none";
+            },
+          },
+          0.3
+        );
+      }
+
+      // 2. Eyebrow at 0.4s
+      tl.from(
+        scene.querySelector("[data-anim='eyebrow']"),
+        { opacity: 0, y: 14, duration: 0.7 },
+        0.4
+      );
+
+      // 3. Headline words stagger from 0.5s, 0.12s between siblings
+      tl.from(
+        scene.querySelectorAll("[data-anim='word']"),
+        { opacity: 0, y: 28, duration: 0.85, stagger: 0.12 },
+        0.5
+      );
+
+      // 4. Sub paragraph at 1.05s
+      tl.from(
+        scene.querySelector("[data-anim='sub']"),
+        { opacity: 0, y: 18, duration: 0.85 },
+        1.05
+      );
+
+      // 5. CTA row at 1.2s
+      tl.from(
+        scene.querySelector("[data-anim='cta']"),
+        { opacity: 0, y: 18, duration: 0.85 },
+        1.2
+      );
+
+      // 6. Editorial chrome (frame meta, crossfade mark, edge label, spine)
+      // staggered from 1.4s
+      const chromeTargets = [
+        scene.querySelector("[data-frame-meta]"),
+        scene.querySelector("[data-anim='crossfade']"),
+        scene.querySelector("[data-edge-label]"),
+        scene.querySelector("[data-spine]"),
+      ].filter(Boolean) as Element[];
+
+      tl.from(
+        chromeTargets,
+        { opacity: 0, y: 8, duration: 0.4, stagger: 0.08 },
+        1.4
+      );
     }
 
     /* ── B. SCROLL CHOREOGRAPHY ── */

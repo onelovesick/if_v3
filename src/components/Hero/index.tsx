@@ -34,14 +34,17 @@ export default function Hero() {
           {/* Film grain: unifies dark + footage as one image */}
           <div className={styles.grain} aria-hidden="true" />
 
+          {/* Ink overlay: covers viewport on mount, translates right to reveal mask */}
+          <div data-ink-overlay className={styles.inkOverlay} aria-hidden="true" />
+
           {/* Frame metadata — top-right */}
-          <div className={styles.frameMeta} aria-hidden="true">
+          <div data-frame-meta className={styles.frameMeta} aria-hidden="true">
             <span className={styles.frameMetaPrimary}>27.04.2026 · 16:42 UTC</span>
             <span className={styles.frameMetaSecondary}>In session</span>
           </div>
 
           {/* Architectural spine — connects text zone to the bridge */}
-          <div className={styles.spine} aria-hidden="true">
+          <div data-spine className={styles.spine} aria-hidden="true">
             <span className={styles.spineNode} />
             <span className={styles.spineLine} />
             <span className={styles.spineLabel}>Project 04 · Cable-stayed · In progress</span>
@@ -59,7 +62,7 @@ export default function Hero() {
           </div>
 
           {/* Vertical edge label — refined editorial detail on the right */}
-          <div className={styles.edgeLabel} aria-hidden="true">
+          <div data-edge-label className={styles.edgeLabel} aria-hidden="true">
             INFRAFORMA · 2026
           </div>
         </div>
