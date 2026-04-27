@@ -1,15 +1,10 @@
-/* Depth layers fill the scene, absolutely positioned, below the content. */
-.layer0,
-.layer1 {
+/* Depth layer 0 — video. The legibility wash has moved to Hero's .mask layer. */
+.layer0 {
   position: absolute;
   inset: 0;
+  z-index: 0;
   pointer-events: none;
   will-change: transform, opacity;
-}
-
-/* ─── DEPTH 0: Video ─── */
-.layer0 {
-  z-index: 0;
 }
 
 .video {
@@ -18,33 +13,4 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-/* ─── DEPTH 1: Atmosphere — asymmetric legibility wash
-   Heavy on the left where the text column sits, fully clear on the right
-   so the bridge in the video reads as the cinematic subject. ─── */
-.layer1 {
-  z-index: 1;
-  background:
-    /* the strong left vignette behind the text */
-    linear-gradient(
-      90deg,
-      rgba(10, 11, 13, 0.82) 0%,
-      rgba(10, 11, 13, 0.62) 22%,
-      rgba(10, 11, 13, 0.32) 42%,
-      rgba(10, 11, 13, 0.08) 60%,
-      rgba(10, 11, 13, 0) 78%
-    ),
-    /* slight bottom darkening so the section feels grounded */
-    linear-gradient(
-      0deg,
-      rgba(10, 11, 13, 0.32) 0%,
-      rgba(10, 11, 13, 0) 32%
-    ),
-    /* faint top wash for topbar contrast */
-    linear-gradient(
-      180deg,
-      rgba(10, 11, 13, 0.42) 0%,
-      rgba(10, 11, 13, 0) 14%
-    );
 }

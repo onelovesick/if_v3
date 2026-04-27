@@ -134,3 +134,36 @@
     display: none;
   }
 }
+
+/* ─── DUAL EXPOSURE MASK ─── */
+.mask {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 11, 13, 0.97) 0%,
+    rgba(10, 11, 13, 0.92) 18%,
+    rgba(10, 11, 13, 0.78) 30%,
+    rgba(10, 11, 13, 0.45) 46%,
+    rgba(10, 11, 13, 0.18) 64%,
+    rgba(10, 11, 13, 0.04) 82%,
+    rgba(10, 11, 13, 0) 100%
+  );
+  will-change: transform;
+}
+
+/* ─── FILM GRAIN ─── */
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0 2px,
+    rgba(255, 255, 255, 0.05) 2px 3px
+  );
+}

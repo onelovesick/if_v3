@@ -28,6 +28,12 @@ export default function Hero() {
         <div data-pin className={styles.pin}>
           <DepthLayers />
 
+          {/* Dual-exposure mask: ink-left to clear-right */}
+          <div data-mask className={styles.mask} aria-hidden="true" />
+
+          {/* Film grain: unifies dark + footage as one image */}
+          <div className={styles.grain} aria-hidden="true" />
+
           {/* Frame metadata — top-right */}
           <div className={styles.frameMeta} aria-hidden="true">
             <span className={styles.frameDot} />

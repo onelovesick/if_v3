@@ -29,22 +29,16 @@ export default function DepthLayers() {
   }, []);
 
   return (
-    <>
-      {/* ─── DEPTH 0 — Background video ─── */}
-      <div data-depth="0" className={styles.layer0} aria-hidden="true">
-        <video
-          ref={videoRef}
-          className={styles.video}
-          src="/videos/hero.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
-      </div>
-
-      {/* ─── DEPTH 1 — Atmospheric haze + legibility gradient ─── */}
-      <div data-depth="1" className={styles.layer1} aria-hidden="true" />
-    </>
+    <div data-depth="0" className={styles.layer0} aria-hidden="true">
+      <video
+        ref={videoRef}
+        className={styles.video}
+        src="/videos/hero.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+    </div>
   );
 }
