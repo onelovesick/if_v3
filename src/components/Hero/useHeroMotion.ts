@@ -44,10 +44,6 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
           duration: 0.85,
           stagger: 0.12,
         }, 0.4)
-        .from(scene.querySelector("[data-anim='digital-overlay']"), {
-          opacity: 0,
-          duration: 1.6,
-        }, 0.9)
         .from(scene.querySelector("[data-anim='sub']"), {
           opacity: 0,
           y: 18,
@@ -65,13 +61,10 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
 
     const triggers: ScrollTrigger[] = [];
 
-    /* Multi-speed parallax for the depth layers */
+    /* Subtle parallax — video drifts slightly slower than scroll */
     const layers: { sel: string; speed: number; scale?: number }[] = [
-      { sel: "[data-depth='0']", speed: 0.10 },
-      { sel: "[data-depth='1']", speed: 0.25 },
-      { sel: "[data-depth='2']", speed: 0.50 },
-      { sel: "[data-depth='3']", speed: 0.80, scale: 1.05 },
-      { sel: "[data-depth='4']", speed: 1.00 },
+      { sel: "[data-depth='0']", speed: 0.15 },
+      { sel: "[data-depth='1']", speed: 0.30 },
     ];
 
     layers.forEach(({ sel, speed, scale }) => {
@@ -98,23 +91,6 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
       const tween = gsap.to(content, {
         yPercent: -20,
         opacity: 0.2,
-        ease: "none",
-        scrollTrigger: {
-          trigger: scene,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.4,
-        },
-      });
-      const st = tween.scrollTrigger;
-      if (st) triggers.push(st);
-    }
-
-    /* Bottom vignette deepens */
-    const vignette = scene.querySelector("[data-anim='vignette']");
-    if (vignette) {
-      const tween = gsap.to(vignette, {
-        opacity: 1,
         ease: "none",
         scrollTrigger: {
           trigger: scene,
