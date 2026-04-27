@@ -200,11 +200,11 @@
   );
 }
 
-/* ─── CROSSFADE MARK — conceptual anchor ─── */
+/* ─── CROSSFADE MARK — conceptual anchor in the seam zone ─── */
 .crossfade {
   position: absolute;
   top: 42%;
-  left: clamp(24px, 5vw, 72px);
+  left: 50%;
   z-index: 12;
   font-family: var(--font-mono);
   font-size: 11px;
@@ -219,15 +219,23 @@
 
 .crossfadeLabel {
   display: block;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 1px 2px rgba(10, 11, 13, 0.6);
 }
 
 .crossfadeBlue {
   display: block;
-  color: rgba(46, 124, 230, 0.95);
+  color: rgba(46, 124, 230, 1);
+  text-shadow: 0 1px 2px rgba(10, 11, 13, 0.6);
 }
 
-/* Suppress on short viewports to avoid colliding with content */
+/* Suppress on narrow viewports (seam zone collapses) and short viewports
+   (vertical collision with content). */
+@media (max-width: 1100px) {
+  .crossfade {
+    display: none;
+  }
+}
 @media (max-height: 800px) {
   .crossfade {
     display: none;
