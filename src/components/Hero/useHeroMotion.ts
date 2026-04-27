@@ -93,19 +93,15 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
         1.2
       );
 
-      // 6. Editorial chrome (frame meta, edge label, spine)
-      // staggered from 1.4s
-      const chromeTargets = [
-        scene.querySelector("[data-frame-meta]"),
-        scene.querySelector("[data-edge-label]"),
-        scene.querySelector("[data-spine]"),
-      ].filter(Boolean) as Element[];
-
-      entranceTl.from(
-        chromeTargets,
-        { opacity: 0, y: 8, duration: 0.4, stagger: 0.08 },
-        1.4
-      );
+      // 6. Edge label fades in last
+      const edgeLabel = scene.querySelector("[data-edge-label]");
+      if (edgeLabel) {
+        entranceTl.from(
+          edgeLabel,
+          { opacity: 0, y: 8, duration: 0.4 },
+          1.4
+        );
+      }
     }
 
     /* ── B. SCROLL CHOREOGRAPHY ── */
@@ -166,6 +162,31 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
       });
       if (releaseTween.scrollTrigger) triggers.push(releaseTween.scrollTrigger);
     }
+
+    /* Word disperse — each headline word scatters in its own direction
+       as the user scrolls past, on top of the content drift. */
+    const words = Array.from(
+      scene.querySelectorAll("[data-anim='word']")
+    ) as HTMLElement[];
+    words.forEach((word, i) => {
+      const dir = i % 3 === 0 ? -1 : i % 3 === 1 ? 0 : 1;
+      const xOffset = dir * (60 + (i % 4) * 30);
+      const yOffset = -20 - (i % 3) * 18;
+      const rotate = dir * (2 + (i % 3) * 1.2);
+      const tween = gsap.to(word, {
+        x: xOffset,
+        y: yOffset,
+        rotate,
+        ease: "none",
+        scrollTrigger: {
+          trigger: scene,
+          start: "20% top",
+          end: "75% top",
+          scrub: 0.6,
+        },
+      });
+      if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
+    });
 
     /* ── C. RELEASE — polarity flip last 25% of pin ── */
     const maskLight = scene.querySelector("[data-mask-light]");

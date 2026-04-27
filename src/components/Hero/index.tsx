@@ -40,19 +40,6 @@ export default function Hero() {
           {/* Ink overlay: covers viewport on mount, translates right to reveal mask */}
           <div data-ink-overlay className={styles.inkOverlay} aria-hidden="true" />
 
-          {/* Frame metadata — top-right */}
-          <div data-frame-meta className={styles.frameMeta} aria-hidden="true">
-            <span className={styles.frameMetaPrimary}>27.04.2026 · 16:42 UTC</span>
-            <span className={styles.frameMetaSecondary}>In session</span>
-          </div>
-
-          {/* Architectural spine — connects text zone to the bridge */}
-          <div data-spine className={styles.spine} aria-hidden="true">
-            <span className={styles.spineNode} />
-            <span className={styles.spineLine} />
-            <span className={styles.spineLabel}>Project 04 · Cable-stayed · In progress</span>
-          </div>
-
           {/* Hero content (left column) */}
           <div className={styles.contentWrap}>
             <HeroContent />

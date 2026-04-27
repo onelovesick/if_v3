@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/reducedMotion";
 import styles from "./Promise.module.css";
@@ -27,9 +27,36 @@ const PILLARS = [
 ];
 
 /**
- * The Promise — the 20-second thesis. One editorial word ("Promise.") doing
- * the heavy lifting at the top, a hairline rule drawing across, the two-tone
- * statement below, and an indexed pillar grid as the operational answer.
+ * Renders a string as per-character spans separated by literal spaces between
+ * words. Used to animate color sweep across each statement line as the user
+ * scrolls past. The full sentence is also rendered as an offscreen sr-only
+ * span so screen readers announce it as one phrase.
+ */
+function CharSweep({ text, className }: { text: string; className?: string }) {
+  const words = text.split(" ");
+  return (
+    <>
+      <span className={styles.srOnly}>{text}</span>
+      <span aria-hidden="true" className={className}>
+        {words.map((word, wi) => (
+          <Fragment key={wi}>
+            {word.split("").map((c, ci) => (
+              <span key={ci} data-char>
+                {c}
+              </span>
+            ))}
+            {wi < words.length - 1 ? " " : null}
+          </Fragment>
+        ))}
+      </span>
+    </>
+  );
+}
+
+/**
+ * The Promise — the 20-second thesis. Editorial title at the top, two-tone
+ * statement that fills with secondary blue character-by-character as the
+ * reader scrolls through, indexed pillar grid as the operational answer.
  */
 export default function Promise() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -101,6 +128,25 @@ export default function Promise() {
     });
     if (statement.scrollTrigger) triggers.push(statement.scrollTrigger);
 
+    // Per-character color sweep — each line fills with secondary blue
+    // as the reader scrolls past it. One trigger per line.
+    section.querySelectorAll("[data-anim='line']").forEach((line) => {
+      const chars = line.querySelectorAll("[data-char]");
+      if (chars.length === 0) return;
+      const sweep = gsap.to(chars, {
+        color: "var(--c-blue)",
+        ease: "none",
+        stagger: 0.5 / chars.length, // total stagger ~0.5 of timeline
+        scrollTrigger: {
+          trigger: line,
+          start: "top 75%",
+          end: "bottom 35%",
+          scrub: 0.5,
+        },
+      });
+      if (sweep.scrollTrigger) triggers.push(sweep.scrollTrigger);
+    });
+
     // Architectural rule draws across before the pillars enter
     const rule = section.querySelector("[data-rule]");
     if (rule) {
@@ -170,22 +216,21 @@ export default function Promise() {
           />
         </header>
 
-        {/* Two-tone statement — muted negation, ink declaration */}
+        {/* Two-tone statement — muted negation, ink declaration. Each line
+            fills with secondary blue as the reader scrolls past. */}
         <div data-anim="statement" className={styles.statement}>
           <p className={styles.statementText}>
             <span data-anim="line" className={styles.statementMuted}>
-              We are not a software company.
+              <CharSweep text="We are not a software company." />
             </span>
             <span data-anim="line" className={styles.statementMuted}>
-              We are not a framework.
+              <CharSweep text="We are not a framework." />
             </span>
             <span data-anim="line" className={styles.statementInk}>
-              We sit inside your project and make sure the information
-              survives.
+              <CharSweep text="We sit on your project team and keep the BIM, drawings, and data usable long after handover." />
             </span>
             <span data-anim="line" className={styles.statementCoda}>
-              From the first sketch, through every handover, into the asset
-              you actually have to run.
+              <CharSweep text="Pre-construction through handover. A digital model the owner can use from day one of operations." />
             </span>
           </p>
         </div>

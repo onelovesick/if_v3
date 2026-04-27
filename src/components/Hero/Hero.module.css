@@ -19,96 +19,9 @@
   inset: 0;
   z-index: 10;
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  padding: 0 0 clamp(120px, 14vh, 180px);
-}
-
-/* ─── Frame metadata top-right ─── */
-.frameMeta {
-  position: absolute;
-  top: clamp(80px, 9vh, 110px);
-  right: clamp(24px, 4vw, 56px);
-  z-index: 12;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  text-align: right;
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-
-.frameMetaPrimary {
-  color: rgba(255, 255, 255, 0.55);
-}
-
-.frameMetaSecondary {
-  color: #fff;
-}
-
-/* ─── Architectural spine — horizontal hairline that
-   crosses the screen, tying the text column to the
-   bridge in the video. ─── */
-.spine {
-  position: absolute;
-  left: clamp(24px, 5vw, 72px);
-  right: 0;
-  bottom: clamp(60px, 8vh, 100px);
-  z-index: 9;
-  display: flex;
   align-items: center;
-  gap: 14px;
-  pointer-events: none;
-}
-
-.spineNode {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--c-blue-bright);
-  box-shadow: 0 0 14px var(--c-blue-glow);
-  flex-shrink: 0;
-  animation: spineBreath 3s ease-in-out infinite;
-}
-
-@keyframes spineBreath {
-  0%, 100% { opacity: 0.7; }
-  50%      { opacity: 1.0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .spineNode {
-    animation: none;
-    opacity: 1;
-  }
-}
-
-.spineLine {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    rgba(46, 124, 230, 0.85) 0%,
-    rgba(46, 124, 230, 0.3) 50%,
-    rgba(46, 124, 230, 0) 100%
-  );
-}
-
-.spineLabel {
-  position: absolute;
-  left: 22px;
-  top: -22px;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  white-space: nowrap;
+  justify-content: flex-start;
+  padding: 0;
 }
 
 /* ─── Vertical mono label — far-right edge ─── */
@@ -130,8 +43,6 @@
 }
 
 @media (max-width: 980px) {
-  .frameMeta,
-  .spine,
   .edgeLabel {
     display: none;
   }

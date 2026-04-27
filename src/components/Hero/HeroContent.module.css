@@ -2,12 +2,12 @@
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 680px;
+  max-width: 760px;
   padding: 0 clamp(24px, 5vw, 72px);
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 32px;
   will-change: transform, opacity;
 }
 
@@ -50,11 +50,10 @@
   margin: 0;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(44px, 5.4vw, 84px);
-  line-height: 0.96;
-  letter-spacing: -0.025em;
+  font-size: clamp(72px, 11vw, 200px);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
   color: var(--c-white);
-  max-width: 12ch;
 }
 
 .headline span {
@@ -138,7 +137,6 @@
     padding: 0 24px;
   }
   .headline {
-    font-size: clamp(40px, 9vw, 60px);
-    max-width: 100%;
+    font-size: clamp(56px, 14vw, 96px);
   }
 }
