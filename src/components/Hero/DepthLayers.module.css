@@ -20,27 +20,31 @@
   object-fit: cover;
 }
 
-/* ─── DEPTH 1: Atmosphere — soft legibility wash over the video ─── */
+/* ─── DEPTH 1: Atmosphere — asymmetric legibility wash
+   Heavy on the left where the text column sits, fully clear on the right
+   so the bridge in the video reads as the cinematic subject. ─── */
 .layer1 {
   z-index: 1;
   background:
-    /* legibility — left/bottom-left where the text sits */
+    /* the strong left vignette behind the text */
     linear-gradient(
       90deg,
-      rgba(10, 11, 13, 0.55) 0%,
-      rgba(10, 11, 13, 0.2) 45%,
-      rgba(10, 11, 13, 0) 75%
+      rgba(10, 11, 13, 0.82) 0%,
+      rgba(10, 11, 13, 0.62) 22%,
+      rgba(10, 11, 13, 0.32) 42%,
+      rgba(10, 11, 13, 0.08) 60%,
+      rgba(10, 11, 13, 0) 78%
     ),
-    /* legibility — bottom */
+    /* slight bottom darkening so the section feels grounded */
     linear-gradient(
       0deg,
-      rgba(10, 11, 13, 0.55) 0%,
-      rgba(10, 11, 13, 0) 45%
+      rgba(10, 11, 13, 0.32) 0%,
+      rgba(10, 11, 13, 0) 32%
     ),
-    /* legibility — top (for topbar contrast) */
+    /* faint top wash for topbar contrast */
     linear-gradient(
       180deg,
-      rgba(10, 11, 13, 0.45) 0%,
-      rgba(10, 11, 13, 0) 18%
+      rgba(10, 11, 13, 0.42) 0%,
+      rgba(10, 11, 13, 0) 14%
     );
 }

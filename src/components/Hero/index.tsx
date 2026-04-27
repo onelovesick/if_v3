@@ -34,9 +34,21 @@ export default function Hero() {
             In session · 27.04.2026 · 16:42 UTC
           </div>
 
-          {/* Centered hero content */}
+          {/* Architectural spine — connects text zone to the bridge */}
+          <div className={styles.spine} aria-hidden="true">
+            <span className={styles.spineNode} />
+            <span className={styles.spineLine} />
+            <span className={styles.spineLabel}>Project 04 · Cable-stayed · In progress</span>
+          </div>
+
+          {/* Hero content (left column) */}
           <div className={styles.contentWrap}>
             <HeroContent />
+          </div>
+
+          {/* Vertical edge label — refined editorial detail on the right */}
+          <div className={styles.edgeLabel} aria-hidden="true">
+            INFRAFORMA · 2026
           </div>
         </div>
       </section>
