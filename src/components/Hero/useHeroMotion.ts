@@ -18,6 +18,7 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
     if (!scene) return;
 
     let entranceTl: gsap.core.Timeline | null = null;
+    let flipTl: gsap.core.Timeline | null = null;
 
     const reduced = prefersReducedMotion();
 
@@ -168,7 +169,7 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
     const mask = scene.querySelector("[data-mask]");
     if (maskLight && mask) {
       // Fade horizontal mask out, vertical light mask in
-      const flipTween = gsap.timeline({
+      flipTl = gsap.timeline({
         scrollTrigger: {
           trigger: scene,
           start: "75% top",
@@ -176,9 +177,9 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
           scrub: 0.6,
         },
       });
-      flipTween.to(mask, { opacity: 0, ease: "none" }, 0);
-      flipTween.to(maskLight, { opacity: 1, ease: "none" }, 0);
-      if (flipTween.scrollTrigger) triggers.push(flipTween.scrollTrigger);
+      flipTl.to(mask, { opacity: 0, ease: "none" }, 0);
+      flipTl.to(maskLight, { opacity: 1, ease: "none" }, 0);
+      if (flipTl.scrollTrigger) triggers.push(flipTl.scrollTrigger);
     }
 
     /* Pin the scene for 200vh */
@@ -194,6 +195,7 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
 
     return () => {
       entranceTl?.kill();
+      flipTl?.kill();
       triggers.forEach((t) => t.kill());
     };
   }, [sceneRef]);
