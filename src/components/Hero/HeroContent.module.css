@@ -30,6 +30,19 @@
   border-radius: 50%;
   background: var(--c-blue-bright);
   box-shadow: 0 0 10px var(--c-blue-glow);
+  animation: eyebrowPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes eyebrowPulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1.0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrowDot {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 /* ─── Headline ─── */
