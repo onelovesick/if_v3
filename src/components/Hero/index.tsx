@@ -36,8 +36,8 @@ export default function Hero() {
 
           {/* Frame metadata — top-right */}
           <div className={styles.frameMeta} aria-hidden="true">
-            <span className={styles.frameDot} />
-            In session · 27.04.2026 · 16:42 UTC
+            <span className={styles.frameMetaPrimary}>27.04.2026 · 16:42 UTC</span>
+            <span className={styles.frameMetaSecondary}>In session</span>
           </div>
 
           {/* Architectural spine — connects text zone to the bridge */}

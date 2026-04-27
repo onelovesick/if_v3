@@ -30,35 +30,25 @@
   top: clamp(80px, 9vh, 110px);
   right: clamp(24px, 4vw, 56px);
   z-index: 12;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.62);
+  text-align: right;
   pointer-events: none;
+  will-change: transform, opacity;
 }
 
-.frameDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--c-blue-bright);
-  box-shadow: 0 0 10px var(--c-blue-glow);
-  animation: framePulse 2s ease-in-out infinite;
+.frameMetaPrimary {
+  color: rgba(255, 255, 255, 0.55);
 }
 
-@keyframes framePulse {
-  0%, 100% { opacity: 0.5; }
-  50%      { opacity: 1.0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .frameDot {
-    animation: none;
-  }
+.frameMetaSecondary {
+  color: #fff;
 }
 
 /* ─── Architectural spine — horizontal hairline that
@@ -91,10 +81,8 @@
   background: linear-gradient(
     90deg,
     rgba(46, 124, 230, 0.85) 0%,
-    rgba(46, 124, 230, 0.6) 18%,
-    rgba(46, 124, 230, 0.28) 48%,
-    rgba(255, 255, 255, 0.18) 78%,
-    rgba(255, 255, 255, 0) 100%
+    rgba(46, 124, 230, 0.3) 50%,
+    rgba(46, 124, 230, 0) 100%
   );
 }
 
@@ -120,11 +108,12 @@
   transform-origin: right center;
   font-family: var(--font-mono);
   font-size: 10.5px;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.32);
   white-space: nowrap;
   pointer-events: none;
+  will-change: transform, opacity;
 }
 
 @media (max-width: 980px) {
