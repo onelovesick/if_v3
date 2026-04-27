@@ -2,120 +2,193 @@
   position: relative;
   background: var(--c-white);
   color: var(--c-ink);
-  border-top: 2px solid var(--c-ink);
-  padding: clamp(72px, 9vw, 112px) 0;
+  border-top: 1px solid var(--c-ink);
+  padding: clamp(96px, 12vw, 160px) 0 clamp(120px, 14vw, 200px);
+  overflow: hidden;
+  isolation: isolate;
 }
 
 .container {
-  max-width: 1280px;
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 clamp(24px, 4vw, 56px);
+  padding: 0 clamp(24px, 4vw, 64px);
 }
 
-/* ─── Top head — 3 + 9 grid ─── */
-.head {
-  display: grid;
-  grid-template-columns: 3fr 9fr;
-  gap: clamp(32px, 5vw, 80px);
-  align-items: start;
+/* ═══════════════════════════════════════════════════════
+   WATERMARK — giant outlined section numeral
+   ═══════════════════════════════════════════════════════ */
+
+.watermark {
+  position: absolute;
+  top: clamp(40px, 6vw, 72px);
+  right: clamp(-30px, -1vw, 0px);
+  z-index: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(180px, 28vw, 480px);
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(10, 11, 13, 0.08);
+  user-select: none;
+  pointer-events: none;
+  will-change: transform;
 }
 
-.headLabelGroup {
+/* ═══════════════════════════════════════════════════════
+   EYEBROW — editorial signals row
+   ═══════════════════════════════════════════════════════ */
+
+.eyebrow {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 14px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: clamp(56px, 7vw, 96px);
+  border-bottom: 1px solid var(--c-rule);
+  margin-bottom: clamp(56px, 7vw, 96px);
 }
 
-.label {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+.eyebrowLabel,
+.eyebrowMeta,
+.eyebrowIndex {
   margin: 0;
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+}
+
+.eyebrowLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   color: var(--c-blue);
 }
 
 .dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--c-blue);
+  box-shadow: 0 0 0 4px rgba(24, 100, 200, 0.08);
 }
 
-.subLabel {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.eyebrowMeta {
   color: var(--c-muted);
 }
 
-/* ─── Statement ─── */
-.statement p {
+.eyebrowIndex {
+  color: var(--c-muted);
+  font-feature-settings: "tnum";
+}
+
+/* ═══════════════════════════════════════════════════════
+   STATEMENT — two-tone, sentence-by-sentence
+   ═══════════════════════════════════════════════════════ */
+
+.statement {
+  max-width: 22ch;
+}
+
+.statementText {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(34px, 4vw, 62px);
-  line-height: 1.04;
-  letter-spacing: -0.015em;
-  color: var(--c-ink);
+  font-size: clamp(40px, 5.6vw, 88px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
 
-.statement span {
-  display: inline-block;
-  will-change: transform, opacity;
+.statementText span {
+  display: block;
+  will-change: transform, opacity, filter;
 }
 
+/* The negation — quiet setup */
 .statementMuted {
   color: var(--c-muted);
 }
 
-/* ─── Three-pillar grid below ─── */
+/* The body — full ink declaration */
+.statementInk {
+  color: var(--c-ink);
+  margin-top: 0.32em;
+  max-width: 22ch;
+}
+
+/* The coda — body weight at lower scale, sets the breath after the punch */
+.statementCoda {
+  color: var(--c-ink);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(17px, 1.5vw, 22px);
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  margin-top: clamp(22px, 2.6vw, 36px);
+  max-width: 50ch;
+}
+
+/* ═══════════════════════════════════════════════════════
+   PILLARS — indexed grid
+   ═══════════════════════════════════════════════════════ */
+
 .pillars {
-  margin-top: clamp(48px, 6vw, 72px);
+  position: relative;
+  margin-top: clamp(96px, 12vw, 160px);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 1px solid var(--c-ink);
+  column-gap: clamp(32px, 4vw, 64px);
+  row-gap: 32px;
+}
+
+.rule {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: var(--c-ink);
+  margin-bottom: clamp(40px, 5vw, 64px);
+  will-change: transform;
 }
 
 .pillar {
-  padding: 28px clamp(20px, 2.4vw, 32px) 4px;
-  border-right: 1px solid var(--c-rule);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(20px, 2.4vw, 32px);
+  align-items: start;
+}
+
+.numeral {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(64px, 6vw, 96px);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--c-ink);
+  font-feature-settings: "tnum";
+  user-select: none;
   will-change: transform, opacity;
 }
 
-.pillar:last-child {
-  border-right: 0;
-  padding-right: 0;
-}
-
-.pillar:first-child {
-  padding-left: 0;
+.pillarText {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 8px;
+  will-change: transform, opacity;
 }
 
 .pillarLabel {
   margin: 0;
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--c-blue);
-}
-
-.pillarIndex {
-  color: var(--c-muted);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(20px, 1.6vw, 26px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--c-ink);
 }
 
 .pillarBody {
@@ -123,36 +196,60 @@
   font-family: var(--font-body);
   font-weight: 400;
   font-size: 15px;
-  line-height: 1.55;
+  line-height: 1.6;
   color: var(--c-ink);
-  max-width: 36ch;
+  max-width: 32ch;
 }
 
-/* ─── Responsive ─── */
-@media (max-width: 980px) {
-  .head {
-    grid-template-columns: 1fr;
-    gap: 24px;
+.pillarDetail {
+  margin: 4px 0 0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-blue);
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-width: 1100px) {
+  .pillars {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .statement {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .eyebrow {
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
-  .headLabelGroup {
-    flex-direction: row;
-    gap: 18px;
-    align-items: center;
-    padding-top: 0;
+  .eyebrowMeta,
+  .eyebrowIndex {
+    flex-basis: 50%;
   }
 
   .pillars {
     grid-template-columns: 1fr;
+    row-gap: 40px;
   }
 
   .pillar {
-    padding: 20px 0;
-    border-right: 0;
-    border-bottom: 1px solid var(--c-rule);
+    grid-template-columns: auto 1fr;
   }
 
-  .pillar:last-child {
-    border-bottom: 0;
+  .numeral {
+    font-size: clamp(56px, 16vw, 80px);
+  }
+
+  .watermark {
+    font-size: clamp(140px, 38vw, 240px);
+    top: clamp(20px, 6vw, 40px);
+    opacity: 0.7;
   }
 }
