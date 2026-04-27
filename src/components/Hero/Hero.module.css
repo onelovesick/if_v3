@@ -1,0 +1,92 @@
+.scene {
+  position: relative;
+  width: 100%;
+  height: 200vh;
+  background: var(--c-ink);
+  color: var(--c-white);
+}
+
+.pin {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--c-ink);
+}
+
+.contentWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 0 clamp(120px, 14vh, 180px);
+}
+
+/* ─── Frame metadata top-right ─── */
+.frameMeta {
+  position: absolute;
+  top: clamp(80px, 9vh, 110px);
+  right: clamp(24px, 4vw, 56px);
+  z-index: 12;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+  pointer-events: none;
+}
+
+.frameDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-blue-bright);
+  box-shadow: 0 0 10px var(--c-blue-glow);
+  animation: framePulse 2s ease-in-out infinite;
+}
+
+@keyframes framePulse {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 1.0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frameDot {
+    animation: none;
+  }
+}
+
+/* ─── Coordinate stamps ─── */
+.coordsLeft,
+.coordsRight {
+  position: absolute;
+  bottom: clamp(24px, 4vh, 36px);
+  z-index: 12;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+
+.coordsLeft {
+  left: clamp(24px, 4vw, 56px);
+}
+
+.coordsRight {
+  right: clamp(24px, 4vw, 56px);
+  text-align: right;
+}
+
+@media (max-width: 980px) {
+  .coordsLeft,
+  .coordsRight,
+  .frameMeta {
+    display: none;
+  }
+}

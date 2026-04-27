@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import SmoothScroll from "@/components/SmoothScroll";
-import Header from "@/components/Header";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Infraforma | Digital Delivery for Engineering and Construction",
+  title: "Infraforma — A specialised construction digital delivery partner",
   description:
-    "Digital delivery, information management, and handover strategy for engineering and construction teams working on complex projects.",
+    "Infraforma embeds into construction projects, pre-construction through handover, and delivers the digital asset supporting the physical one.",
 };
 
 export default function RootLayout({
@@ -17,7 +16,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
