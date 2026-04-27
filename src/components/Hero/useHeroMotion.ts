@@ -17,6 +17,8 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
     const scene = sceneRef.current;
     if (!scene) return;
 
+    let entranceTl: gsap.core.Timeline | null = null;
+
     const reduced = prefersReducedMotion();
 
     /* ── A. ENTRANCE ── */
@@ -38,13 +40,13 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
         inkOverlay.style.display = "none";
       }
     } else {
-      const tl = gsap.timeline({
+      entranceTl = gsap.timeline({
         defaults: { ease: "cubic-bezier(0.2, 0.8, 0.2, 1)" },
       });
 
       // 1. Ink overlay retracts right over 1.0s starting at 0.3s
       if (inkOverlay) {
-        tl.fromTo(
+        entranceTl.fromTo(
           inkOverlay,
           { xPercent: 0 },
           {
@@ -59,29 +61,29 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
       }
 
       // 2. Eyebrow at 0.4s
-      tl.from(
-        scene.querySelector("[data-anim='eyebrow']"),
+      entranceTl.from(
+        scene.querySelectorAll("[data-anim='eyebrow']"),
         { opacity: 0, y: 14, duration: 0.7 },
         0.4
       );
 
       // 3. Headline words stagger from 0.5s, 0.12s between siblings
-      tl.from(
+      entranceTl.from(
         scene.querySelectorAll("[data-anim='word']"),
         { opacity: 0, y: 28, duration: 0.85, stagger: 0.12 },
         0.5
       );
 
       // 4. Sub paragraph at 1.05s
-      tl.from(
-        scene.querySelector("[data-anim='sub']"),
+      entranceTl.from(
+        scene.querySelectorAll("[data-anim='sub']"),
         { opacity: 0, y: 18, duration: 0.85 },
         1.05
       );
 
       // 5. CTA row at 1.2s
-      tl.from(
-        scene.querySelector("[data-anim='cta']"),
+      entranceTl.from(
+        scene.querySelectorAll("[data-anim='cta']"),
         { opacity: 0, y: 18, duration: 0.85 },
         1.2
       );
@@ -95,7 +97,7 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
         scene.querySelector("[data-spine]"),
       ].filter(Boolean) as Element[];
 
-      tl.from(
+      entranceTl.from(
         chromeTargets,
         { opacity: 0, y: 8, duration: 0.4, stagger: 0.08 },
         1.4
@@ -161,6 +163,7 @@ export function useHeroMotion(sceneRef: RefObject<HTMLDivElement | null>) {
     triggers.push(pinTrigger);
 
     return () => {
+      entranceTl?.kill();
       triggers.forEach((t) => t.kill());
     };
   }, [sceneRef]);
