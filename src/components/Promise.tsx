@@ -128,24 +128,73 @@ export default function Promise() {
     });
     if (statement.scrollTrigger) triggers.push(statement.scrollTrigger);
 
-    // Per-character color sweep — each line fills with secondary blue
-    // as the reader scrolls past it. One trigger per line.
-    section.querySelectorAll("[data-anim='line']").forEach((line) => {
+    // Per-character color sweep — each line fills with its target color
+    // as the reader scrolls past. Each character SNAPS at its own scroll
+    // threshold (duration 0.001) so there are no half-tween artefacts mid-
+    // line. The wave moves left to right through reading order.
+    //
+    // Treatments by tone:
+    //   muted  — gray → ink   (negation lines "publish" as you read)
+    //   punch  — ink → blue   (the brand answer fills with secondary)
+    //   coda   — no sweep     (final breath, stays as-is)
+    const TONE_TARGETS: Record<string, string | null> = {
+      muted: "#0A0B0D", // var(--c-ink)
+      punch: "#1864C8", // var(--c-blue)
+      coda: null,
+    };
+
+    section.querySelectorAll<HTMLElement>("[data-anim='line']").forEach((line) => {
+      const tone = line.getAttribute("data-tone") ?? "";
+      const targetColor = TONE_TARGETS[tone];
+      if (!targetColor) return;
+
       const chars = line.querySelectorAll("[data-char]");
       if (chars.length === 0) return;
+
+      // Punch line gets a longer scrub window so the wave feels deliberate
+      // when it lands. Negations get a tighter window — read, settle, move.
+      const window = tone === "punch"
+        ? { start: "top 75%", end: "bottom 30%" }
+        : { start: "top 80%", end: "bottom 50%" };
+
       const sweep = gsap.to(chars, {
-        color: "var(--c-blue)",
+        color: targetColor,
+        duration: 0.001, // snap — no mid-tween artefacts
         ease: "none",
-        stagger: 0.5 / chars.length, // total stagger ~0.5 of timeline
+        stagger: 1 / chars.length, // even distribution across the timeline
         scrollTrigger: {
           trigger: line,
-          start: "top 75%",
-          end: "bottom 35%",
+          start: window.start,
+          end: window.end,
           scrub: 0.5,
         },
       });
       if (sweep.scrollTrigger) triggers.push(sweep.scrollTrigger);
     });
+
+    // Punch line gets a subtle weight presence — fades to slightly larger
+    // scale as the sweep completes, so the answer feels like it lands.
+    const punchLine = section.querySelector<HTMLElement>(
+      "[data-anim='line'][data-tone='punch']"
+    );
+    if (punchLine) {
+      const punchScale = gsap.fromTo(
+        punchLine,
+        { scale: 1 },
+        {
+          scale: 1.02,
+          ease: "none",
+          scrollTrigger: {
+            trigger: punchLine,
+            start: "top 75%",
+            end: "bottom 30%",
+            scrub: 0.6,
+          },
+          transformOrigin: "left center",
+        }
+      );
+      if (punchScale.scrollTrigger) triggers.push(punchScale.scrollTrigger);
+    }
 
     // Architectural rule draws across before the pillars enter
     const rule = section.querySelector("[data-rule]");
@@ -220,16 +269,16 @@ export default function Promise() {
             fills with secondary blue as the reader scrolls past. */}
         <div data-anim="statement" className={styles.statement}>
           <p className={styles.statementText}>
-            <span data-anim="line" className={styles.statementMuted}>
+            <span data-anim="line" data-tone="muted" className={styles.statementMuted}>
               <CharSweep text="We are not a software company." />
             </span>
-            <span data-anim="line" className={styles.statementMuted}>
+            <span data-anim="line" data-tone="muted" className={styles.statementMuted}>
               <CharSweep text="We are not a framework." />
             </span>
-            <span data-anim="line" className={styles.statementInk}>
+            <span data-anim="line" data-tone="punch" className={styles.statementInk}>
               <CharSweep text="We are a Layer of confidence when it comes to Heavy Civil Mega Projects." />
             </span>
-            <span data-anim="line" className={styles.statementCoda}>
+            <span data-anim="line" data-tone="coda" className={styles.statementCoda}>
               <CharSweep text="Pre-construction through handover. A digital model the owner can use from day one of operations." />
             </span>
           </p>

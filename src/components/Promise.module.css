@@ -97,14 +97,21 @@
   will-change: transform, opacity, filter;
 }
 
-/* The negation — quiet setup */
+/* The negation — quiet setup. Slightly smaller than the punch so the
+   visual hierarchy reads: setup → answer → breath. */
 .statementMuted {
   color: var(--c-muted);
+  font-size: clamp(36px, 4.8vw, 76px);
+  line-height: 1.04;
 }
 
-/* The body — full ink declaration */
+/* The punch — bigger than the negations, the answer that fills with blue
+   character-by-character as the reader scrolls past. */
 .statementInk {
   color: var(--c-ink);
+  font-size: clamp(48px, 6.6vw, 104px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
   margin-top: 0.32em;
   max-width: 22ch;
 }
@@ -117,7 +124,7 @@
   font-size: clamp(17px, 1.5vw, 22px);
   line-height: 1.5;
   letter-spacing: -0.005em;
-  margin-top: clamp(22px, 2.6vw, 36px);
+  margin-top: clamp(28px, 3.2vw, 48px);
   max-width: 50ch;
 }
 
