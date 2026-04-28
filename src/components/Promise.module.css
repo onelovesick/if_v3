@@ -1,9 +1,15 @@
+/* ═══════════════════════════════════════════════════════
+   THE PROMISE — single-breath section
+   Mono meta · editorial title · hairline rule · punch
+   statement (with scroll-driven per-char blue fill) · coda
+   ═══════════════════════════════════════════════════════ */
+
 .promise {
   position: relative;
   background: var(--c-white);
   color: var(--c-ink);
   border-top: 1px solid var(--c-ink);
-  padding: clamp(96px, 12vw, 160px) 0 clamp(120px, 14vw, 200px);
+  padding: clamp(72px, 9vw, 128px) 0 clamp(80px, 10vw, 144px);
   overflow: hidden;
   isolation: isolate;
 }
@@ -11,27 +17,33 @@
 .container {
   position: relative;
   z-index: 1;
-  max-width: 1440px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 clamp(24px, 4vw, 64px);
 }
 
-/* ═══════════════════════════════════════════════════════
-   TITLE — one editorial word, mask-reveal entrance
-   ═══════════════════════════════════════════════════════ */
-
-.titleBlock {
-  position: relative;
-  margin-bottom: clamp(72px, 9vw, 128px);
+/* ─── Mono section meta — top header line ─── */
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  margin: 0 0 clamp(40px, 5vw, 64px);
 }
 
+/* ─── Editorial title — sized as a section beat, not a hero ─── */
 .title {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(80px, 13vw, 220px);
-  line-height: 0.85;
-  letter-spacing: -0.045em;
+  font-size: clamp(56px, 8vw, 132px);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
   color: var(--c-ink);
   /* Clip the inner span as it rises into view */
   overflow: hidden;
@@ -49,13 +61,39 @@
   width: 100%;
   height: 1px;
   background: var(--c-ink);
-  margin-top: clamp(28px, 3.6vw, 48px);
+  margin-top: clamp(20px, 2.4vw, 32px);
   transform-origin: left center;
   will-change: transform;
 }
 
-/* Screen-reader-only — visible to AT, hidden visually. Used to keep
-   per-character split text accessible as a single phrase. */
+/* ─── Punch — single-line editorial statement with per-char scroll fill ─── */
+.punch {
+  margin: clamp(48px, 6vw, 80px) 0 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(32px, 4.4vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--c-ink);
+  text-wrap: balance;
+  max-width: 22ch;
+  will-change: transform, opacity, filter;
+}
+
+/* ─── Coda — quiet body text after the punch ─── */
+.coda {
+  margin: clamp(28px, 3.4vw, 44px) 0 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  color: var(--c-muted);
+  max-width: 56ch;
+}
+
+/* Screen-reader-only — visible to AT, hidden visually. Preserves the
+   sentence as one phrase even though the visible text is split per-char. */
 .srOnly {
   position: absolute;
   width: 1px;
@@ -68,363 +106,18 @@
   border: 0;
 }
 
-/* ═══════════════════════════════════════════════════════
-   STATEMENT — two-tone, sentence-by-sentence
-   ═══════════════════════════════════════════════════════ */
-
-.statement {
-  /* No max-width here — the previous 22ch was in body-font context (~176px)
-     and forced one word per line. Width is controlled inside .statementText
-     where 22ch resolves in the display font. */
-}
-
-.statementText {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(40px, 5.6vw, 88px);
-  line-height: 1.02;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
-  max-width: 22ch;
-}
-
-/* Direct child only — line spans become blocks. Nested spans (the per-char
-   sweep markup and the sr-only mirror) keep default inline so the chars
-   flow as text instead of stacking vertically. */
-.statementText > span {
-  display: block;
-  will-change: transform, opacity, filter;
-}
-
-/* The negation — quiet setup. Slightly smaller than the punch so the
-   visual hierarchy reads: setup → answer → breath. */
-.statementMuted {
-  color: var(--c-muted);
-  font-size: clamp(36px, 4.8vw, 76px);
-  line-height: 1.04;
-}
-
-/* The punch — bigger than the negations, the answer that fills with blue
-   character-by-character as the reader scrolls past. */
-.statementInk {
-  color: var(--c-ink);
-  font-size: clamp(48px, 6.6vw, 104px);
-  line-height: 0.98;
-  letter-spacing: -0.03em;
-  margin-top: 0.32em;
-  max-width: 22ch;
-}
-
-/* The coda — body weight at lower scale, sets the breath after the punch */
-.statementCoda {
-  color: var(--c-ink);
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: clamp(17px, 1.5vw, 22px);
-  line-height: 1.5;
-  letter-spacing: -0.005em;
-  margin-top: clamp(28px, 3.2vw, 48px);
-  max-width: 50ch;
-}
-
-/* ═══════════════════════════════════════════════════════
-   LAYERS INVENTORY — Infraforma shown as one ACTIVE layer
-   in a stack of project disciplines. Standard layers are
-   thin hairline rows; the active row is a tall blue card.
-   The contrast IS the metaphor.
-   ═══════════════════════════════════════════════════════ */
-
-.layers {
-  margin-top: clamp(96px, 12vw, 160px);
-  border: 1px solid rgba(10, 11, 13, 0.18);
-  background: var(--c-white);
-  font-family: var(--font-mono);
-  will-change: transform, opacity;
-}
-
-.layersHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 24px;
-  padding: 18px clamp(20px, 2.4vw, 32px);
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(10, 11, 13, 0.55);
-  border-bottom: 1px solid rgba(10, 11, 13, 0.14);
-}
-
-.layersList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* Standard layer row — thin, gray, single line */
-.layer {
-  display: grid;
-  grid-template-columns: auto auto 1fr auto;
-  gap: clamp(14px, 1.6vw, 22px);
-  align-items: center;
-  padding: clamp(16px, 1.6vw, 22px) clamp(20px, 2.4vw, 32px);
-  border-bottom: 1px solid rgba(10, 11, 13, 0.08);
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(10, 11, 13, 0.7);
-  will-change: transform, opacity;
-}
-
-/* Active layer row — Infraforma. Tall, blue, editorial. */
-.layerActive {
-  display: grid;
-  grid-template-columns: auto auto 1fr auto;
-  gap: clamp(14px, 1.6vw, 22px);
-  align-items: start;
-  padding: clamp(40px, 5vw, 72px) clamp(20px, 2.4vw, 32px);
-  border-bottom: 1px solid rgba(10, 11, 13, 0.08);
-  background: var(--c-blue);
-  color: #ffffff;
-  font-size: 14px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  position: relative;
-  will-change: transform, opacity;
-}
-
-.layerActive::before {
-  /* Thin top accent so the row reads as "selected" — like a Photoshop
-     active layer indicator. */
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--c-blue-bright);
-}
-
-/* Dot — small filled circle marker on each row */
-.layerDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: rgba(10, 11, 13, 0.4);
-}
-
-.layerActive .layerDot {
-  background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
-}
-
-/* Layer index — tabular numerals */
-.layerIdx {
-  font-feature-settings: "tnum";
-  opacity: 0.5;
-  min-width: 2.4ch;
-}
-
-.layerActive .layerIdx {
-  opacity: 0.85;
-}
-
-/* Layer body — name + optional sub-tagline */
-.layerBody {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-}
-
-.layerName {
-  font-weight: 500;
-}
-
-.layerActive .layerName {
-  font-size: clamp(18px, 1.6vw, 24px);
-  letter-spacing: 0.18em;
-  line-height: 1.2;
-}
-
-.layerSub {
-  font-family: var(--font-body);
-  font-size: clamp(13px, 1.05vw, 16px);
-  letter-spacing: 0;
-  text-transform: none;
-  font-weight: 400;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.85);
-  max-width: 56ch;
-}
-
-/* Layer status — right-aligned indicator */
-.layerStatus {
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  opacity: 0.5;
-  font-feature-settings: "tnum";
-  white-space: nowrap;
-}
-
-.layerActive .layerStatus {
-  opacity: 1;
-  font-weight: 500;
-}
-
-/* Footer — caption row */
-.layersFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 24px;
-  padding: 18px clamp(20px, 2.4vw, 32px);
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(10, 11, 13, 0.55);
-  border-top: 1px solid rgba(10, 11, 13, 0.14);
-}
-
-/* ═══════════════════════════════════════════════════════
-   PILLARS — indexed grid
-   ═══════════════════════════════════════════════════════ */
-
-.pillars {
-  position: relative;
-  margin-top: clamp(80px, 9vw, 128px);
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  column-gap: clamp(32px, 4vw, 64px);
-  row-gap: 32px;
-}
-
-/* Phase anchor — small mono caption at the top of each pillar that
-   connects the pillar to its lifecycle range in the diagram above. */
-.pillarPhase {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--c-blue);
-  font-feature-settings: "tnum";
-}
-
-.rule {
-  grid-column: 1 / -1;
-  height: 1px;
-  background: var(--c-ink);
-  margin-bottom: clamp(40px, 5vw, 64px);
-  will-change: transform;
-}
-
-.pillar {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: clamp(20px, 2.4vw, 32px);
-  align-items: start;
-}
-
-.numeral {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(64px, 6vw, 96px);
-  line-height: 0.85;
-  letter-spacing: -0.04em;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--c-ink);
-  font-feature-settings: "tnum";
-  user-select: none;
-  will-change: transform, opacity;
-}
-
-.pillarText {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding-top: 8px;
-  will-change: transform, opacity;
-}
-
-.pillarLabel {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(20px, 1.6vw, 26px);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  color: var(--c-ink);
-}
-
-.pillarBody {
-  margin: 0;
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--c-ink);
-  max-width: 32ch;
-}
-
-.pillarDetail {
-  margin: 4px 0 0;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--c-blue);
-}
-
-/* ═══════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════ */
-
-@media (max-width: 1100px) {
-  .pillars {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .statement {
-    max-width: 100%;
-  }
-}
-
+/* ─── Responsive ─── */
 @media (max-width: 720px) {
-  .pillars {
-    grid-template-columns: 1fr;
-    row-gap: 40px;
-  }
-
-  .pillar {
-    grid-template-columns: auto 1fr;
-  }
-
-  .numeral {
-    font-size: clamp(56px, 16vw, 80px);
-  }
-
-  .title {
-    font-size: clamp(72px, 22vw, 140px);
-  }
-
-  /* On narrow viewports, drop the layer status indicator — gain
-     more room for the layer name. The active card stays full-width. */
-  .layer {
-    grid-template-columns: auto auto 1fr;
-  }
-  .layerActive {
-    grid-template-columns: auto auto 1fr;
-    padding: clamp(28px, 6vw, 48px) clamp(16px, 4vw, 24px);
-  }
-  .layer .layerStatus,
-  .layerActive .layerStatus {
-    display: none;
-  }
-  .layersHeader,
-  .layersFooter {
+  .meta {
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
+  }
+  .title {
+    font-size: clamp(48px, 14vw, 96px);
+  }
+  .punch {
+    font-size: clamp(26px, 7.4vw, 48px);
+    max-width: 100%;
   }
 }
