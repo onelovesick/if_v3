@@ -227,7 +227,7 @@ export default function Promise() {
               <CharSweep text="We are not a framework." />
             </span>
             <span data-anim="line" className={styles.statementInk}>
-              <CharSweep text="We sit on your project team and keep the BIM, drawings, and data usable long after handover." />
+              <CharSweep text="We are a Layer of confidence when it comes to Heavy Civil Mega Projects." />
             </span>
             <span data-anim="line" className={styles.statementCoda}>
               <CharSweep text="Pre-construction through handover. A digital model the owner can use from day one of operations." />
