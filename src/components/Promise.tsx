@@ -6,8 +6,7 @@ import { prefersReducedMotion } from "@/lib/reducedMotion";
 import styles from "./Promise.module.css";
 
 /**
- * Renders text as per-character spans for scroll-driven color sweep.
- * Full sentence mirrored in an off-screen sr-only span for assistive tech.
+ * Per-character spans for scroll-driven blue fill on the statement line.
  */
 function CharSweep({ text }: { text: string }) {
   const words = text.split(" ");
@@ -31,10 +30,10 @@ function CharSweep({ text }: { text: string }) {
 }
 
 /**
- * The Promise — a single-breath thesis. Mono section header, the editorial
- * "Promise." title, hairline rule, the punch statement (with scroll-driven
- * per-character blue fill), and a quiet body coda. No pillars, no diagrams,
- * no inventory — those move to their own sections.
+ * The Promise — formatted as an architectural title block. One bordered
+ * frame containing four cells: header / statement / coda / sign-off.
+ * Brief, on-brand for an infrastructure firm, compact enough to fit
+ * comfortably in one viewport. Scroll past it to the next section.
  */
 export default function Promise() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -47,8 +46,7 @@ export default function Promise() {
       gsap.set(section.querySelectorAll("[data-anim]"), {
         opacity: 1,
         y: 0,
-        yPercent: 0,
-        scaleX: 1,
+        scale: 1,
       });
       return;
     }
@@ -56,85 +54,50 @@ export default function Promise() {
     const triggers: ScrollTrigger[] = [];
     const ease = "cubic-bezier(0.2, 0.8, 0.2, 1)";
 
-    // Section meta header — fades up
-    const meta = section.querySelector("[data-anim='meta']");
-    if (meta) {
-      const t = gsap.from(meta, {
+    // Title block frame fades + scales in
+    const block = section.querySelector("[data-anim='block']");
+    if (block) {
+      const t = gsap.from(block, {
         opacity: 0,
-        y: 12,
-        duration: 0.6,
-        ease,
-        scrollTrigger: {
-          trigger: section,
-          start: "top 82%",
-          toggleActions: "play none none none",
-        },
-      });
-      if (t.scrollTrigger) triggers.push(t.scrollTrigger);
-    }
-
-    // Title — mask-reveal: word rises into the H2's clipped frame
-    const title = section.querySelector("[data-anim='title']");
-    if (title) {
-      const t = gsap.from(title, {
-        yPercent: 110,
-        duration: 1.0,
-        ease,
-        delay: 0.1,
-        scrollTrigger: {
-          trigger: section,
-          start: "top 82%",
-          toggleActions: "play none none none",
-        },
-      });
-      if (t.scrollTrigger) triggers.push(t.scrollTrigger);
-    }
-
-    // Title rule draws across
-    const titleRule = section.querySelector("[data-anim='title-rule']");
-    if (titleRule) {
-      const t = gsap.from(titleRule, {
-        scaleX: 0,
-        transformOrigin: "left center",
+        scale: 0.985,
+        y: 16,
         duration: 0.9,
         ease,
-        delay: 0.4,
         scrollTrigger: {
           trigger: section,
-          start: "top 82%",
+          start: "top 78%",
           toggleActions: "play none none none",
         },
       });
       if (t.scrollTrigger) triggers.push(t.scrollTrigger);
     }
 
-    // Punch statement — entrance reveal
-    const punch = section.querySelector("[data-anim='punch']");
-    if (punch) {
-      const t = gsap.from(punch, {
+    // Cells stagger in inside the frame
+    const cells = section.querySelectorAll("[data-anim='cell']");
+    if (cells.length > 0) {
+      const t = gsap.from(cells, {
         opacity: 0,
-        y: 24,
-        filter: "blur(8px)",
-        duration: 1.0,
+        y: 12,
+        duration: 0.55,
+        stagger: 0.08,
         ease,
         scrollTrigger: {
-          trigger: punch,
-          start: "top 80%",
+          trigger: section,
+          start: "top 78%",
           toggleActions: "play none none none",
         },
       });
       if (t.scrollTrigger) triggers.push(t.scrollTrigger);
     }
 
-    // Per-character blue sweep on the punch — snap each char as the
-    // reader scrolls past so the answer fills with brand color.
-    const punchChars = section.querySelectorAll("[data-anim='punch'] [data-char]");
-    if (punchChars.length > 0) {
-      const sweep = gsap.to(punchChars, {
+    // Per-character blue sweep on the statement
+    const chars = section.querySelectorAll("[data-char]");
+    if (chars.length > 0) {
+      const sweep = gsap.to(chars, {
         color: "#1864C8",
         duration: 0.001,
         ease: "none",
-        stagger: 1 / punchChars.length,
+        stagger: 1 / chars.length,
         scrollTrigger: {
           trigger: section.querySelector("[data-anim='punch']"),
           start: "top 70%",
@@ -145,23 +108,6 @@ export default function Promise() {
       if (sweep.scrollTrigger) triggers.push(sweep.scrollTrigger);
     }
 
-    // Coda — quiet body fade-up after the punch
-    const coda = section.querySelector("[data-anim='coda']");
-    if (coda) {
-      const t = gsap.from(coda, {
-        opacity: 0,
-        y: 14,
-        duration: 0.85,
-        ease,
-        scrollTrigger: {
-          trigger: coda,
-          start: "top 84%",
-          toggleActions: "play none none none",
-        },
-      });
-      if (t.scrollTrigger) triggers.push(t.scrollTrigger);
-    }
-
     return () => {
       triggers.forEach((t) => t.kill());
     };
@@ -170,34 +116,34 @@ export default function Promise() {
   return (
     <section ref={sectionRef} className={styles.promise} aria-label="The promise">
       <div className={styles.container}>
-        {/* Mono section meta */}
-        <header data-anim="meta" className={styles.meta}>
-          <span>Promise</span>
-          <span>No. 02 / Practice</span>
-        </header>
+        <article data-anim="block" className={styles.block}>
+          {/* Header — section + reference */}
+          <header data-anim="cell" className={styles.cell}>
+            <span>Promise</span>
+            <span>N° 02 / 12 — Practice</span>
+          </header>
 
-        {/* Editorial title — kept as a beat, sized for a section, not a hero */}
-        <h2 className={styles.title}>
-          <span data-anim="title" className={styles.titleInner}>
-            Promise.
-          </span>
-        </h2>
-        <span
-          data-anim="title-rule"
-          className={styles.titleRule}
-          aria-hidden="true"
-        />
+          {/* Statement — the punch, with scroll-driven per-char blue fill */}
+          <div data-anim="cell" className={`${styles.cell} ${styles.cellStatement}`}>
+            <p data-anim="punch" className={styles.punch}>
+              <CharSweep text="We are a Layer of confidence for Heavy Civil Mega Projects." />
+            </p>
+          </div>
 
-        {/* The single punch statement — with scroll-driven per-char blue fill */}
-        <p data-anim="punch" className={styles.punch}>
-          <CharSweep text="We are a Layer of confidence for Heavy Civil Mega Projects." />
-        </p>
+          {/* Coda — quiet body */}
+          <div data-anim="cell" className={`${styles.cell} ${styles.cellCoda}`}>
+            <p className={styles.coda}>
+              Pre-construction through handover. A digital model the owner can
+              use from day one of operations.
+            </p>
+          </div>
 
-        {/* Quiet coda — body weight, smaller scale, the breath after the punch */}
-        <p data-anim="coda" className={styles.coda}>
-          Pre-construction through handover. A digital model the owner can use
-          from day one of operations.
-        </p>
+          {/* Sign-off — like a drawing's title block footer */}
+          <footer data-anim="cell" className={`${styles.cell} ${styles.cellFooter}`}>
+            <span>Reg'd · 2026 · Quebec</span>
+            <span>Infraforma — Drawn 01 of 01</span>
+          </footer>
+        </article>
       </div>
     </section>
   );

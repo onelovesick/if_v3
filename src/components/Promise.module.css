@@ -1,99 +1,97 @@
 /* ═══════════════════════════════════════════════════════
-   THE PROMISE — single-breath section
-   Mono meta · editorial title · hairline rule · punch
-   statement (with scroll-driven per-char blue fill) · coda
+   THE PROMISE — formatted as an architectural title block.
+   Single bordered frame, four stacked cells, hairline
+   separators. Compact, on-brand, single-viewport.
    ═══════════════════════════════════════════════════════ */
 
 .promise {
   position: relative;
   background: var(--c-white);
   color: var(--c-ink);
-  border-top: 1px solid var(--c-ink);
-  padding: clamp(72px, 9vw, 128px) 0 clamp(80px, 10vw, 144px);
-  overflow: hidden;
+  padding: clamp(56px, 7vw, 96px) 0 clamp(72px, 8vw, 112px);
   isolation: isolate;
 }
 
 .container {
   position: relative;
-  z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 clamp(24px, 4vw, 64px);
 }
 
-/* ─── Mono section meta — top header line ─── */
-.meta {
+/* The frame — like an architect's title block. 1px border on all sides,
+   hairlines between cells. */
+.block {
+  border: 1px solid var(--c-ink);
+  background: var(--c-white);
+  will-change: transform, opacity;
+}
+
+/* Each cell sits inside the frame and is separated by a hairline. */
+.cell {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 24px;
+  padding: 16px clamp(20px, 2.4vw, 36px);
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--c-muted);
-  margin: 0 0 clamp(40px, 5vw, 64px);
+  border-bottom: 1px solid var(--c-ink);
+  will-change: transform, opacity;
 }
 
-/* ─── Editorial title — sized as a section beat, not a hero ─── */
-.title {
+.cell:last-child {
+  border-bottom: none;
+}
+
+/* Statement cell — bigger padding, the editorial answer */
+.cellStatement {
+  display: block;
+  padding: clamp(48px, 6vw, 96px) clamp(20px, 2.4vw, 36px);
+}
+
+/* Coda cell — smaller padding, body text */
+.cellCoda {
+  display: block;
+  padding: clamp(20px, 2.4vw, 32px) clamp(20px, 2.4vw, 36px);
+}
+
+/* Footer cell — tighter, matches header */
+.cellFooter {
+  /* inherits .cell defaults */
+}
+
+/* Punch — the editorial statement, display font */
+.punch {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(56px, 8vw, 132px);
-  line-height: 0.88;
-  letter-spacing: -0.04em;
-  color: var(--c-ink);
-  /* Clip the inner span as it rises into view */
-  overflow: hidden;
-  /* Headroom for descenders so they don't get clipped at rest */
-  padding-bottom: 0.08em;
-}
-
-.titleInner {
-  display: inline-block;
-  will-change: transform;
-}
-
-.titleRule {
-  display: block;
-  width: 100%;
-  height: 1px;
-  background: var(--c-ink);
-  margin-top: clamp(20px, 2.4vw, 32px);
-  transform-origin: left center;
-  will-change: transform;
-}
-
-/* ─── Punch — single-line editorial statement with per-char scroll fill ─── */
-.punch {
-  margin: clamp(48px, 6vw, 80px) 0 0;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(32px, 4.4vw, 72px);
-  line-height: 1.05;
+  font-size: clamp(28px, 3.8vw, 60px);
+  line-height: 1.06;
   letter-spacing: -0.025em;
   color: var(--c-ink);
   text-wrap: balance;
-  max-width: 22ch;
-  will-change: transform, opacity, filter;
+  max-width: 26ch;
 }
 
-/* ─── Coda — quiet body text after the punch ─── */
+/* Coda — body paragraph */
 .coda {
-  margin: clamp(28px, 3.4vw, 44px) 0 0;
+  margin: 0;
   font-family: var(--font-body);
   font-weight: 400;
-  font-size: clamp(15px, 1.15vw, 18px);
+  font-size: clamp(14px, 1.05vw, 17px);
   line-height: 1.55;
   letter-spacing: -0.005em;
   color: var(--c-muted);
-  max-width: 56ch;
+  max-width: 64ch;
+  text-transform: none;
 }
 
-/* Screen-reader-only — visible to AT, hidden visually. Preserves the
-   sentence as one phrase even though the visible text is split per-char. */
+/* Screen-reader-only — keeps the per-char split text accessible
+   as one phrase. */
 .srOnly {
   position: absolute;
   width: 1px;
@@ -108,16 +106,20 @@
 
 /* ─── Responsive ─── */
 @media (max-width: 720px) {
-  .meta {
+  .cell {
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
+    padding: 14px 18px;
   }
-  .title {
-    font-size: clamp(48px, 14vw, 96px);
+  .cellStatement {
+    padding: clamp(32px, 8vw, 56px) 18px;
+  }
+  .cellCoda {
+    padding: 16px 18px;
   }
   .punch {
-    font-size: clamp(26px, 7.4vw, 48px);
+    font-size: clamp(24px, 7vw, 40px);
     max-width: 100%;
   }
 }
