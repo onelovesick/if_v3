@@ -129,16 +129,106 @@
 }
 
 /* ═══════════════════════════════════════════════════════
+   LAYER DIAGRAM — architectural section showing Infraforma
+   as a continuous information layer through every project
+   phase. Pure SVG, animated via GSAP targeting [data-diag*].
+   ═══════════════════════════════════════════════════════ */
+
+.diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: clamp(96px, 12vw, 160px);
+  color: var(--c-ink);
+  overflow: visible;
+}
+
+/* SVG transforms need transform-box: fill-box so transform-origin
+   resolves against the element's own bounding box, not the SVG root. */
+.diagram [data-diag-tick],
+.diagram [data-diag='top-rule'],
+.diagram [data-diag='bottom-rule'],
+.diagram [data-diag-band-rect] {
+  transform-box: fill-box;
+}
+
+.diagPhaseNum {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  fill: currentColor;
+  fill-opacity: 0.32;
+  font-feature-settings: "tnum";
+}
+
+.diagPhaseLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  fill: currentColor;
+  fill-opacity: 0.65;
+}
+
+.diagRule {
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-opacity: 0.18;
+}
+
+.diagTick {
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-opacity: 0.32;
+}
+
+.diagBand {
+  fill: var(--c-blue);
+}
+
+.diagBandInner {
+  stroke: rgba(255, 255, 255, 0.2);
+  stroke-width: 1;
+}
+
+.diagBandLabel {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.24em;
+  font-weight: 500;
+  fill: #ffffff;
+}
+
+.diagAnnotation {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  fill: currentColor;
+  fill-opacity: 0.55;
+}
+
+/* ═══════════════════════════════════════════════════════
    PILLARS — indexed grid
    ═══════════════════════════════════════════════════════ */
 
 .pillars {
   position: relative;
-  margin-top: clamp(96px, 12vw, 160px);
+  margin-top: clamp(80px, 9vw, 128px);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: clamp(32px, 4vw, 64px);
   row-gap: 32px;
+}
+
+/* Phase anchor — small mono caption at the top of each pillar that
+   connects the pillar to its lifecycle range in the diagram above. */
+.pillarPhase {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-blue);
+  font-feature-settings: "tnum";
 }
 
 .rule {
@@ -235,5 +325,10 @@
 
   .title {
     font-size: clamp(72px, 22vw, 140px);
+  }
+
+  /* Diagram is too dense for narrow viewports — hide. */
+  .diagram {
+    display: none;
   }
 }
