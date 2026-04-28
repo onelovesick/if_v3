@@ -129,81 +129,162 @@
 }
 
 /* ═══════════════════════════════════════════════════════
-   LAYER DIAGRAM — architectural section showing Infraforma
-   as a continuous information layer through every project
-   phase. Pure SVG, animated via GSAP targeting [data-diag*].
+   LAYERS INVENTORY — Infraforma shown as one ACTIVE layer
+   in a stack of project disciplines. Standard layers are
+   thin hairline rows; the active row is a tall blue card.
+   The contrast IS the metaphor.
    ═══════════════════════════════════════════════════════ */
 
-.diagram {
-  display: block;
-  width: 100%;
-  height: auto;
+.layers {
   margin-top: clamp(96px, 12vw, 160px);
-  color: var(--c-ink);
-  overflow: visible;
-}
-
-/* SVG transforms need transform-box: fill-box so transform-origin
-   resolves against the element's own bounding box, not the SVG root. */
-.diagram [data-diag-tick],
-.diagram [data-diag='top-rule'],
-.diagram [data-diag='bottom-rule'],
-.diagram [data-diag-band-rect] {
-  transform-box: fill-box;
-}
-
-.diagPhaseNum {
+  border: 1px solid rgba(10, 11, 13, 0.18);
+  background: var(--c-white);
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  fill: currentColor;
-  fill-opacity: 0.32;
-  font-feature-settings: "tnum";
+  will-change: transform, opacity;
 }
 
-.diagPhaseLabel {
-  font-family: var(--font-mono);
+.layersHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  padding: 18px clamp(20px, 2.4vw, 32px);
   font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(10, 11, 13, 0.55);
+  border-bottom: 1px solid rgba(10, 11, 13, 0.14);
+}
+
+.layersList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Standard layer row — thin, gray, single line */
+.layer {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  gap: clamp(14px, 1.6vw, 22px);
+  align-items: center;
+  padding: clamp(16px, 1.6vw, 22px) clamp(20px, 2.4vw, 32px);
+  border-bottom: 1px solid rgba(10, 11, 13, 0.08);
+  font-size: 12px;
   letter-spacing: 0.18em;
-  fill: currentColor;
-  fill-opacity: 0.65;
+  text-transform: uppercase;
+  color: rgba(10, 11, 13, 0.7);
+  will-change: transform, opacity;
 }
 
-.diagRule {
-  stroke: currentColor;
-  stroke-width: 1;
-  stroke-opacity: 0.18;
-}
-
-.diagTick {
-  stroke: currentColor;
-  stroke-width: 1;
-  stroke-opacity: 0.32;
-}
-
-.diagBand {
-  fill: var(--c-blue);
-}
-
-.diagBandInner {
-  stroke: rgba(255, 255, 255, 0.2);
-  stroke-width: 1;
-}
-
-.diagBandLabel {
-  font-family: var(--font-mono);
+/* Active layer row — Infraforma. Tall, blue, editorial. */
+.layerActive {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  gap: clamp(14px, 1.6vw, 22px);
+  align-items: start;
+  padding: clamp(40px, 5vw, 72px) clamp(20px, 2.4vw, 32px);
+  border-bottom: 1px solid rgba(10, 11, 13, 0.08);
+  background: var(--c-blue);
+  color: #ffffff;
   font-size: 14px;
-  letter-spacing: 0.24em;
-  font-weight: 500;
-  fill: #ffffff;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  position: relative;
+  will-change: transform, opacity;
 }
 
-.diagAnnotation {
-  font-family: var(--font-mono);
+.layerActive::before {
+  /* Thin top accent so the row reads as "selected" — like a Photoshop
+     active layer indicator. */
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--c-blue-bright);
+}
+
+/* Dot — small filled circle marker on each row */
+.layerDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(10, 11, 13, 0.4);
+}
+
+.layerActive .layerDot {
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+}
+
+/* Layer index — tabular numerals */
+.layerIdx {
+  font-feature-settings: "tnum";
+  opacity: 0.5;
+  min-width: 2.4ch;
+}
+
+.layerActive .layerIdx {
+  opacity: 0.85;
+}
+
+/* Layer body — name + optional sub-tagline */
+.layerBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.layerName {
+  font-weight: 500;
+}
+
+.layerActive .layerName {
+  font-size: clamp(18px, 1.6vw, 24px);
+  letter-spacing: 0.18em;
+  line-height: 1.2;
+}
+
+.layerSub {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 1.05vw, 16px);
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 56ch;
+}
+
+/* Layer status — right-aligned indicator */
+.layerStatus {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  opacity: 0.5;
+  font-feature-settings: "tnum";
+  white-space: nowrap;
+}
+
+.layerActive .layerStatus {
+  opacity: 1;
+  font-weight: 500;
+}
+
+/* Footer — caption row */
+.layersFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  padding: 18px clamp(20px, 2.4vw, 32px);
   font-size: 11px;
-  letter-spacing: 0.16em;
-  fill: currentColor;
-  fill-opacity: 0.55;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(10, 11, 13, 0.55);
+  border-top: 1px solid rgba(10, 11, 13, 0.14);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -327,8 +408,23 @@
     font-size: clamp(72px, 22vw, 140px);
   }
 
-  /* Diagram is too dense for narrow viewports — hide. */
-  .diagram {
+  /* On narrow viewports, drop the layer status indicator — gain
+     more room for the layer name. The active card stays full-width. */
+  .layer {
+    grid-template-columns: auto auto 1fr;
+  }
+  .layerActive {
+    grid-template-columns: auto auto 1fr;
+    padding: clamp(28px, 6vw, 48px) clamp(16px, 4vw, 24px);
+  }
+  .layer .layerStatus,
+  .layerActive .layerStatus {
     display: none;
+  }
+  .layersHeader,
+  .layersFooter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
   }
 }

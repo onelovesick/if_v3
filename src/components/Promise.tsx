@@ -5,15 +5,27 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/reducedMotion";
 import styles from "./Promise.module.css";
 
-const PHASES = [
-  "Concept",
-  "Design",
-  "Pre-con",
-  "Construction",
-  "Commissioning",
-  "Handover",
-  "Operations",
-] as const;
+type Layer = {
+  idx: string;
+  name: string;
+  active?: boolean;
+  sub?: string;
+};
+
+const LAYERS: Layer[] = [
+  { idx: "01", name: "Owner · Stakeholders" },
+  { idx: "02", name: "Designers · Engineers" },
+  { idx: "03", name: "Structural · Civil · Geotech" },
+  {
+    idx: "04",
+    name: "Infraforma · The Information Layer",
+    active: true,
+    sub: "Continuous through every phase. Holding the digital truth that the asset will run on.",
+  },
+  { idx: "05", name: "Contractor · Subcontractors" },
+  { idx: "06", name: "Quality · Compliance · Handover" },
+  { idx: "07", name: "Operations · Maintenance" },
+];
 
 const PILLARS = [
   {
@@ -40,10 +52,8 @@ const PILLARS = [
 ];
 
 /**
- * Renders a string as per-character spans separated by literal spaces between
- * words. Used to animate color sweep across each statement line as the user
- * scrolls past. The full sentence is also rendered as an offscreen sr-only
- * span so screen readers announce it as one phrase.
+ * Renders a string as per-character spans for scroll-driven color sweep.
+ * Full sentence is mirrored in an off-screen sr-only span for assistive tech.
  */
 function CharSweep({ text }: { text: string }) {
   const words = text.split(" ");
@@ -67,172 +77,59 @@ function CharSweep({ text }: { text: string }) {
 }
 
 /**
- * The Layer Diagram — architectural section showing Infraforma as a
- * persistent blue band running through every project phase. Built as
- * pure SVG so all styling and animation work via CSS classes and GSAP
- * targeting [data-diag] attributes.
+ * The Layers Inventory — Infraforma shown as the one ACTIVE layer in a
+ * stack of project disciplines. Standard layers are thin hairline rows;
+ * the Infraforma row is a tall blue card padded out with a sub-tagline.
+ * The visual metaphor IS the message: "we are a layer in your project."
  */
-function LayerDiagram() {
-  const W = 1200;
-  const H = 360;
-  const TOP_RULE_Y = 100;
-  const BAND_TOP = 140;
-  const BAND_HEIGHT = 110;
-  const BAND_BOTTOM = BAND_TOP + BAND_HEIGHT;
-  const BOTTOM_RULE_Y = 290;
-  const PHASE_NUM_Y = 22;
-  const PHASE_LABEL_Y = 50;
-  const ANNOTATION_Y = 320;
-  const labelMargin = 60;
-  const usableW = W - labelMargin * 2;
-  const phaseX = (i: number) =>
-    labelMargin + (usableW / (PHASES.length - 1)) * i;
+function LayersInventory() {
+  const total = LAYERS.length;
+  const activeCount = LAYERS.filter((l) => l.active).length;
 
   return (
-    <svg
-      data-anim="diagram"
-      className={styles.diagram}
-      viewBox={`0 0 ${W} ${H}`}
-      preserveAspectRatio="xMidYMid meet"
-      xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-label="Project lifecycle diagram. Infraforma sits as a continuous information layer through concept, design, pre-construction, construction, commissioning, handover, and operations."
-    >
-      {/* Phase numbers + labels above the top hairline */}
-      <g data-diag="phases">
-        {PHASES.map((phase, i) => (
-          <g key={phase} data-diag-phase>
-            <text
-              x={phaseX(i)}
-              y={PHASE_NUM_Y}
-              className={styles.diagPhaseNum}
-              textAnchor="middle"
-            >
-              {String(i + 1).padStart(2, "0")}
-            </text>
-            <text
-              x={phaseX(i)}
-              y={PHASE_LABEL_Y}
-              className={styles.diagPhaseLabel}
-              textAnchor="middle"
-            >
-              {phase.toUpperCase()}
-            </text>
-          </g>
+    <div data-anim="layers" className={styles.layers}>
+      <header className={styles.layersHeader}>
+        <span>Project Layers · Inventory</span>
+        <span>
+          {String(total).padStart(2, "0")} Layers ·{" "}
+          {String(activeCount).padStart(2, "0")} Active
+        </span>
+      </header>
+
+      <ol className={styles.layersList}>
+        {LAYERS.map((layer) => (
+          <li
+            key={layer.idx}
+            data-anim-layer
+            className={layer.active ? styles.layerActive : styles.layer}
+          >
+            <span className={styles.layerDot} aria-hidden="true" />
+            <span className={styles.layerIdx}>{layer.idx}</span>
+            <div className={styles.layerBody}>
+              <span className={styles.layerName}>{layer.name}</span>
+              {layer.sub ? (
+                <span className={styles.layerSub}>{layer.sub}</span>
+              ) : null}
+            </div>
+            <span className={styles.layerStatus}>
+              {layer.active ? "Active" : "Visible"}
+            </span>
+          </li>
         ))}
-      </g>
+      </ol>
 
-      {/* Top hairline */}
-      <line
-        data-diag="top-rule"
-        x1="0"
-        y1={TOP_RULE_Y}
-        x2={W}
-        y2={TOP_RULE_Y}
-        className={styles.diagRule}
-      />
-
-      {/* Top ticks crossing into the band — alternating long/short for rhythm */}
-      <g data-diag="top-ticks">
-        {PHASES.map((phase, i) => {
-          const len = i % 2 === 0 ? 30 : 16;
-          return (
-            <line
-              key={phase}
-              data-diag-tick
-              x1={phaseX(i)}
-              y1={TOP_RULE_Y}
-              x2={phaseX(i)}
-              y2={TOP_RULE_Y + len}
-              className={styles.diagTick}
-            />
-          );
-        })}
-      </g>
-
-      {/* The Infraforma band — solid blue, the visual answer */}
-      <g data-diag="band">
-        <rect
-          data-diag-band-rect
-          x="0"
-          y={BAND_TOP}
-          width={W}
-          height={BAND_HEIGHT}
-          className={styles.diagBand}
-        />
-        {/* Subtle horizontal hairlines inside the band — like a section
-            material indicator. White at low opacity. */}
-        <line
-          x1="0"
-          y1={BAND_TOP + 22}
-          x2={W}
-          y2={BAND_TOP + 22}
-          className={styles.diagBandInner}
-        />
-        <line
-          x1="0"
-          y1={BAND_BOTTOM - 22}
-          x2={W}
-          y2={BAND_BOTTOM - 22}
-          className={styles.diagBandInner}
-        />
-        <text
-          data-diag-band-label
-          x={W / 2}
-          y={BAND_TOP + BAND_HEIGHT / 2 + 5}
-          textAnchor="middle"
-          className={styles.diagBandLabel}
-        >
-          INFRAFORMA · THE INFORMATION LAYER
-        </text>
-      </g>
-
-      {/* Bottom ticks emerging from the band downward */}
-      <g data-diag="bottom-ticks">
-        {PHASES.map((phase, i) => {
-          const len = i % 2 === 0 ? 30 : 16;
-          return (
-            <line
-              key={phase}
-              data-diag-tick
-              x1={phaseX(i)}
-              y1={BOTTOM_RULE_Y - len}
-              x2={phaseX(i)}
-              y2={BOTTOM_RULE_Y}
-              className={styles.diagTick}
-            />
-          );
-        })}
-      </g>
-
-      {/* Bottom hairline */}
-      <line
-        data-diag="bottom-rule"
-        x1="0"
-        y1={BOTTOM_RULE_Y}
-        x2={W}
-        y2={BOTTOM_RULE_Y}
-        className={styles.diagRule}
-      />
-
-      {/* Bottom annotation — flush right */}
-      <text
-        data-diag="annotation"
-        x={W - labelMargin}
-        y={ANNOTATION_Y}
-        textAnchor="end"
-        className={styles.diagAnnotation}
-      >
-        → CONTINUOUS · CONCEPT THROUGH OPERATIONS
-      </text>
-    </svg>
+      <footer className={styles.layersFooter}>
+        <span>Continuous · Concept through Operations</span>
+        <span>↗ We sit at the interface of all</span>
+      </footer>
+    </div>
   );
 }
 
 /**
- * The Promise — the 20-second thesis. Editorial title, two-tone statement
- * with per-character scroll fills, the layer diagram as visual answer,
- * and the operational pillars anchored to project phases.
+ * The Promise — editorial title, two-tone statement with scroll-driven
+ * per-character color fills, the layers inventory as visual answer
+ * ("we are A LAYER"), and the operational pillars as the how.
  */
 export default function Promise() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -248,12 +145,10 @@ export default function Promise() {
         y: 0,
       });
       gsap.set(section.querySelectorAll("[data-rule]"), { scaleX: 1 });
-      gsap.set(
-        section.querySelectorAll(
-          "[data-diag], [data-diag-tick], [data-diag-phase], [data-diag-band-label]"
-        ),
-        { opacity: 1, scaleX: 1, scaleY: 1, x: 0, y: 0 }
-      );
+      gsap.set(section.querySelectorAll("[data-anim-layer]"), {
+        opacity: 1,
+        y: 0,
+      });
       return;
     }
 
@@ -310,13 +205,11 @@ export default function Promise() {
     });
     if (statement.scrollTrigger) triggers.push(statement.scrollTrigger);
 
-    // Per-character color sweep — each line fills with its target color
-    // as the reader scrolls past. SNAP per char (duration 0.001) to avoid
-    // half-tween artefacts. Wave moves left-to-right through reading order.
+    // Per-character color sweep — snap-fill, distinct color per tone
     const TONE_TARGETS: Record<string, string | null> = {
-      muted: "#0A0B0D", // gray → ink (negation publishes)
-      punch: "#1864C8", // ink → blue (the brand answer)
-      coda: null, // no sweep — final breath
+      muted: "#0A0B0D",
+      punch: "#1864C8",
+      coda: null,
     };
 
     section.querySelectorAll<HTMLElement>("[data-anim='line']").forEach((line) => {
@@ -370,99 +263,50 @@ export default function Promise() {
       if (punchScale.scrollTrigger) triggers.push(punchScale.scrollTrigger);
     }
 
-    // Layer diagram — the visual answer to "we are a layer". Choreographed
-    // entrance: phase labels fade in, top ticks scale down, blue band draws
-    // left to right, label appears inside, bottom ticks scale up, bottom
-    // rule draws, annotation lands last.
-    const diagram = section.querySelector("[data-anim='diagram']");
-    if (diagram) {
+    // Layers inventory — cascade rows top-to-bottom; the active (Infraforma)
+    // row gets a horizontal blue-fill reveal as it lands.
+    const layersPanel = section.querySelector<HTMLElement>("[data-anim='layers']");
+    if (layersPanel) {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: diagram,
+          trigger: layersPanel,
           start: "top 78%",
           toggleActions: "play none none none",
         },
         defaults: { ease },
       });
 
-      // Top rule draws
+      // Whole panel gentle entrance
       tl.from(
-        diagram.querySelector("[data-diag='top-rule']"),
-        { scaleX: 0, transformOrigin: "left center", duration: 0.9 },
+        layersPanel,
+        { opacity: 0, y: 18, duration: 0.6 },
         0
       );
 
-      // Phase labels stagger in
+      // Cascade rows
       tl.from(
-        diagram.querySelectorAll("[data-diag-phase]"),
-        { opacity: 0, y: 8, duration: 0.5, stagger: 0.06 },
+        layersPanel.querySelectorAll("[data-anim-layer]"),
+        { opacity: 0, y: 14, duration: 0.4, stagger: 0.08 },
         0.15
       );
 
-      // Top ticks scale down from rule
-      tl.from(
-        diagram.querySelectorAll(
-          "[data-diag='top-ticks'] [data-diag-tick]"
-        ),
-        {
-          scaleY: 0,
-          transformOrigin: "top center",
-          duration: 0.45,
-          stagger: 0.04,
-        },
-        0.6
-      );
-
-      // The band draws across — the moment
-      tl.from(
-        diagram.querySelector("[data-diag-band-rect]"),
-        {
-          scaleX: 0,
-          transformOrigin: "left center",
-          duration: 1.1,
-        },
-        0.75
-      );
-
-      // Band label fades in after band fills
-      tl.from(
-        diagram.querySelector("[data-diag-band-label]"),
-        { opacity: 0, duration: 0.55 },
-        1.5
-      );
-
-      // Bottom ticks rise into the bottom rule
-      tl.from(
-        diagram.querySelectorAll(
-          "[data-diag='bottom-ticks'] [data-diag-tick]"
-        ),
-        {
-          scaleY: 0,
-          transformOrigin: "bottom center",
-          duration: 0.45,
-          stagger: 0.04,
-        },
-        1.05
-      );
-
-      // Bottom rule draws
-      tl.from(
-        diagram.querySelector("[data-diag='bottom-rule']"),
-        { scaleX: 0, transformOrigin: "left center", duration: 0.9 },
-        1.1
-      );
-
-      // Annotation lands last
-      tl.from(
-        diagram.querySelector("[data-diag='annotation']"),
-        { opacity: 0, x: -16, duration: 0.6 },
-        1.7
-      );
+      // Active (Infraforma) row — subtle scale "click" once it lands
+      const activeRow = layersPanel.querySelector(
+        `.${styles.layerActive}`
+      ) as HTMLElement | null;
+      if (activeRow) {
+        tl.fromTo(
+          activeRow,
+          { scaleX: 0.985, transformOrigin: "left center" },
+          { scaleX: 1, duration: 0.5 },
+          ">-0.1"
+        );
+      }
 
       if (tl.scrollTrigger) triggers.push(tl.scrollTrigger);
     }
 
-    // Architectural rule above pillars draws across before the pillars enter
+    // Architectural rule above pillars
     const rule = section.querySelector("[data-rule]");
     if (rule) {
       const ruleTween = gsap.from(rule, {
@@ -494,7 +338,7 @@ export default function Promise() {
     });
     if (numerals.scrollTrigger) triggers.push(numerals.scrollTrigger);
 
-    // Pillar text body — staggered behind the numerals
+    // Pillar text body
     const pillars = gsap.from(section.querySelectorAll("[data-anim='pillar-body']"), {
       opacity: 0,
       y: 18,
@@ -549,8 +393,8 @@ export default function Promise() {
           </p>
         </div>
 
-        {/* The Layer Diagram — visual answer to "we are a layer" */}
-        <LayerDiagram />
+        {/* The Layers Inventory — visual answer to "we are a layer" */}
+        <LayersInventory />
 
         {/* Pillar grid — operational details, anchored to project phases */}
         <div data-anim="pillars" className={styles.pillars}>
