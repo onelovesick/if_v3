@@ -89,7 +89,10 @@
   max-width: 22ch;
 }
 
-.statementText span {
+/* Direct child only — line spans become blocks. Nested spans (the per-char
+   sweep markup and the sr-only mirror) keep default inline so the chars
+   flow as text instead of stacking vertically. */
+.statementText > span {
   display: block;
   will-change: transform, opacity, filter;
 }
