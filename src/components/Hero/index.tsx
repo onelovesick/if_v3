@@ -9,11 +9,11 @@ const VIDEO_SRC = "/hero-loop.mp4";
 const WORDMARK = "Infraforma";
 
 /**
- * Hero — full-bleed background video washed white, with the brand
- * wordmark as the dominant typographic moment, the slogan and value
- * prop centered below, and an editorial about block anchored to the
- * bottom-left corner. On mobile, the about block flows below the
- * centered stack.
+ * Hero — full-bleed video washed white. Composition is an asymmetric
+ * editorial spread: title column on the left (wordmark, slogan, value
+ * prop), a vertical hairline divider, body column on the right
+ * (About label + positioning paragraph). Both columns vertically
+ * centered. On mobile they stack with a horizontal divider between.
  */
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -25,10 +25,17 @@ export default function Hero() {
     const letters = root.querySelectorAll<HTMLElement>("[data-letter]");
     const tag = root.querySelector(`.${CSS.escape(styles.tagline)}`);
     const value = root.querySelector(`.${CSS.escape(styles.valueProp)}`);
-    const about = root.querySelector(`.${CSS.escape(styles.aboutBlock)}`);
+    const divider = root.querySelector(`.${CSS.escape(styles.divider)}`);
+    const bodyHead = root.querySelector(`.${CSS.escape(styles.aboutLabel)}`);
+    const bodyText = root.querySelector(`.${CSS.escape(styles.aboutText)}`);
 
     if (prefersReducedMotion()) {
-      gsap.set([tag, value, about].filter(Boolean), { opacity: 1, y: 0 });
+      gsap.set([tag, value, divider, bodyHead, bodyText].filter(Boolean), {
+        opacity: 1,
+        y: 0,
+        scaleY: 1,
+        scaleX: 1,
+      });
       gsap.set(letters, { opacity: 1, y: 0 });
       return;
     }
@@ -44,9 +51,24 @@ export default function Hero() {
       );
     }
 
-    if (tag) tl.to(tag, { opacity: 1, y: 0, duration: 0.7 }, 0.85);
-    if (value) tl.to(value, { opacity: 1, y: 0, duration: 0.7 }, 1.0);
-    if (about) tl.to(about, { opacity: 1, y: 0, duration: 0.8 }, 1.2);
+    if (tag) tl.to(tag, { opacity: 1, y: 0, duration: 0.7 }, 0.75);
+    if (value) tl.to(value, { opacity: 1, y: 0, duration: 0.7 }, 0.9);
+
+    if (divider) {
+      tl.from(
+        divider,
+        {
+          scaleY: 0,
+          transformOrigin: "top center",
+          duration: 1.2,
+          ease: "power2.inOut",
+        },
+        0.5,
+      );
+    }
+
+    if (bodyHead) tl.to(bodyHead, { opacity: 1, y: 0, duration: 0.55 }, 1.0);
+    if (bodyText) tl.to(bodyText, { opacity: 1, y: 0, duration: 0.85 }, 1.15);
 
     return () => {
       tl.kill();
@@ -71,44 +93,47 @@ export default function Hero() {
         aria-hidden="true"
       />
 
-      {/* Whitewash overlay — turns video into paper-tinted texture */}
+      {/* Whitewash + grain */}
       <div className={styles.whitewash} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
 
-      {/* Centered wordmark + slogan + value prop */}
-      <div className={styles.main}>
-        <h1 className={styles.wordmark} aria-label={WORDMARK}>
-          <span aria-hidden="true">
-            {WORDMARK.split("").map((ch, i) => (
-              <Fragment key={i}>
-                <span data-letter>{ch}</span>
-              </Fragment>
-            ))}
-          </span>
-        </h1>
+      {/* Editorial spread: title column | divider | body column */}
+      <div className={styles.spread}>
+        <div className={styles.titleColumn}>
+          <h1 className={styles.wordmark} aria-label={WORDMARK}>
+            <span aria-hidden="true">
+              {WORDMARK.split("").map((ch, i) => (
+                <Fragment key={i}>
+                  <span data-letter>{ch}</span>
+                </Fragment>
+              ))}
+            </span>
+          </h1>
 
-        <p className={styles.tagline}>
-          Human-Led, <em>Digitally</em> Enabled.
-        </p>
+          <p className={styles.tagline}>
+            Human-Led, <em>Digitally</em> Enabled.
+          </p>
 
-        <p className={styles.valueProp}>
-          We&rsquo;re how heavy civil mega-projects open on time.
-        </p>
+          <p className={styles.valueProp}>
+            We&rsquo;re how heavy civil mega-projects open on time.
+          </p>
+        </div>
+
+        <span className={styles.divider} aria-hidden="true" />
+
+        <div className={styles.bodyColumn}>
+          <span className={styles.aboutLabel}>About the Practice</span>
+          <p className={styles.aboutText}>
+            Infraforma gives infrastructure teams the structure they
+            need to deliver with confidence. We help owners, designers,
+            builders, and delivery teams turn scattered project
+            information into clear, connected workflows, making it
+            easier to coordinate decisions, track requirements, manage
+            compliance, and carry reliable information from design
+            through construction and handover.
+          </p>
+        </div>
       </div>
-
-      {/* About block — bottom-left corner on desktop, flows below on mobile */}
-      <aside className={styles.aboutBlock}>
-        <span className={styles.aboutLabel}>About</span>
-        <p className={styles.aboutText}>
-          Infraforma gives infrastructure teams the structure they need
-          to deliver with confidence. We help owners, designers,
-          builders, and delivery teams turn scattered project
-          information into clear, connected workflows, making it easier
-          to coordinate decisions, track requirements, manage
-          compliance, and carry reliable information from design
-          through construction and handover.
-        </p>
-      </aside>
     </section>
   );
 }
