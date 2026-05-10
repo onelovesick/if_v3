@@ -1,0 +1,331 @@
+/* ═══════════════════════════════════════════════════════
+   SOLUTION LAYERS — three stratigraphic bands. The
+   structure of an information delivery practice as a
+   geological section drawing. Light register, restrained,
+   one signal blue accent on hover.
+   ═══════════════════════════════════════════════════════ */
+
+.section {
+  position: relative;
+  background: var(--c-paper);
+  color: var(--c-ink);
+  isolation: isolate;
+  padding: 0;
+}
+
+.container {
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* ─── Vertical full-height side rule + rotated mono label ─── */
+.sideRule {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: clamp(24px, 4vw, 64px);
+  width: 1px;
+  background: var(--c-rule);
+  z-index: 1;
+  will-change: transform;
+}
+
+.sideLabel {
+  position: absolute;
+  top: 50%;
+  left: clamp(24px, 4vw, 64px);
+  z-index: 2;
+  transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+  transform-origin: center center;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  background: var(--c-paper);
+  padding: 6px 14px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@media (max-width: 980px) {
+  .sideRule,
+  .sideLabel {
+    display: none;
+  }
+}
+
+/* ─── Section header bar (running magazine header) ─── */
+.headerBar {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  padding: clamp(64px, 8vh, 112px) clamp(24px, 4vw, 64px) 14px clamp(80px, 8vw, 144px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  border-bottom: 1px solid var(--c-rule);
+}
+
+.headerBar > span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.headerBar [data-glyph] {
+  width: 28px;
+  height: 1px;
+  background: var(--c-rule);
+  margin-bottom: 3px;
+}
+
+@media (max-width: 980px) {
+  .headerBar {
+    padding-left: clamp(24px, 4vw, 64px);
+  }
+}
+
+/* ─── Bands ─── */
+.bands {
+  position: relative;
+  z-index: 1;
+}
+
+.band {
+  position: relative;
+  padding: clamp(72px, 12vh, 152px) clamp(24px, 4vw, 64px) clamp(72px, 12vh, 152px) clamp(80px, 8vw, 144px);
+  border-top: 1px solid transparent;
+}
+
+/* The one band that gets a slight tonal shift — middle band */
+.bandAlt {
+  background: var(--c-rule);
+  /* Use a paper-tinted mid tone, not the rule color directly */
+  background: color-mix(in oklab, var(--c-paper) 92%, var(--c-ink) 8%);
+}
+
+/* Top hairline that draws L→R on intersection */
+.bandRule {
+  position: absolute;
+  top: 0;
+  left: clamp(24px, 4vw, 64px);
+  right: clamp(24px, 4vw, 64px);
+  height: 1px;
+  background: var(--c-ink);
+  opacity: 0.85;
+  transform-origin: left center;
+  will-change: transform;
+}
+
+@media (max-width: 980px) {
+  .band {
+    padding-left: clamp(24px, 4vw, 64px);
+  }
+  .bandRule {
+    left: clamp(24px, 4vw, 64px);
+    right: clamp(24px, 4vw, 64px);
+  }
+}
+
+.bandGrid {
+  display: grid;
+  grid-template-columns: minmax(80px, 96px) minmax(0, 1.6fr) minmax(220px, 0.9fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .bandGrid {
+    grid-template-columns: minmax(56px, 72px) 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 720px) {
+  .bandGrid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+/* ─── Numeral ─── */
+.numeral {
+  font-family: var(--font-mono);
+  font-size: clamp(48px, 6vw, 88px);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  color: var(--c-ink);
+  margin: 0;
+  padding-top: 0.06em;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 720px) {
+  .numeral {
+    font-size: 56px;
+  }
+}
+
+/* ─── Heading + tagline ─── */
+.headingBlock {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.5vw, 36px);
+  min-width: 0;
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(36px, 5.6vw, 84px);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  color: var(--c-ink);
+  text-wrap: balance;
+  will-change: transform, opacity;
+}
+
+.headingLink {
+  display: inline-block;
+  position: relative;
+  color: inherit;
+  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.headingLink::after {
+  content: "→";
+  display: inline-block;
+  margin-left: 0.32em;
+  font-size: 0.7em;
+  font-family: var(--font-body);
+  font-weight: 400;
+  vertical-align: 0.18em;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  color: var(--c-blue);
+}
+
+.headingLink:hover,
+.headingLink:focus-visible {
+  color: var(--c-blue);
+}
+
+.headingLink:hover::after,
+.headingLink:focus-visible::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.tagline {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(18px, 1.4vw, 23px);
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--c-muted);
+  max-width: 36ch;
+  will-change: transform, opacity;
+}
+
+/* ─── Capabilities column ─── */
+.capabilities {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  padding-top: 8px;
+}
+
+.capsHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--c-rule);
+  will-change: opacity, transform;
+}
+
+.capsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.capsList li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--c-rule);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--c-ink);
+  will-change: opacity, transform;
+}
+
+.capsList li:last-child {
+  border-bottom: none;
+}
+
+.capIndex {
+  color: var(--c-muted);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+}
+
+@media (max-width: 980px) {
+  .capabilities {
+    grid-column: 2 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .capabilities {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ─── Foot strip ─── */
+.footStrip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 14px clamp(24px, 4vw, 64px) clamp(48px, 6vh, 80px) clamp(80px, 8vw, 144px);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  border-top: 1px solid var(--c-rule);
+}
+
+@media (max-width: 980px) {
+  .footStrip {
+    padding-left: clamp(24px, 4vw, 64px);
+  }
+}
