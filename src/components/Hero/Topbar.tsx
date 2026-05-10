@@ -22,17 +22,19 @@ export default function Topbar() {
 
   return (
     <header className={`${styles.topbar} ${scrolled ? styles.scrolled : ""}`}>
-      <a href="/" className={styles.brand} aria-label="Infraforma — home">
-        Infraforma
-      </a>
+      <div className={styles.left}>
+        <a href="/" className={styles.brand} aria-label="Infraforma — home">
+          Infraforma
+        </a>
 
-      <nav className={styles.nav} aria-label="Primary">
-        {NAV_ITEMS.map((item) => (
-          <a key={item.label} href={item.href} className={styles.navLink}>
-            {item.label}
-          </a>
-        ))}
-      </nav>
+        <nav className={styles.nav} aria-label="Primary">
+          {NAV_ITEMS.map((item) => (
+            <a key={item.label} href={item.href} className={styles.navLink}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      </div>
 
       <a href="#" className={styles.cta}>
         {/* TODO: link to /contact */}

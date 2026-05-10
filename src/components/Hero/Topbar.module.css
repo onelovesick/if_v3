@@ -1,6 +1,8 @@
 /* ═══════════════════════════════════════════════════════
-   TOPBAR — global nav. Ink on paper. Hairline-bottom on
-   scroll. No dark gradient — the homepage is light.
+   TOPBAR — global nav. Edges only: brand far-left, nav
+   tucked to its right, CTA far-right. The center stays
+   empty so it never sits on the visual axis of the
+   centered hero wordmark.
    ═══════════════════════════════════════════════════════ */
 
 .topbar {
@@ -12,6 +14,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 32px;
   padding: 18px clamp(24px, 4vw, 56px);
   background: transparent;
   color: var(--c-ink);
@@ -26,6 +29,14 @@
   border-bottom-color: var(--c-rule);
 }
 
+/* Left cluster: brand + nav, grouped tightly to the far edge */
+.left {
+  display: inline-flex;
+  align-items: baseline;
+  gap: clamp(24px, 3vw, 48px);
+  min-width: 0;
+}
+
 .brand {
   font-family: var(--font-display);
   font-weight: 500;
@@ -36,7 +47,7 @@
 
 .nav {
   display: flex;
-  gap: 32px;
+  gap: 24px;
 }
 
 .navLink {
@@ -84,6 +95,7 @@
   border: 1px solid var(--c-ink);
   border-radius: 2px;
   transition: background 200ms ease, color 200ms ease;
+  white-space: nowrap;
 }
 
 .cta:hover,
