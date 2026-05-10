@@ -1,7 +1,8 @@
 /* ═══════════════════════════════════════════════════════
    HERO — full-bleed video background, whitewash overlay,
-   centered Infraforma wordmark, slogan, value prop.
-   No topbar, no header, no foot strip.
+   centered Infraforma wordmark, slogan, value prop, plus
+   an editorial about block anchored to the bottom-left
+   corner on desktop (flows below on mobile).
    ═══════════════════════════════════════════════════════ */
 
 .hero {
@@ -11,8 +12,7 @@
   background: var(--c-paper);
   color: var(--c-ink);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   isolation: isolate;
   overflow: hidden;
 }
@@ -58,10 +58,11 @@
   );
 }
 
-/* ─── Main content area — centered stack ─── */
+/* ─── Main content area — centered stack, takes the full viewport ─── */
 .main {
   position: relative;
   z-index: 4;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -125,16 +126,79 @@
   transform: translateY(10px);
 }
 
+/* ─── About block — bottom-left corner on desktop ─── */
+.aboutBlock {
+  position: absolute;
+  z-index: 4;
+  bottom: clamp(40px, 6vh, 80px);
+  left: clamp(24px, 4vw, 64px);
+  max-width: clamp(280px, 36vw, 460px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  will-change: opacity, transform;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.aboutLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+.aboutLabel::before {
+  content: "";
+  width: 32px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.aboutText {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  color: var(--c-ink);
+  opacity: 0.88;
+}
+
 /* ─── Reduced motion: render at final state ─── */
 @media (prefers-reduced-motion: reduce) {
   .tagline,
-  .valueProp {
+  .valueProp,
+  .aboutBlock {
     opacity: 1;
     transform: none;
   }
   .wordmark [data-letter] {
     transform: none;
     opacity: 1;
+  }
+}
+
+/* ─── Tablet: about block flows in (still positioned, but on a tighter viewport) ─── */
+@media (max-width: 980px) {
+  .aboutBlock {
+    position: static;
+    margin: 0 auto;
+    margin-top: clamp(40px, 6vh, 64px);
+    padding: 0 clamp(24px, 4vw, 64px) clamp(48px, 8vh, 96px);
+    max-width: 60ch;
+    align-items: flex-start;
+  }
+  /* Push main up a bit so the centered comp doesn't sit too low */
+  .main {
+    flex: 0 1 auto;
+    min-height: 100svh;
   }
 }
 
@@ -154,5 +218,13 @@
   .valueProp {
     font-size: 15px;
     max-width: 32ch;
+  }
+  .aboutBlock {
+    margin-top: 32px;
+    padding: 0 24px clamp(48px, 8vh, 80px);
+    gap: 12px;
+  }
+  .aboutText {
+    font-size: 14px;
   }
 }

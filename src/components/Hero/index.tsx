@@ -10,9 +10,10 @@ const WORDMARK = "Infraforma";
 
 /**
  * Hero — full-bleed background video washed white, with the brand
- * wordmark as the dominant typographic moment, the slogan below it,
- * and a single-sentence value prop. No topbar, no section header,
- * no foot strip. Just the page.
+ * wordmark as the dominant typographic moment, the slogan and value
+ * prop centered below, and an editorial about block anchored to the
+ * bottom-left corner. On mobile, the about block flows below the
+ * centered stack.
  */
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -24,9 +25,10 @@ export default function Hero() {
     const letters = root.querySelectorAll<HTMLElement>("[data-letter]");
     const tag = root.querySelector(`.${CSS.escape(styles.tagline)}`);
     const value = root.querySelector(`.${CSS.escape(styles.valueProp)}`);
+    const about = root.querySelector(`.${CSS.escape(styles.aboutBlock)}`);
 
     if (prefersReducedMotion()) {
-      gsap.set([tag, value].filter(Boolean), { opacity: 1, y: 0 });
+      gsap.set([tag, value, about].filter(Boolean), { opacity: 1, y: 0 });
       gsap.set(letters, { opacity: 1, y: 0 });
       return;
     }
@@ -44,6 +46,7 @@ export default function Hero() {
 
     if (tag) tl.to(tag, { opacity: 1, y: 0, duration: 0.7 }, 0.85);
     if (value) tl.to(value, { opacity: 1, y: 0, duration: 0.7 }, 1.0);
+    if (about) tl.to(about, { opacity: 1, y: 0, duration: 0.8 }, 1.2);
 
     return () => {
       tl.kill();
@@ -92,6 +95,20 @@ export default function Hero() {
           We&rsquo;re how heavy civil mega-projects open on time.
         </p>
       </div>
+
+      {/* About block — bottom-left corner on desktop, flows below on mobile */}
+      <aside className={styles.aboutBlock}>
+        <span className={styles.aboutLabel}>About</span>
+        <p className={styles.aboutText}>
+          Infraforma gives infrastructure teams the structure they need
+          to deliver with confidence. We help owners, designers,
+          builders, and delivery teams turn scattered project
+          information into clear, connected workflows, making it easier
+          to coordinate decisions, track requirements, manage
+          compliance, and carry reliable information from design
+          through construction and handover.
+        </p>
+      </aside>
     </section>
   );
 }
