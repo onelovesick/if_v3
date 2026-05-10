@@ -44,3 +44,14 @@ next-env.d.ts
 
 # brainstorming visual companion
 .superpowers/
+
+# local agent / skill installations (keep per-developer)
+/.agents/
+/.claude/skills/
+/skills-lock.json
+
+# strategic context (private)
+/PRODUCT.md
+
+# unrelated project residue
+/cleaning company/
