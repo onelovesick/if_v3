@@ -115,7 +115,7 @@ export default function Hero() {
           </p>
 
           <p className={styles.valueProp}>
-            We&rsquo;re how heavy civil mega-projects open on time.
+            Strategy. Delivery. Intelligence.
           </p>
         </div>
 

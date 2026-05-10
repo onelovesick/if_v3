@@ -115,19 +115,31 @@
   font-style: normal;
 }
 
+/* Three-word declarative — sits as a co-equal title alongside the
+   slogan (Kiewit-inspired pattern: "Engineering. Construction. Solutions.").
+   Each word maps to one of our three solution layers (S03). */
 .valueProp {
   margin: 0;
   margin-top: clamp(4px, 0.6vh, 12px);
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: clamp(15px, 1.1vw, 19px);
-  line-height: 1.4;
-  letter-spacing: -0.005em;
-  color: var(--c-muted);
-  max-width: 44ch;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(20px, 1.9vw, 30px);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  color: var(--c-ink);
   will-change: opacity, transform;
   opacity: 0;
   transform: translateY(10px);
+}
+
+.valueProp::before {
+  content: "";
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--c-blue);
+  margin-bottom: 18px;
+  opacity: 0.85;
 }
 
 /* ─── Vertical hairline divider ─── */
@@ -241,8 +253,12 @@
     font-size: 18px;
   }
   .valueProp {
-    font-size: 15px;
-    max-width: 32ch;
+    font-size: 20px;
+    margin-top: 8px;
+  }
+  .valueProp::before {
+    width: 24px;
+    margin-bottom: 14px;
   }
   .aboutText {
     font-size: 15px;
