@@ -55,3 +55,4 @@ next-env.d.ts
 
 # unrelated project residue
 /cleaning company/
+/.claude/settings.json

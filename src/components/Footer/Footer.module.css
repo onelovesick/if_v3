@@ -1,0 +1,122 @@
+.foot {
+  background: var(--c-ink-deep);
+  color: color-mix(in oklch, var(--c-paper) 75%, transparent);
+  padding: clamp(60px, 8vh, 100px) var(--gutter) 32px;
+}
+
+.inner {
+  max-width: var(--max-content);
+  margin: 0 auto;
+}
+
+.top {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 50px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid color-mix(in oklch, var(--c-paper) 14%, transparent);
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-size: 32px;
+  color: var(--c-paper);
+  line-height: 1;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--c-blue);
+  margin-left: 5px;
+  margin-bottom: 2px;
+  border-radius: 50%;
+}
+
+.brandText {
+  margin: 18px 0 0;
+  max-width: 36ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: color-mix(in oklch, var(--c-paper) 55%, transparent);
+}
+
+.col h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: color-mix(in oklch, var(--c-paper) 65%, transparent);
+  margin: 0 0 18px;
+}
+
+.col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.col a {
+  color: var(--c-paper);
+  font-size: 14px;
+  transition: color 250ms var(--ease);
+}
+
+.col a:hover,
+.col a:focus-visible {
+  color: var(--c-blue-bright);
+}
+
+.bottom {
+  padding-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 36px;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in oklch, var(--c-paper) 50%, transparent);
+}
+
+.bottom a {
+  color: inherit;
+  transition: color 250ms var(--ease);
+}
+
+.bottom a:hover,
+.bottom a:focus-visible {
+  color: var(--c-paper);
+}
+
+.spacer {
+  flex: 1;
+}
+
+@media (max-width: 880px) {
+  .top {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 40px;
+  }
+}
+
+@media (max-width: 540px) {
+  .top {
+    grid-template-columns: 1fr;
+  }
+}

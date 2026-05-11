@@ -1,11 +1,7 @@
 /* ═══════════════════════════════════════════════════════
-   INFRAFORMA · BRAND v2
-   Söhne typography, ink/paper/blue palette
-   See BRAND.md and STRUCTURE.md for the full system.
+   INFRAFORMA · BRAND
+   Söhne typography, paper / ink / blue palette.
    ═══════════════════════════════════════════════════════ */
-
-/* IMPORTANT: Söhne is licensed for trial use only via Klim Type Foundry.
-   Before going to production, license the family. */
 
 @import "tailwindcss";
 
@@ -52,25 +48,46 @@
   --font-body: 'Söhne', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: 'Söhne Mono', ui-monospace, Menlo, Consolas, monospace;
 
-  /* Color palette — locked, no second accent */
+  /* Color palette */
   --c-white: #FFFFFF;
   --c-paper: #FAFAF7;
+  --c-paper-2: #F2F1ED;
   --c-rule: #E2E2DD;
-  --c-muted: #5C5C58;
+  --c-muted: #6C6C68;
+  --c-muted-2: #95958F;
   --c-ink: #0A0B0D;
+  --c-ink-deep: #060709;
+  --c-steel: #1B1D22;
   --c-blue: #1864C8;
   --c-blue-bright: #2E7CE6;
   --c-blue-glow: rgba(46, 124, 230, 0.55);
 
+  /* Layout */
+  --gutter: clamp(24px, 5vw, 96px);
+  --max-content: 1920px;
+
+  /* Type scale */
+  --t-eyebrow: 11px;
+  --t-body:    clamp(15px, 1.05vw, 18px);
+  --t-lead:    clamp(18px, 1.4vw, 24px);
+  --t-h3:      clamp(22px, 2vw, 32px);
+  --t-h2:      clamp(36px, 5.5vw, 96px);
+  --t-h1:      clamp(56px, 9.5vw, 188px);
+  --t-stat:    clamp(64px, 11vw, 200px);
+
   /* Easing */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-fast: cubic-bezier(0.2, 0.9, 0.25, 1);
   --ease-cinematic: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* ─── BASE ─── */
 html {
-  background: var(--c-white);
+  background: var(--c-paper);
   color: var(--c-ink);
   font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -78,7 +95,7 @@ html {
 body {
   margin: 0;
   overflow-x: hidden;
-  background: var(--c-white);
+  background: var(--c-paper);
 }
 
 *, *::before, *::after {
@@ -93,6 +110,11 @@ a {
 button {
   font-family: inherit;
   cursor: pointer;
+}
+
+::selection {
+  background: var(--c-blue);
+  color: var(--c-paper);
 }
 
 /* ─── FOCUS RING ─── */

@@ -6,15 +6,10 @@ import { prefersReducedMotion } from "@/lib/reducedMotion";
 import styles from "./Hero.module.css";
 
 const VIDEO_SRC = "/hero-loop.mp4";
-const WORDMARK = "Infraforma";
 
-/**
- * Hero — full-bleed video washed white. Composition is an asymmetric
- * editorial spread: title column on the left (wordmark, slogan, value
- * prop), a vertical hairline divider, body column on the right
- * (About label + positioning paragraph). Both columns vertically
- * centered. On mobile they stack with a horizontal divider between.
- */
+const TAGLINE = ["The", "Digital", "Delivery", "Partner"];
+const TAGLINE_ACCENT = "for Complex Infrastructure.";
+
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
 
@@ -22,53 +17,55 @@ export default function Hero() {
     const root = heroRef.current;
     if (!root) return;
 
-    const letters = root.querySelectorAll<HTMLElement>("[data-letter]");
-    const tag = root.querySelector(`.${CSS.escape(styles.tagline)}`);
-    const value = root.querySelector(`.${CSS.escape(styles.valueProp)}`);
-    const divider = root.querySelector(`.${CSS.escape(styles.divider)}`);
-    const bodyHead = root.querySelector(`.${CSS.escape(styles.aboutLabel)}`);
-    const bodyText = root.querySelector(`.${CSS.escape(styles.aboutText)}`);
+    const frameTL = root.querySelector(`.${CSS.escape(styles.frameTL)}`);
+    const frameTR = root.querySelector(`.${CSS.escape(styles.frameTR)}`);
+    const eyebrow = root.querySelector(`.${CSS.escape(styles.eyebrow)}`);
+    const headlineWords = root.querySelectorAll<HTMLElement>("[data-word='h1']");
+    const tagWords = root.querySelectorAll<HTMLElement>("[data-word='tag']");
+    const ctas = root.querySelector(`.${CSS.escape(styles.cta)}`);
+    const scroll = root.querySelector(`.${CSS.escape(styles.scroll)}`);
+    const edge = root.querySelector(`.${CSS.escape(styles.edge)}`);
 
     if (prefersReducedMotion()) {
-      gsap.set([tag, value, divider, bodyHead, bodyText].filter(Boolean), {
-        opacity: 1,
-        y: 0,
-        scaleY: 1,
-        scaleX: 1,
-      });
-      gsap.set(letters, { opacity: 1, y: 0 });
+      gsap.set(
+        [frameTL, frameTR, eyebrow, ctas, scroll, edge].filter(Boolean),
+        { opacity: 1, y: 0, scaleY: 1 },
+      );
+      gsap.set([headlineWords, tagWords].flat(), { opacity: 1, y: 0 });
       return;
     }
 
-    const ease = "expo.out";
-    const tl = gsap.timeline({ defaults: { ease } });
+    const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
 
-    if (letters.length) {
+    if (frameTL) tl.to(frameTL, { opacity: 1, duration: 0.9 }, 0.1);
+    if (frameTR) tl.to(frameTR, { opacity: 1, duration: 0.9 }, 0.1);
+    if (eyebrow) tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.9 }, 0.15);
+
+    if (headlineWords.length) {
       tl.to(
-        letters,
-        { y: 0, opacity: 1, duration: 1.1, stagger: 0.045 },
-        0.18,
+        headlineWords,
+        { y: 0, opacity: 1, duration: 1.1, stagger: 0.1 },
+        0.2,
+      );
+    }
+    if (tagWords.length) {
+      tl.to(
+        tagWords,
+        { y: 0, opacity: 1, duration: 0.85, stagger: 0.07 },
+        0.55,
       );
     }
 
-    if (tag) tl.to(tag, { opacity: 1, y: 0, duration: 0.7 }, 0.75);
-    if (value) tl.to(value, { opacity: 1, y: 0, duration: 0.7 }, 0.9);
-
-    if (divider) {
+    if (edge) {
       tl.from(
-        divider,
-        {
-          scaleY: 0,
-          transformOrigin: "top center",
-          duration: 1.2,
-          ease: "power2.inOut",
-        },
+        edge,
+        { scaleY: 0, transformOrigin: "top center", duration: 1.2, ease: "power2.inOut" },
         0.5,
       );
     }
 
-    if (bodyHead) tl.to(bodyHead, { opacity: 1, y: 0, duration: 0.55 }, 1.0);
-    if (bodyText) tl.to(bodyText, { opacity: 1, y: 0, duration: 0.85 }, 1.15);
+    if (ctas) tl.to(ctas, { opacity: 1, y: 0, duration: 0.9 }, 1.1);
+    if (scroll) tl.to(scroll, { opacity: 1, duration: 1.1 }, 1.0);
 
     return () => {
       tl.kill();
@@ -78,60 +75,91 @@ export default function Hero() {
   return (
     <section
       ref={heroRef}
+      id="top"
+      data-hero
       className={styles.hero}
       aria-label="Infraforma"
     >
-      {/* Background video */}
-      <video
-        className={styles.bgVideo}
-        src={VIDEO_SRC}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-hidden="true"
-      />
+      {/* Layer 1 — Background video */}
+      <div className={styles.media}>
+        <video
+          src={VIDEO_SRC}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        />
+      </div>
 
-      {/* Whitewash + grain */}
-      <div className={styles.whitewash} aria-hidden="true" />
+      {/* Layer 2-4 — Tone, vignette, film-grain noise */}
+      <div className={styles.tone} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
+      <div className={styles.noise} aria-hidden="true" />
 
-      {/* Editorial spread: title column | divider | body column */}
-      <div className={styles.spread}>
-        <div className={styles.titleColumn}>
-          <h1 className={styles.wordmark} aria-label={WORDMARK}>
-            <span aria-hidden="true">
-              {WORDMARK.split("").map((ch, i) => (
-                <Fragment key={i}>
-                  <span data-letter>{ch}</span>
-                </Fragment>
-              ))}
+      {/* Blue-tinted vertical edge mark anchoring the lockup column */}
+      <div className={styles.edge} aria-hidden="true" />
+
+      {/* 12-col content grid */}
+      <div className={styles.content}>
+        {/* Top-left: manifesto fingerprint */}
+        <div className={`${styles.frame} ${styles.frameTL}`}>
+          <span className={styles.frameTitle}>Human-led</span>
+          <span className={styles.frameNum}>Digitally enabled</span>
+        </div>
+
+        {/* Top-right: edition mark */}
+        <div className={`${styles.frame} ${styles.frameTR}`}>
+          <span className={styles.frameTitle}>Edition 2026</span>
+          <span className={styles.frameNum}>Quebec / North America</span>
+        </div>
+
+        {/* Lockup (bottom-left) */}
+        <div className={styles.lockup}>
+          <span className={styles.eyebrow}>
+            <span className={styles.pip} aria-hidden="true" />
+            <span>Heavy civil</span>
+            <span className={styles.eyebrowRule} aria-hidden="true" />
+            <span>Digitally engineered</span>
+          </span>
+
+          <h1 className={styles.h1}>
+            <span className={styles.h1Line}>
+              <span data-word="h1">Infraforma.</span>
             </span>
           </h1>
 
           <p className={styles.tagline}>
-            Human-Led, <em>Digitally</em> Enabled.
+            {TAGLINE.map((w, i) => (
+              <Fragment key={i}>
+                <span data-word="tag" className={styles.tagWord}>
+                  {w}
+                </span>
+                {i < TAGLINE.length - 1 ? " " : null}
+              </Fragment>
+            ))}{" "}
+            <span data-word="tag" className={`${styles.tagWord} ${styles.tagAccent}`}>
+              {TAGLINE_ACCENT}
+            </span>
           </p>
 
-          <p className={styles.valueProp}>
-            Strategy. Delivery. Intelligence.
-          </p>
+          <div className={styles.cta}>
+            <a className={`${styles.btn} ${styles.btnPrimary}`} href="#capabilities">
+              Our process
+              <span className={styles.arr} aria-hidden="true" />
+            </a>
+            <a className={`${styles.btn} ${styles.btnGhost}`} href="#contact">
+              Let&rsquo;s start a conversation
+              <span className={styles.arr} aria-hidden="true" />
+            </a>
+          </div>
         </div>
 
-        <span className={styles.divider} aria-hidden="true" />
-
-        <div className={styles.bodyColumn}>
-          <span className={styles.aboutLabel}>About the Practice</span>
-          <p className={styles.aboutText}>
-            Infraforma gives infrastructure teams the structure they
-            need to deliver with confidence. We help owners, designers,
-            builders, and delivery teams turn scattered project
-            information into clear, connected workflows, making it
-            easier to coordinate decisions, track requirements, manage
-            compliance, and carry reliable information from design
-            through construction and handover.
-          </p>
+        {/* Scroll cue (bottom-right) */}
+        <div className={styles.scroll} aria-hidden="true">
+          <span className={styles.scrollLabel}>Scroll</span>
+          <span className={styles.scrollLine} />
         </div>
       </div>
     </section>
