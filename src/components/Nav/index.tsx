@@ -1,77 +1,71 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./Nav.module.css";
 
-const LEFT = [
-  { label: "Capabilities", href: "#capabilities" },
-  { label: "Sectors", href: "#sectors" },
-  { label: "Programme", href: "#programme" },
-];
-const RIGHT = [
-  { label: "Partners", href: "#partners" },
-  { label: "About", href: "#about" },
+const LINKS = [
+  { label: "Practice", href: "#position" },
+  { label: "Capabilities", href: "#layers" },
+  { label: "Work", href: "#howwework" },
+  { label: "Writing", href: "#close" },
 ];
 
-/**
- * Fixed top nav. Three-position layout: left links / centered brand /
- * right links + Contact CTA. While the hero is on-screen the nav is
- * transparent + light text; once scrolled past the hero it switches
- * to a paper-backed bar with ink text.
- */
+type Mode = "transparent" | "is-light" | "is-dark";
+
 export default function Nav() {
-  const [isHero, setIsHero] = useState(true);
+  const { ready } = useMotionReady();
+  const [mode, setMode] = useState<Mode>("transparent");
 
   useEffect(() => {
-    const hero = document.querySelector("section[data-hero]");
-    if (!hero) return;
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-section]"));
+    if (!sections.length) return;
 
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        setIsHero(entry.isIntersecting && entry.intersectionRatio > 0.15);
-      },
-      { threshold: [0, 0.15, 0.5, 1] },
-    );
+    const onScroll = () => {
+      const navHeight = 60;
+      const probe = navHeight + 4;
+      let next: Mode = "transparent";
+      for (const s of sections) {
+        const r = s.getBoundingClientRect();
+        if (r.top <= probe && r.bottom > probe) {
+          const tone = s.getAttribute("data-tone");
+          next = tone === "dark" ? "is-dark" : tone === "light" ? "is-light" : "transparent";
+          break;
+        }
+      }
+      setMode(next);
+    };
 
-    io.observe(hero);
-    return () => io.disconnect();
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <header className={`${styles.nav} ${isHero ? styles.isHero : ""}`}>
-      <div className={styles.row}>
-        <ul className={styles.left} aria-label="What we do">
-          {LEFT.map((item) => (
-            <li key={item.label}>
-              <a href={item.href} className={styles.link}>
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+    <header
+      className={`${styles.nav} ${ready ? styles.visible : ""} ${
+        mode === "is-light" ? styles.light : mode === "is-dark" ? styles.dark : ""
+      }`}
+    >
+      <a href="#top" className={styles.brand} aria-label="Infraforma — home">
+        <span className={styles.brandMark} aria-hidden="true" />
+        Infraforma
+      </a>
 
-        <a href="#top" className={styles.brand} aria-label="Infraforma — home">
-          Infraforma<span className={styles.dot} aria-hidden="true" />
+      <nav className={styles.links} aria-label="Primary">
+        {LINKS.map((l) => (
+          <a key={l.label} href={l.href}>
+            {l.label}
+          </a>
+        ))}
+      </nav>
+
+      <div className={styles.right}>
+        <span className={styles.locale}>QC · 2026</span>
+        <span className={styles.divider} aria-hidden="true" />
+        <a href="#contact" className={styles.cta} data-cta>
+          Begin a brief
         </a>
-
-        <ul className={styles.right} aria-label="Connect">
-          {RIGHT.map((item) => (
-            <li key={item.label}>
-              <a href={item.href} className={styles.link}>
-                {item.label}
-              </a>
-            </li>
-          ))}
-          <li>
-            <a href="#contact" className={styles.cta}>
-              Contact <span aria-hidden="true">→</span>
-            </a>
-          </li>
-        </ul>
-
-        <button className={styles.burger} aria-label="Menu" type="button">
-          <span aria-hidden="true" />
-        </button>
       </div>
     </header>
   );

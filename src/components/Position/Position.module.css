@@ -1,0 +1,246 @@
+.section {
+  background: var(--bg);
+  padding: clamp(96px, 14vh, 160px) var(--gutter) clamp(80px, 12vh, 140px);
+  border-top: 1px solid var(--rule);
+  position: relative;
+}
+
+.inner {
+  max-width: var(--max-wide);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(48px, 6vw, 96px);
+  align-items: start;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--ink-mute);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--blue);
+}
+
+.eyebrow strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.manifesto h2 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(36px, 4.6vw, 76px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+
+.kw {
+  display: inline;
+  transition: color 600ms var(--ease), text-shadow 600ms var(--ease);
+}
+
+.kw.active {
+  color: var(--blue);
+  font-weight: 500;
+  text-shadow: 0 0 24px var(--blue-glow);
+}
+
+.bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  padding-top: 48px;
+  border-top: 1px solid var(--rule);
+}
+
+.supporting {
+  font-family: var(--display);
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 42ch;
+}
+
+.audience {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--ink-mute);
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.lbl {
+  color: var(--ink-faint);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.val {
+  color: var(--ink);
+}
+
+.diagram {
+  position: sticky;
+  top: 100px;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 560px;
+  justify-self: end;
+  background: var(--bg-soft);
+  border: 1px solid var(--rule);
+  position: relative;
+}
+
+.ndHeader {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  z-index: 4;
+}
+
+.ndTitle {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.ndStatus {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  transition: color 400ms var(--ease);
+}
+
+.ndStatusActive {
+  color: var(--blue);
+}
+
+.diagram svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ndCorner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ndCorner::before,
+.ndCorner::after {
+  content: "";
+  position: absolute;
+  background: var(--ink);
+}
+
+.ndCorner::before {
+  width: 14px;
+  height: 1px;
+}
+
+.ndCorner::after {
+  width: 1px;
+  height: 14px;
+}
+
+.tl {
+  top: 8px;
+  left: 8px;
+}
+
+.tl::before,
+.tl::after {
+  top: 0;
+  left: 0;
+}
+
+.tr {
+  top: 8px;
+  right: 8px;
+}
+
+.tr::before,
+.tr::after {
+  top: 0;
+  right: 0;
+}
+
+.bl {
+  bottom: 8px;
+  left: 8px;
+}
+
+.bl::before,
+.bl::after {
+  bottom: 0;
+  left: 0;
+}
+
+.br {
+  bottom: 8px;
+  right: 8px;
+}
+
+.br::before,
+.br::after {
+  bottom: 0;
+  right: 0;
+}
+
+@media (max-width: 1080px) {
+  .inner {
+    grid-template-columns: 1fr;
+  }
+  .diagram {
+    position: relative;
+    top: auto;
+    max-width: 100%;
+    justify-self: stretch;
+  }
+}
+
+@media (max-width: 720px) {
+  .bottom {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}

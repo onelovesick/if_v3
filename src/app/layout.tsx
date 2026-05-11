@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import SmoothScroll from "@/components/SmoothScroll";
+import { MotionProvider } from "@/components/MotionProvider";
+import Grain from "@/components/Grain";
+import Cursor from "@/components/Cursor";
+import Loader from "@/components/Loader";
+import Nav from "@/components/Nav";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Infraforma — A specialised construction digital delivery partner",
+  title: "Infraforma — We harmonize the parties that deliver infrastructure",
   description:
-    "Infraforma embeds into construction projects, pre-construction through handover, and delivers the digital asset supporting the physical one.",
+    "An information management practice for major infrastructure programs. We work between owners, designers, and contractors.",
 };
 
 export default function RootLayout({
@@ -16,7 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SmoothScroll>{children}</SmoothScroll>
+        <MotionProvider>
+          <Loader />
+          <Grain />
+          <Cursor />
+          <Nav />
+          {children}
+        </MotionProvider>
       </body>
     </html>
   );

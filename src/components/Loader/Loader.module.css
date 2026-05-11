@@ -1,0 +1,125 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  background: var(--dark);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  color: var(--dark-text);
+}
+
+.exiting {
+  transition: transform 1.0s var(--ease);
+  transform: translateY(-100%);
+}
+
+.top {
+  flex-shrink: 0;
+  padding: 28px var(--gutter);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--dark-rule);
+}
+
+.brand {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--dark-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+}
+
+.mark {
+  width: 10px;
+  height: 10px;
+  background: var(--dark-text);
+  transform: rotate(45deg);
+  display: inline-block;
+}
+
+.corner {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--dark-text-mute);
+  opacity: 0;
+}
+
+.center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 var(--gutter);
+  gap: 32px;
+  position: relative;
+}
+
+.tagline {
+  font-family: var(--display);
+  font-size: clamp(13px, 1.05vw, 15px);
+  font-weight: 400;
+  color: var(--dark-text-mute);
+  max-width: 36ch;
+  text-align: center;
+  line-height: 1.5;
+  opacity: 0;
+}
+
+.bottom {
+  flex-shrink: 0;
+  padding: 28px var(--gutter) 32px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  align-items: end;
+  border-top: 1px solid var(--dark-rule);
+}
+
+.meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--dark-text-mute);
+  opacity: 0;
+}
+
+.right {
+  justify-self: end;
+  text-align: right;
+}
+
+.counter {
+  justify-self: center;
+  font-family: var(--display);
+  font-size: clamp(64px, 9vw, 120px);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  color: var(--dark-text);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  opacity: 0;
+}
+
+.pct {
+  font-size: 0.4em;
+  font-weight: 500;
+  color: var(--dark-text-mute);
+  letter-spacing: 0;
+  margin-bottom: 0.4em;
+}

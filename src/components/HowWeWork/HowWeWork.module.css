@@ -1,0 +1,224 @@
+.section {
+  background: var(--bg);
+  padding: clamp(96px, 14vh, 160px) var(--gutter);
+  border-top: 1px solid var(--rule);
+}
+
+.inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: end;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--ink-mute);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--blue);
+}
+
+.eyebrow strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.head h2 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(36px, 5vw, 76px);
+  line-height: 1.0;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  max-width: 18ch;
+  margin-top: 24px;
+}
+
+.head p {
+  font-family: var(--display);
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 46ch;
+}
+
+.lifecycle {
+  border: 1px solid var(--rule);
+  background: var(--bg-soft);
+  padding: 48px clamp(20px, 3vw, 40px);
+  position: relative;
+}
+
+.lcHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 48px;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.lcTitle {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.lcMeta {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--blue);
+  transition: color 240ms var(--ease);
+}
+
+.phases {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule-strong);
+  margin-bottom: 32px;
+}
+
+.phase {
+  padding: 20px 16px;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: background 240ms var(--ease);
+  position: relative;
+  text-align: left;
+  background: transparent;
+}
+
+.phase:last-child {
+  border-right: none;
+}
+
+.phase:hover,
+.phaseActive {
+  background: var(--bg);
+}
+
+.phaseActive::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--blue);
+}
+
+.phaseNum {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  font-weight: 500;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  transition: color 240ms var(--ease);
+}
+
+.phaseActive .phaseNum {
+  color: var(--blue);
+}
+
+.phaseName {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.layers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lcLayer {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 32px;
+  align-items: center;
+  transition: opacity 240ms var(--ease);
+  position: relative;
+  padding: 4px 0;
+}
+
+.lcDimmed {
+  opacity: 0.32;
+}
+
+.lcName {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  font-weight: 500;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.bar {
+  height: 32px;
+  background: var(--bg-deep);
+  position: relative;
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+
+.fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--blue);
+  transition: width 800ms var(--ease), left 800ms var(--ease),
+    background 240ms var(--ease);
+}
+
+.fillInk {
+  background: var(--ink);
+}
+
+@media (max-width: 880px) {
+  .head {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .phases {
+    grid-template-columns: 1fr 1fr;
+  }
+  .lcLayer {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}

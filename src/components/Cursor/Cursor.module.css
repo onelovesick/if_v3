@@ -1,0 +1,72 @@
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--ink);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  transition: width 280ms var(--ease), height 280ms var(--ease),
+    background 280ms var(--ease), border-color 280ms var(--ease);
+  will-change: transform, width, height;
+  opacity: 0;
+}
+
+.active {
+  opacity: 1;
+}
+
+.isDark {
+  background: var(--dark-text);
+}
+
+.isHover {
+  width: 60px;
+  height: 60px;
+  background: transparent;
+  border: 1px solid var(--ink);
+}
+
+.isHover.isDark {
+  border-color: var(--dark-text);
+}
+
+.isCta {
+  width: 80px;
+  height: 80px;
+  background: var(--blue);
+  border: none;
+  mix-blend-mode: normal;
+}
+
+.label {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 100;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bg);
+  opacity: 0;
+  transition: opacity 200ms var(--ease);
+  white-space: nowrap;
+  mix-blend-mode: difference;
+}
+
+.labelVisible {
+  opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor,
+  .label {
+    display: none;
+  }
+}

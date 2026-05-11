@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════
    INFRAFORMA · BRAND
-   Söhne typography, paper / ink / blue palette.
+   Söhne typography, cool-concrete + electric blue palette.
+   Reference anchor: Matter Intelligence × Polestar.
    ═══════════════════════════════════════════════════════ */
 
 @import "tailwindcss";
@@ -44,62 +45,76 @@
 
 /* ─── DESIGN TOKENS ─── */
 :root {
-  --font-display: 'Söhne Breit', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-body: 'Söhne', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: 'Söhne Mono', ui-monospace, Menlo, Consolas, monospace;
+  /* Fonts (Söhne family kept) */
+  --display: 'Söhne Breit', system-ui, sans-serif;
+  --body: 'Söhne', system-ui, sans-serif;
+  --mono: 'Söhne Mono', ui-monospace, monospace;
 
-  /* Color palette */
-  --c-white: #FFFFFF;
-  --c-paper: #FAFAF7;
-  --c-paper-2: #F2F1ED;
-  --c-rule: #E2E2DD;
-  --c-muted: #6C6C68;
-  --c-muted-2: #95958F;
-  --c-ink: #0A0B0D;
-  --c-ink-deep: #060709;
-  --c-steel: #1B1D22;
-  --c-blue: #1864C8;
-  --c-blue-bright: #2E7CE6;
-  --c-blue-glow: rgba(46, 124, 230, 0.55);
+  /* Surfaces — cool concrete, NOT cream */
+  --bg: #e6e7e3;
+  --bg-soft: #dfe0dc;
+  --bg-deep: #d4d5d1;
+
+  /* Ink */
+  --ink: #0a0e16;
+  --ink-2: #1d2330;
+  --ink-mute: #5e6473;
+  --ink-faint: #8a8e96;
+
+  /* Dark sections — brand-tinted near-black */
+  --dark: #0a1019;
+  --dark-2: #131a26;
+  --dark-text: #e6e4dd;
+  --dark-text-mute: rgba(230, 228, 221, 0.55);
+  --dark-text-faint: rgba(230, 228, 221, 0.30);
+  --dark-rule: rgba(230, 228, 221, 0.10);
+  --dark-rule-strong: rgba(230, 228, 221, 0.20);
+
+  /* Rules */
+  --rule: #c5c6c1;
+  --rule-strong: #a0a19c;
+
+  /* Electric Engineering Blue */
+  --blue: #0050ff;
+  --blue-deep: #1538b3;
+  --blue-glow: rgba(0, 80, 255, 0.4);
 
   /* Layout */
-  --gutter: clamp(24px, 5vw, 96px);
-  --max-content: 1920px;
-
-  /* Type scale */
-  --t-eyebrow: 11px;
-  --t-body:    clamp(15px, 1.05vw, 18px);
-  --t-lead:    clamp(18px, 1.4vw, 24px);
-  --t-h3:      clamp(22px, 2vw, 32px);
-  --t-h2:      clamp(36px, 5.5vw, 96px);
-  --t-h1:      clamp(56px, 9.5vw, 188px);
-  --t-stat:    clamp(64px, 11vw, 200px);
+  --gutter: clamp(20px, 3vw, 44px);
+  --max: 1400px;
+  --max-wide: 1640px;
 
   /* Easing */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-fast: cubic-bezier(0.2, 0.9, 0.25, 1);
-  --ease-cinematic: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-snap: cubic-bezier(0.65, 0.05, 0.36, 1);
 }
 
 /* ─── BASE ─── */
-html {
-  background: var(--c-paper);
-  color: var(--c-ink);
-  font-family: var(--font-body);
-  font-size: var(--t-body);
-  line-height: 1.5;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--display);
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  margin: 0;
+  min-height: 100vh;
   overflow-x: hidden;
-  background: var(--c-paper);
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
+img,
+video {
+  display: block;
+  max-width: 100%;
 }
 
 a {
@@ -108,25 +123,44 @@ a {
 }
 
 button {
-  font-family: inherit;
+  font: inherit;
   cursor: pointer;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+/* Hide native cursor on supported devices */
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  * {
+    cursor: none !important;
+  }
+}
+
+/* When the loader is active, lock the body */
+body.is-loading {
+  overflow: hidden;
+  height: 100vh;
 }
 
 ::selection {
-  background: var(--c-blue);
-  color: var(--c-paper);
+  background: var(--blue);
+  color: var(--bg);
 }
 
 /* ─── FOCUS RING ─── */
 :focus-visible {
-  outline: 2px solid var(--c-blue-bright);
+  outline: 2px solid var(--blue);
   outline-offset: 4px;
-  border-radius: 2px;
 }
 
 /* ─── REDUCED MOTION ─── */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
