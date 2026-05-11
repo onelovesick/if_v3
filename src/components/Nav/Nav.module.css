@@ -4,7 +4,7 @@
   align-items: center;
   gap: var(--gutter);
   padding: 22px var(--gutter);
-  border-bottom: 1px solid rgba(230, 228, 221, 0.10);
+  border-bottom: 1px solid transparent;
   background: transparent;
   position: fixed;
   inset: 0 0 auto 0;
