@@ -1,130 +1,216 @@
 /* ═══════════════════════════════════════════════════════
-   POSITION (S2) — typographic spread on white. Three
-   paragraphs, mixed-size inline emphasis, scroll-fill
-   keyphrases in electric blue. Designed to be read as
-   a composition, not a column.
+   POSITION (S2) — light ground, text column left,
+   overlapping photo collage right. Kiewit-flavored.
    ═══════════════════════════════════════════════════════ */
 
 .section {
   background: #ffffff;
-  padding: clamp(120px, 18vh, 220px) var(--gutter);
+  color: var(--ink);
+  padding: clamp(120px, 18vh, 200px) var(--gutter);
   border-top: 1px solid #ededed;
   border-bottom: 1px solid #ededed;
   position: relative;
-  color: var(--ink);
+  overflow: hidden;
 }
 
 .inner {
-  max-width: 1280px;
+  max-width: 1400px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(64px, 10vh, 112px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(48px, 8vw, 120px);
+  align-items: center;
 }
 
-.eyebrow {
-  align-self: center;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-weight: 500;
-  color: var(--ink-mute);
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
+/* ─── Left: text column ─── */
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(28px, 4vh, 44px);
+  max-width: 56ch;
+}
+
+.rule {
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: var(--blue);
   will-change: opacity, transform;
 }
 
-.eyebrow::before,
-.eyebrow::after {
-  content: "";
-  width: 32px;
-  height: 1px;
-  background: var(--ink-faint);
+.title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(34px, 4.2vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  max-width: 18ch;
+  text-wrap: balance;
+  will-change: opacity, transform;
 }
 
-/* ─── Spread ─── */
 .spread {
   display: flex;
   flex-direction: column;
-  gap: clamp(56px, 9vh, 112px);
+  gap: clamp(24px, 4vh, 40px);
 }
 
 .para {
   margin: 0;
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(22px, 2.3vw, 36px);
-  line-height: 1.32;
-  letter-spacing: -0.022em;
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
   color: var(--ink-2);
-  max-width: 24ch;
-  text-wrap: pretty;
+  max-width: 48ch;
   will-change: opacity, transform;
 }
 
-/* Right-aligned paragraph for compositional rhythm */
-.paraRight {
-  align-self: flex-end;
-  text-align: right;
-}
-
-/* ─── Inline emphasis: oversized display words inline with body ─── */
-.emph {
-  display: inline;
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: 1.85em;
-  line-height: 0.95;
-  letter-spacing: -0.045em;
-  color: var(--ink);
-  /* Tight optical baseline tuning so the emphasis sits with the body */
-  vertical-align: -0.04em;
-  margin: 0 0.03em;
-}
-
-/* ─── Scroll-fill keyphrases ─── */
 .fill {
-  display: inline;
-  color: var(--ink-faint);
-  transition: color 800ms var(--ease), text-shadow 800ms var(--ease);
+  color: var(--ink-mute);
   font-weight: 500;
-  font-style: normal;
+  transition: color 800ms var(--ease), text-shadow 800ms var(--ease);
 }
 
 .filled {
   color: var(--blue);
-  text-shadow: 0 0 18px rgba(0, 80, 255, 0.20);
+  text-shadow: 0 0 18px rgba(0, 80, 255, 0.16);
 }
 
-/* ─── Mobile / tablet ─── */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--ink);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--ink);
+  transition: color 300ms var(--ease), border-color 300ms var(--ease),
+    gap 350ms var(--ease);
+  will-change: opacity, transform;
+}
+
+.arr {
+  font-family: var(--display);
+  font-size: 14px;
+  transition: transform 300ms var(--ease);
+}
+
+.cta:hover,
+.cta:focus-visible {
+  color: var(--blue);
+  border-color: var(--blue);
+  gap: 22px;
+}
+
+.cta:hover .arr,
+.cta:focus-visible .arr {
+  transform: translateX(4px);
+}
+
+/* ─── Right: overlapping photo collage ─── */
+.collage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  min-height: 480px;
+}
+
+.photo {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgba(10, 14, 22, 0.18),
+    0 2px 8px rgba(10, 14, 22, 0.08);
+  will-change: opacity, transform;
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.6s var(--ease);
+}
+
+.photo:hover img {
+  transform: scale(1.04);
+}
+
+/* Top-right small photo (crane / structure) */
+.photoTop {
+  top: 0;
+  right: 0;
+  width: 46%;
+  aspect-ratio: 4 / 5;
+  z-index: 1;
+}
+
+/* Main mid-screen photo (interchange / drone aerial) */
+.photoMain {
+  top: 14%;
+  left: 0;
+  width: 70%;
+  aspect-ratio: 4 / 3;
+  z-index: 2;
+}
+
+/* Bottom-right photo (team / engineering) */
+.photoBottom {
+  bottom: 0;
+  right: 8%;
+  width: 42%;
+  aspect-ratio: 5 / 4;
+  z-index: 3;
+}
+
+/* ─── Tablet ─── */
 @media (max-width: 980px) {
-  .para {
-    max-width: 22ch;
-    font-size: clamp(22px, 3.6vw, 30px);
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 64px;
   }
-  .paraRight {
-    align-self: flex-start;
-    text-align: left;
+  .collage {
+    aspect-ratio: 5 / 4;
+    min-height: 420px;
   }
-  .emph {
-    font-size: 1.7em;
+  .photoTop {
+    width: 50%;
+  }
+  .photoMain {
+    width: 75%;
+  }
+  .photoBottom {
+    width: 46%;
   }
 }
 
+/* ─── Mobile ─── */
 @media (max-width: 720px) {
   .section {
     padding: clamp(96px, 14vh, 160px) var(--gutter);
   }
-  .spread {
-    gap: 48px;
-  }
-  .para {
-    font-size: 22px;
+  .title {
+    font-size: clamp(28px, 8vw, 44px);
     max-width: none;
   }
-  .emph {
-    font-size: 1.6em;
+  .para {
+    font-size: 16px;
+  }
+  .collage {
+    aspect-ratio: 1 / 1;
+    min-height: 360px;
+  }
+  .photo {
+    box-shadow: 0 16px 40px rgba(10, 14, 22, 0.18);
   }
 }
