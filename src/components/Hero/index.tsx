@@ -30,15 +30,36 @@ export default function Hero() {
 
     const ctx = gsap.context(() => {
       const words = root.querySelectorAll<HTMLElement>("[data-word]");
+      const headline = root.querySelector(`.${CSS.escape(styles.headline)}`);
 
       if (reduce) {
-        gsap.set(words, { opacity: 1, y: 0 });
+        gsap.set([words, headline], { opacity: 1, y: 0, scale: 1 });
         return;
       }
 
       const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+
+      // Whole headline: subtle zoom-up as it appears (start slightly larger
+      // and shifted down, settle into final). This is the "bump down,
+      // zoom up" feel.
+      if (headline) {
+        tl.fromTo(
+          headline,
+          { scale: 1.06, y: 18 },
+          { scale: 1, y: 0, duration: 1.6, ease: "expo.out" },
+          0.1,
+        );
+      }
+
+      // Per-word slide-up + tiny scale settle, staggered into the headline
+      // zoom so it reads as one move.
       if (words.length) {
-        tl.to(words, { opacity: 1, y: 0, duration: 1.1, stagger: 0.12 }, 0.2);
+        tl.fromTo(
+          words,
+          { opacity: 0, y: "60%", scale: 1.04 },
+          { opacity: 1, y: 0, scale: 1, duration: 1.4, stagger: 0.14, ease: "expo.out" },
+          0.2,
+        );
       }
     }, sectionRef);
 
