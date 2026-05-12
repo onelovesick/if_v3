@@ -1,28 +1,26 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./Cursor.module.css";
 
 /**
  * Custom cursor. 6px dot default, 60px ring on hoverable targets,
  * 80px solid blue on CTAs. Optional label appears under cursor for
- * elements with [data-cursor]. Magnetic effect on [data-magnetic].
- * Hidden on touch devices.
+ * elements with [data-cursor]. Hidden on touch.
  */
 export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLDivElement>(null);
-  const { ready } = useMotionReady();
-  const [hidden, setHidden] = useState(true);
+  const [enabled, setEnabled] = useState(false);
+  const [activated, setActivated] = useState(false);
 
   useEffect(() => {
-    // Touch / coarse pointer? Don't activate at all.
     if (typeof window === "undefined") return;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
       return;
     }
-    setHidden(false);
+    setEnabled(true);
+    document.body.classList.add("cursor-custom");
 
     const dot = dotRef.current;
     const label = labelRef.current;
@@ -47,6 +45,11 @@ export default function Cursor() {
     const onMove = (e: PointerEvent) => {
       targetX = e.clientX;
       targetY = e.clientY;
+      if (!activated) {
+        setActivated(true);
+        x = e.clientX;
+        y = e.clientY;
+      }
     };
 
     const onOver = (e: PointerEvent) => {
@@ -81,15 +84,15 @@ export default function Cursor() {
       document.removeEventListener("pointerover", onOver);
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [activated]);
 
-  if (hidden) return null;
+  if (!enabled) return null;
 
   return (
     <>
       <div
         ref={dotRef}
-        className={`${styles.cursor} ${ready ? styles.active : ""}`}
+        className={`${styles.cursor} ${activated ? styles.active : ""}`}
         aria-hidden="true"
       />
       <div ref={labelRef} className={styles.label} aria-hidden="true" />

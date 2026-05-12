@@ -113,11 +113,11 @@
 .headline {
   font-family: var(--display);
   font-weight: 500;
-  font-size: clamp(48px, 7vw, 124px);
-  line-height: 0.94;
-  letter-spacing: -0.045em;
+  font-size: clamp(32px, 4.2vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
   color: var(--dark-text);
-  max-width: 20ch;
+  max-width: 22ch;
   margin: 0;
   text-wrap: balance;
   /* Subtle text shadow to lift type from the grainy ground */

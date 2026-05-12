@@ -130,11 +130,11 @@ button {
   color: inherit;
 }
 
-/* Hide native cursor on supported devices */
+/* Hide native cursor only once the custom cursor has activated.
+   This prevents a no-cursor state if JS is slow or fails. */
 @media (hover: hover) and (pointer: fine) {
-  html,
-  body,
-  * {
+  body.cursor-custom,
+  body.cursor-custom * {
     cursor: none !important;
   }
 }

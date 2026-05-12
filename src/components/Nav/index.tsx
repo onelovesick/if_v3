@@ -27,14 +27,30 @@ export default function Nav() {
     const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-section]"));
     if (!sections.length) return;
 
+    const hero = document.querySelector<HTMLElement>("#top");
+
     const onScroll = () => {
       const probe = 60;
+
+      // While the hero is still on screen, stay transparent (no glass bar).
+      // Matter keeps the nav purely floating over the photo.
+      if (hero) {
+        const r = hero.getBoundingClientRect();
+        if (r.bottom > probe) {
+          setMode("transparent");
+          return;
+        }
+      }
+
+      // Past the hero — switch to light or dark glass based on the
+      // current section's tone for readability.
       let next: Mode = "transparent";
       for (const s of sections) {
+        if (s === hero) continue;
         const r = s.getBoundingClientRect();
         if (r.top <= probe && r.bottom > probe) {
           const tone = s.getAttribute("data-tone");
-          next = tone === "dark" ? "is-dark" : tone === "light" ? "is-light" : "transparent";
+          next = tone === "dark" ? "is-dark" : "is-light";
           break;
         }
       }
