@@ -4,11 +4,17 @@ import { useEffect, useState } from "react";
 import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./Nav.module.css";
 
-const LINKS = [
+const LEFT_LINKS = [
   { label: "Practice", href: "#position" },
   { label: "Capabilities", href: "#layers" },
   { label: "Work", href: "#howwework" },
   { label: "Writing", href: "#close" },
+];
+
+const RIGHT_LINKS = [
+  { label: "About", href: "#practice" },
+  { label: "Team", href: "#practice" },
+  { label: "Contact", href: "#contact" },
 ];
 
 type Mode = "transparent" | "is-light" | "is-dark";
@@ -22,8 +28,7 @@ export default function Nav() {
     if (!sections.length) return;
 
     const onScroll = () => {
-      const navHeight = 60;
-      const probe = navHeight + 4;
+      const probe = 60;
       let next: Mode = "transparent";
       for (const s of sections) {
         const r = s.getBoundingClientRect();
@@ -47,26 +52,26 @@ export default function Nav() {
         mode === "is-light" ? styles.light : mode === "is-dark" ? styles.dark : ""
       }`}
     >
-      <a href="#top" className={styles.brand} aria-label="Infraforma — home">
-        <span className={styles.brandMark} aria-hidden="true" />
-        Infraforma
-      </a>
-
-      <nav className={styles.links} aria-label="Primary">
-        {LINKS.map((l) => (
+      <nav className={`${styles.links} ${styles.leftLinks}`} aria-label="What we do">
+        {LEFT_LINKS.map((l) => (
           <a key={l.label} href={l.href}>
             {l.label}
           </a>
         ))}
       </nav>
 
-      <div className={styles.right}>
-        <span className={styles.locale}>QC · 2026</span>
-        <span className={styles.divider} aria-hidden="true" />
-        <a href="#contact" className={styles.cta} data-cta>
-          Begin a brief
-        </a>
-      </div>
+      <a href="#top" className={styles.brand} aria-label="Infraforma — home">
+        <span className={styles.brandMark} aria-hidden="true" />
+        <span className={styles.brandName}>Infraforma</span>
+      </a>
+
+      <nav className={`${styles.links} ${styles.rightLinks}`} aria-label="Connect">
+        {RIGHT_LINKS.map((l) => (
+          <a key={l.label} href={l.href}>
+            {l.label}
+          </a>
+        ))}
+      </nav>
     </header>
   );
 }
