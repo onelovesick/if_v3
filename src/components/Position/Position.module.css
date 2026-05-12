@@ -1,12 +1,13 @@
 /* ═══════════════════════════════════════════════════════
-   POSITION (S2) — centered statement on a pure white
-   ground. The story of the practice, told in three
-   short paragraphs with generous breathing room.
+   POSITION (S2) — typographic spread on white. Three
+   paragraphs, mixed-size inline emphasis, scroll-fill
+   keyphrases in electric blue. Designed to be read as
+   a composition, not a column.
    ═══════════════════════════════════════════════════════ */
 
 .section {
   background: #ffffff;
-  padding: clamp(120px, 18vh, 200px) var(--gutter);
+  padding: clamp(120px, 18vh, 220px) var(--gutter);
   border-top: 1px solid #ededed;
   border-bottom: 1px solid #ededed;
   position: relative;
@@ -14,16 +15,15 @@
 }
 
 .inner {
-  max-width: 880px;
+  max-width: 1280px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: clamp(40px, 6vh, 72px);
+  gap: clamp(64px, 10vh, 112px);
 }
 
 .eyebrow {
+  align-self: center;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.22em;
@@ -44,39 +44,87 @@
   background: var(--ink-faint);
 }
 
-.statement {
+/* ─── Spread ─── */
+.spread {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(56px, 9vh, 112px);
+}
+
+.para {
   margin: 0;
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(22px, 2.4vw, 38px);
-  line-height: 1.3;
-  letter-spacing: -0.025em;
-  color: var(--ink);
-  max-width: 28ch;
-  text-wrap: balance;
+  font-size: clamp(22px, 2.3vw, 36px);
+  line-height: 1.32;
+  letter-spacing: -0.022em;
+  color: var(--ink-2);
+  max-width: 24ch;
+  text-wrap: pretty;
   will-change: opacity, transform;
 }
 
-.signOff {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+/* Right-aligned paragraph for compositional rhythm */
+.paraRight {
+  align-self: flex-end;
+  text-align: right;
+}
+
+/* ─── Inline emphasis: oversized display words inline with body ─── */
+.emph {
+  display: inline;
+  font-family: var(--display);
   font-weight: 500;
-  color: var(--ink-mute);
-  margin-top: clamp(24px, 4vh, 48px);
-  will-change: opacity, transform;
+  font-size: 1.85em;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+  /* Tight optical baseline tuning so the emphasis sits with the body */
+  vertical-align: -0.04em;
+  margin: 0 0.03em;
+}
+
+/* ─── Scroll-fill keyphrases ─── */
+.fill {
+  display: inline;
+  color: var(--ink-faint);
+  transition: color 800ms var(--ease), text-shadow 800ms var(--ease);
+  font-weight: 500;
+  font-style: normal;
+}
+
+.filled {
+  color: var(--blue);
+  text-shadow: 0 0 18px rgba(0, 80, 255, 0.20);
+}
+
+/* ─── Mobile / tablet ─── */
+@media (max-width: 980px) {
+  .para {
+    max-width: 22ch;
+    font-size: clamp(22px, 3.6vw, 30px);
+  }
+  .paraRight {
+    align-self: flex-start;
+    text-align: left;
+  }
+  .emph {
+    font-size: 1.7em;
+  }
 }
 
 @media (max-width: 720px) {
   .section {
     padding: clamp(96px, 14vh, 160px) var(--gutter);
   }
-  .inner {
-    gap: 36px;
+  .spread {
+    gap: 48px;
   }
-  .statement {
+  .para {
     font-size: 22px;
-    max-width: 24ch;
+    max-width: none;
+  }
+  .emph {
+    font-size: 1.6em;
   }
 }
