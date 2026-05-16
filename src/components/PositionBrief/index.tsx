@@ -5,8 +5,8 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./PositionBrief.module.css";
 
-const HEADLINE =
-  "We connect the people, the data, and the decisions behind critical infrastructure projects.";
+const HEADLINE = "We connect the people, the data, and the decisions";
+const SUBHEAD = "behind critical infrastructure projects.";
 
 const blocks = [
   {
@@ -200,6 +200,7 @@ export default function PositionBrief() {
             <h2 id="position-brief-title" className={styles.title}>
               {splitWords(HEADLINE)}
             </h2>
+            <p className={styles.subhead}>{splitWords(SUBHEAD)}</p>
           </div>
 
           <div className={styles.cells}>
