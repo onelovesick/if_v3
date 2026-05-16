@@ -17,36 +17,17 @@ export default function Position() {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const reveals = root.querySelectorAll<HTMLElement>("[data-reveal]");
-    const svg = root.querySelector("svg");
     const rim = root.querySelector(`.${CSS.escape(styles.dRim)}`);
     const ticks = root.querySelectorAll(`.${CSS.escape(styles.dTick)}`);
     const lines = root.querySelectorAll(`.${CSS.escape(styles.dLine)}`);
     const labels = root.querySelectorAll(`.${CSS.escape(styles.dLabelGroup)}`);
     const centre = root.querySelector(`.${CSS.escape(styles.dCentre)}`);
-    const drawTargets = [rim, ...Array.from(lines)].filter(Boolean);
-    const visibleTargets = [
-      ...Array.from(ticks),
-      ...Array.from(labels),
-      centre,
-      svg,
-    ].filter(Boolean);
+    const circumference = rim?.getAttribute("stroke-dasharray") ?? 0;
 
     const ctx = gsap.context(() => {
       if (reduce) {
-        gsap.set(reveals, { opacity: 1, y: 0 });
-        gsap.set(drawTargets, { strokeDashoffset: 0 });
-        gsap.set(visibleTargets, { opacity: 1 });
         return;
       }
-
-      gsap.set(reveals, { opacity: 0, y: 18 });
-      gsap.set(ticks, { opacity: 0 });
-      gsap.set(labels, { opacity: 0, y: 6 });
-      gsap.set(centre, {
-        opacity: 0,
-        scale: 0.82,
-        transformOrigin: "50% 50%",
-      });
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -57,16 +38,61 @@ export default function Position() {
         defaults: { ease: "expo.out" },
       });
 
-      tl.to(reveals, { opacity: 1, y: 0, duration: 1, stagger: 0.07 }, 0);
-      tl.to(
+      tl.from(
+        reveals,
+        {
+          opacity: 0,
+          y: 18,
+          duration: 1,
+          stagger: 0.07,
+          immediateRender: false,
+        },
+        0,
+      );
+      tl.fromTo(
         rim,
-        { strokeDashoffset: 0, duration: 1.1, ease: "power2.inOut" },
+        { strokeDashoffset: circumference },
+        {
+          strokeDashoffset: 0,
+          duration: 1.1,
+          ease: "power2.inOut",
+          immediateRender: false,
+        },
         0.12,
       );
-      tl.to(ticks, { opacity: 1, duration: 0.5, stagger: 0.01 }, 0.44);
-      tl.to(lines, { strokeDashoffset: 0, duration: 0.82, stagger: 0.06 }, 0.62);
-      tl.to(labels, { opacity: 1, y: 0, duration: 0.65, stagger: 0.04 }, 0.72);
-      tl.to(centre, { opacity: 1, scale: 1, duration: 0.7 }, 0.98);
+      tl.from(
+        ticks,
+        { opacity: 0, duration: 0.5, stagger: 0.01, immediateRender: false },
+        0.44,
+      );
+      tl.fromTo(
+        lines,
+        { strokeDashoffset: 1 },
+        { strokeDashoffset: 0, duration: 0.82, stagger: 0.06 },
+        0.62,
+      );
+      tl.from(
+        labels,
+        {
+          opacity: 0,
+          y: 6,
+          duration: 0.65,
+          stagger: 0.04,
+          immediateRender: false,
+        },
+        0.72,
+      );
+      tl.from(
+        centre,
+        {
+          opacity: 0,
+          scale: 0.82,
+          transformOrigin: "50% 50%",
+          duration: 0.7,
+          immediateRender: false,
+        },
+        0.98,
+      );
 
       ScrollTrigger.refresh();
     }, sectionRef);
@@ -83,7 +109,7 @@ export default function Position() {
       className={styles.section}
       aria-labelledby="position-title"
     >
-      <div className={styles.plate} data-reveal>
+      <div className={styles.plate}>
         <div className={styles.topbar}>
           <p className={styles.eyebrow}>
             <span>S2</span>

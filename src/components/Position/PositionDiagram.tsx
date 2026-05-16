@@ -32,9 +32,11 @@ const polar = (angleDeg: number, radius: number) => {
   };
 };
 
+const svgNum = (value: number) => value.toFixed(3);
+
 const anchorFor = (angle: number) => {
-  if (angle === 0) return "start";
-  if (angle === 180) return "end";
+  if (angle === 0) return "end";
+  if (angle === 180) return "start";
   return "middle";
 };
 
@@ -49,7 +51,7 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
   ref,
 ) {
   const ticks = Array.from({ length: 24 }, (_, i) => i * 15 - 90);
-  const circumference = 2 * Math.PI * RADIUS;
+  const circumference = svgNum(2 * Math.PI * RADIUS);
 
   return (
     <svg
@@ -67,7 +69,6 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
           r={RADIUS}
           fill="none"
           strokeDasharray={circumference}
-          strokeDashoffset={circumference}
         />
       </g>
 
@@ -84,10 +85,10 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
               className={`${styles.dTick} ${
                 isCardinal ? styles.dTickCardinal : ""
               }`}
-              x1={inner.x}
-              y1={inner.y}
-              x2={outer.x}
-              y2={outer.y}
+              x1={svgNum(inner.x)}
+              y1={svgNum(inner.y)}
+              x2={svgNum(outer.x)}
+              y2={svgNum(outer.y)}
               data-cardinal={isCardinal ? "1" : "0"}
               data-tick-index={i}
             />
@@ -105,13 +106,12 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
               className={`${styles.dLine} ${
                 active === party.key ? styles.dLineActive : ""
               } ${active && active !== party.key ? styles.dLineDimmed : ""}`}
-              x1={start.x}
-              y1={start.y}
+              x1={svgNum(start.x)}
+              y1={svgNum(start.y)}
               x2={CENTER}
               y2={CENTER}
               pathLength={1}
               strokeDasharray="1 1"
-              strokeDashoffset={1}
             />
           );
         })}
@@ -134,16 +134,16 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
               tabIndex={0}
             >
               <rect
-                x={point.x - 74}
-                y={point.y - 17}
+                x={svgNum(point.x - 74)}
+                y={svgNum(point.y - 17)}
                 width={148}
                 height={34}
                 fill="transparent"
               />
               <text
                 className={styles.dLabel}
-                x={point.x}
-                y={point.y}
+                x={svgNum(point.x)}
+                y={svgNum(point.y)}
                 textAnchor={anchorFor(party.angle)}
                 dominantBaseline={baselineFor(party.angle)}
               >

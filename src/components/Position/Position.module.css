@@ -163,6 +163,11 @@
   stroke: var(--accent);
 }
 
+.dTicks,
+.dLines {
+  transform-box: fill-box;
+}
+
 .dLine {
   stroke: color-mix(in oklch, var(--accent), transparent 18%);
   stroke-width: 1.35;
