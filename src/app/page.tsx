@@ -1,5 +1,5 @@
 import Hero from "@/components/Hero";
-import Position from "@/components/Position";
+import PositionBrief from "@/components/PositionBrief";
 import Layers from "@/components/Layers";
 import HowWeWork from "@/components/HowWeWork";
 import Practice from "@/components/Practice";
@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <Position />
+      <PositionBrief />
       <Layers />
       <HowWeWork />
       <Practice />
