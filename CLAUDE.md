@@ -91,13 +91,19 @@ The **Position** section (S2) intentionally uses pure `#ffffff` to feel calmer t
 
 ### 5.2 Typography
 
-**Söhne family** (Klim Type Foundry, licensed). Files in `public/fonts/` as `test-soehne-*.woff2`. The "test-" prefix is from the original trial files; if a different licensing arrangement lands, swap the filenames in the `@font-face` blocks of `globals.css`.
+**PP Neue Corp Compact** (Pangram Pangram, personal-use trial) for display + body, **PP Fraktion Mono** (Pangram Pangram, personal-use trial) for mono. Files in `public/fonts/`:
 
-- `--display: 'Söhne Breit', system-ui, sans-serif` — headlines, statements, hero wordmark
-- `--body: 'Söhne', system-ui, sans-serif` — body copy, the rare instance we need a less wide cut
-- `--mono: 'Söhne Mono', ui-monospace, monospace` — eyebrows, captions, metadata, callouts
+- `pp-neue-corp-compact-medium.woff2` (covers weight 400–500)
+- `pp-neue-corp-compact-ultrabold.woff2` (covers 700–800, reserved for emphasis)
+- `pp-fraktion-mono-regular.woff2` (weight 400)
 
-Headlines: weight 500 (kraftig) at clamp(32–124px) sizes, line-height 0.92–1.05, letter-spacing -0.035em to -0.05em.
+When a paid license lands, drop the licensed files in the same folder and swap filenames in the `@font-face` blocks of `globals.css`.
+
+- `--display: 'PP Neue Corp Compact', system-ui, sans-serif` — headlines, statements, hero wordmark
+- `--body: 'PP Neue Corp Compact', system-ui, sans-serif` — body copy
+- `--mono: 'PP Fraktion Mono', ui-monospace, monospace` — eyebrows, captions, metadata, callouts
+
+Headlines: weight 500 at clamp(32–124px) sizes, line-height 0.92–1.05, letter-spacing -0.02em to -0.04em (PP Neue Corp wants slightly less negative tracking than Söhne).
 Body: weight 400 at 15–17px, line-height 1.5.
 Mono: weight 400, 10–12px, letter-spacing 0.16em–0.22em, uppercase.
 

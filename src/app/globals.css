@@ -1,43 +1,35 @@
 /* ═══════════════════════════════════════════════════════
    INFRAFORMA · BRAND
-   Söhne typography, cool-concrete + electric blue palette.
-   Reference anchor: Matter Intelligence × Polestar.
+   PP Neue Corp Compact + PP Fraktion Mono typography,
+   cool-concrete + electric blue palette.
+   Reference anchor: Matter Intelligence, Polestar, Enerblock.
    ═══════════════════════════════════════════════════════ */
 
 @import "tailwindcss";
 
-/* ─── FONT FACES ─── */
+/* ─── FONT FACES ───
+   PP Neue Corp Compact (Pangram Pangram, personal-use trial) +
+   PP Fraktion Mono (Pangram Pangram, personal-use trial).
+   The trial pack ships Medium (500) and Ultrabold (800) for Compact,
+   and Regular (400) for Fraktion Mono. Body and display share the
+   family at Medium; Ultrabold is reserved for emphasis. */
 @font-face {
-  font-family: 'Söhne Breit';
-  src: url('/fonts/test-soehne-breit-buch.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'PP Neue Corp Compact';
+  src: url('/fonts/pp-neue-corp-compact-medium.woff2') format('woff2');
+  font-weight: 400 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Söhne Breit';
-  src: url('/fonts/test-soehne-breit-kraftig.woff2') format('woff2');
-  font-weight: 500;
+  font-family: 'PP Neue Corp Compact';
+  src: url('/fonts/pp-neue-corp-compact-ultrabold.woff2') format('woff2');
+  font-weight: 700 800;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Söhne';
-  src: url('/fonts/test-soehne-buch.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Söhne';
-  src: url('/fonts/test-soehne-kraftig.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Söhne Mono';
-  src: url('/fonts/test-soehne-mono-buch.woff2') format('woff2');
+  font-family: 'PP Fraktion Mono';
+  src: url('/fonts/pp-fraktion-mono-regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -45,10 +37,10 @@
 
 /* ─── DESIGN TOKENS ─── */
 :root {
-  /* Fonts (Söhne family kept) */
-  --display: 'Söhne Breit', system-ui, sans-serif;
-  --body: 'Söhne', system-ui, sans-serif;
-  --mono: 'Söhne Mono', ui-monospace, monospace;
+  /* Fonts — PP Neue Corp Compact (display + body), PP Fraktion Mono (mono) */
+  --display: 'PP Neue Corp Compact', system-ui, sans-serif;
+  --body: 'PP Neue Corp Compact', system-ui, sans-serif;
+  --mono: 'PP Fraktion Mono', ui-monospace, monospace;
 
   /* Surfaces — cool concrete, NOT cream */
   --bg: #e6e7e3;
