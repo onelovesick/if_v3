@@ -63,26 +63,6 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
       role="img"
       aria-label="Infraforma sits between owners, designers, contractors and operators"
     >
-      {/* Ripples emanate from centre; drawn first so they sit behind. */}
-      <g className={styles.dRipples}>
-        <circle
-          className={styles.dRipple}
-          cx={CENTER}
-          cy={CENTER}
-          r={12}
-          fill="none"
-          data-ripple="0"
-        />
-        <circle
-          className={styles.dRipple}
-          cx={CENTER}
-          cy={CENTER}
-          r={12}
-          fill="none"
-          data-ripple="1"
-        />
-      </g>
-
       <g transform={`rotate(-90 ${CENTER} ${CENTER})`}>
         <circle
           className={styles.dRim}
@@ -181,6 +161,8 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
                 y={svgNum(point.y - 17)}
                 width={148}
                 height={34}
+                fill="transparent"
+                pointerEvents="all"
               />
               <text
                 className={styles.dLabel}
@@ -213,14 +195,6 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
         />
         <circle className={styles.dCentreDot} cx={CENTER} cy={CENTER} r={2.5} />
       </g>
-
-      {/* Orbiting satellite — a continuous slow sweep along the rim */}
-      <circle
-        className={styles.dSatellite}
-        cx={CENTER}
-        cy={CENTER - RADIUS}
-        r={2.6}
-      />
     </svg>
   );
 });

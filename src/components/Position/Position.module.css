@@ -164,7 +164,7 @@
   opacity: 0.38;
 }
 
-/* Centre — the brand mark, breathing */
+/* Centre — the brand mark. Quiet, static. */
 
 .dCentre {
   transform-box: fill-box;
@@ -172,24 +172,24 @@
 }
 
 .dCentreGlow {
-  stroke: var(--accent);
+  stroke: color-mix(in oklch, var(--accent), transparent 78%);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 0 6px color-mix(in oklch, var(--accent), transparent 35%));
 }
 
 .dCentreRing {
   stroke: var(--ink-local);
   stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
+  transition: r 360ms var(--ease);
 }
 
 .dCentreDot {
   fill: var(--accent);
-  filter: drop-shadow(0 0 4px color-mix(in oklch, var(--accent), transparent 40%));
 }
 
-/* Packets — bright dots traveling rim → centre on each line */
+/* Packets — invisible at rest. A single packet pulses rim → centre on
+   hover of a party; see Position/index.tsx. */
 
 .dPackets {
   pointer-events: none;
@@ -197,28 +197,7 @@
 
 .dPacket {
   fill: var(--accent);
-  filter: drop-shadow(0 0 4px color-mix(in oklch, var(--accent), transparent 30%));
-  transition: r 260ms var(--ease);
-}
-
-/* Centre ripples — pulses radiating outward */
-
-.dRipples {
-  pointer-events: none;
-}
-
-.dRipple {
-  stroke: var(--accent);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
   opacity: 0;
-}
-
-/* Satellite — small dot orbiting the rim */
-
-.dSatellite {
-  fill: var(--ink-local);
-  opacity: 0.55;
 }
 
 /* ─── Coordinate readout ─── */
@@ -439,11 +418,7 @@
 /* ─── Reduced motion ─── */
 
 @media (prefers-reduced-motion: reduce) {
-  .dPacket,
-  .dRipple,
-  .dSatellite,
-  .dCentreDot,
-  .dCentreGlow {
-    animation: none !important;
+  .dPacket {
+    opacity: 0;
   }
 }
