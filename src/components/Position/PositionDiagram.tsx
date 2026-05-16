@@ -17,6 +17,8 @@ const PARTIES = [
   { key: "designers", label: "designers", angle: 180 },
 ] as const;
 
+const PACKET_LINE_INSET = LONG_TICK + 2; // rim-end of each converging line
+
 type PartyKey = (typeof PARTIES)[number]["key"];
 
 interface Props {
@@ -35,8 +37,8 @@ const polar = (angleDeg: number, radius: number) => {
 const svgNum = (value: number) => value.toFixed(3);
 
 const anchorFor = (angle: number) => {
-  if (angle === 0) return "end";
-  if (angle === 180) return "start";
+  if (angle === 0) return "start";
+  if (angle === 180) return "end";
   return "middle";
 };
 
@@ -61,6 +63,26 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
       role="img"
       aria-label="Infraforma sits between owners, designers, contractors and operators"
     >
+      {/* Ripples emanate from centre; drawn first so they sit behind. */}
+      <g className={styles.dRipples}>
+        <circle
+          className={styles.dRipple}
+          cx={CENTER}
+          cy={CENTER}
+          r={12}
+          fill="none"
+          data-ripple="0"
+        />
+        <circle
+          className={styles.dRipple}
+          cx={CENTER}
+          cy={CENTER}
+          r={12}
+          fill="none"
+          data-ripple="1"
+        />
+      </g>
+
       <g transform={`rotate(-90 ${CENTER} ${CENTER})`}>
         <circle
           className={styles.dRim}
@@ -117,6 +139,27 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
         })}
       </g>
 
+      {/* Data packets — one per converging line. Travel rim -> centre on a loop. */}
+      <g className={styles.dPackets}>
+        {PARTIES.map((party) => {
+          const start = polar(party.angle, RADIUS - PACKET_LINE_INSET);
+          return (
+            <circle
+              key={party.key}
+              className={`${styles.dPacket} ${
+                active === party.key ? styles.dPacketActive : ""
+              } ${active && active !== party.key ? styles.dPacketDimmed : ""}`}
+              cx={svgNum(start.x)}
+              cy={svgNum(start.y)}
+              r={3}
+              data-party={party.key}
+              data-start-x={svgNum(start.x)}
+              data-start-y={svgNum(start.y)}
+            />
+          );
+        })}
+      </g>
+
       <g className={styles.dLabels}>
         {PARTIES.map((party) => {
           const point = polar(party.angle, RADIUS + LABEL_OFFSET);
@@ -138,7 +181,6 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
                 y={svgNum(point.y - 17)}
                 width={148}
                 height={34}
-                fill="transparent"
               />
               <text
                 className={styles.dLabel}
@@ -171,9 +213,18 @@ const PositionDiagram = forwardRef<SVGSVGElement, Props>(function PositionDiagra
         />
         <circle className={styles.dCentreDot} cx={CENTER} cy={CENTER} r={2.5} />
       </g>
+
+      {/* Orbiting satellite — a continuous slow sweep along the rim */}
+      <circle
+        className={styles.dSatellite}
+        cx={CENTER}
+        cy={CENTER - RADIUS}
+        r={2.6}
+      />
     </svg>
   );
 });
 
 export default PositionDiagram;
 export type { PartyKey };
+export { PARTIES, CENTER, RADIUS, PACKET_LINE_INSET };
