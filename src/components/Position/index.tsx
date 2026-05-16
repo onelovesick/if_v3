@@ -1,75 +1,72 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
+import PositionDiagram, { type PartyKey } from "./PositionDiagram";
 import styles from "./Position.module.css";
 
-/**
- * S2 Position — Kiewit-style composition: text column left, overlapping
- * photo collage right. Dark ground. Mixed-size emphasis inline; key
- * phrases fill electric blue as they enter the viewport.
- */
 export default function Position() {
   const sectionRef = useRef<HTMLElement>(null);
   const { ready } = useMotionReady();
+  const [active, setActive] = useState<PartyKey | null>(null);
 
   useEffect(() => {
     const root = sectionRef.current;
     if (!root || !ready) return;
+
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reveals = root.querySelectorAll<HTMLElement>("[data-reveal]");
+    const svg = root.querySelector("svg");
+    const rim = root.querySelector(`.${CSS.escape(styles.dRim)}`);
+    const ticks = root.querySelectorAll(`.${CSS.escape(styles.dTick)}`);
+    const lines = root.querySelectorAll(`.${CSS.escape(styles.dLine)}`);
+    const labels = root.querySelectorAll(`.${CSS.escape(styles.dLabelGroup)}`);
+    const centre = root.querySelector(`.${CSS.escape(styles.dCentre)}`);
+    const drawTargets = [rim, ...Array.from(lines)].filter(Boolean);
+    const visibleTargets = [
+      ...Array.from(ticks),
+      ...Array.from(labels),
+      centre,
+      svg,
+    ].filter(Boolean);
 
     const ctx = gsap.context(() => {
-      const reveals = root.querySelectorAll<HTMLElement>("[data-reveal]");
-      const fills = root.querySelectorAll<HTMLElement>("[data-fill]");
-      const photos = root.querySelectorAll<HTMLElement>("[data-photo]");
-
       if (reduce) {
         gsap.set(reveals, { opacity: 1, y: 0 });
-        gsap.set(photos, { opacity: 1, y: 0, scale: 1 });
-        fills.forEach((el) => el.classList.add(styles.filled));
+        gsap.set(drawTargets, { strokeDashoffset: 0 });
+        gsap.set(visibleTargets, { opacity: 1 });
         return;
       }
 
-      reveals.forEach((el, i) => {
-        gsap.from(el, {
-          opacity: 0,
-          y: 24,
-          duration: 1.1,
-          ease: "expo.out",
-          delay: i * 0.06,
-          scrollTrigger: {
-            trigger: el,
-            start: "top 84%",
-            toggleActions: "play none none none",
-          },
-        });
+      gsap.set(reveals, { opacity: 0, y: 18 });
+      gsap.set(ticks, { opacity: 0 });
+      gsap.set(labels, { opacity: 0, y: 6 });
+      gsap.set(centre, {
+        opacity: 0,
+        scale: 0.82,
+        transformOrigin: "50% 50%",
       });
 
-      photos.forEach((el, i) => {
-        gsap.from(el, {
-          opacity: 0,
-          y: 32,
-          scale: 0.96,
-          duration: 1.4,
-          ease: "expo.out",
-          delay: i * 0.14,
-          scrollTrigger: {
-            trigger: el,
-            start: "top 86%",
-            toggleActions: "play none none none",
-          },
-        });
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: root,
+          start: "top 62%",
+          toggleActions: "play none none reverse",
+        },
+        defaults: { ease: "expo.out" },
       });
 
-      fills.forEach((el) => {
-        ScrollTrigger.create({
-          trigger: el,
-          start: "top 70%",
-          onEnter: () => el.classList.add(styles.filled),
-          onLeaveBack: () => el.classList.remove(styles.filled),
-        });
-      });
+      tl.to(reveals, { opacity: 1, y: 0, duration: 1, stagger: 0.07 }, 0);
+      tl.to(
+        rim,
+        { strokeDashoffset: 0, duration: 1.1, ease: "power2.inOut" },
+        0.12,
+      );
+      tl.to(ticks, { opacity: 1, duration: 0.5, stagger: 0.01 }, 0.44);
+      tl.to(lines, { strokeDashoffset: 0, duration: 0.82, stagger: 0.06 }, 0.62);
+      tl.to(labels, { opacity: 1, y: 0, duration: 0.65, stagger: 0.04 }, 0.72);
+      tl.to(centre, { opacity: 1, scale: 1, duration: 0.7 }, 0.98);
 
       ScrollTrigger.refresh();
     }, sectionRef);
@@ -82,94 +79,74 @@ export default function Position() {
       ref={sectionRef}
       id="position"
       data-section
-      data-tone="dark"
-      data-dark
+      data-tone="light"
       className={styles.section}
+      aria-labelledby="position-title"
     >
-      <div className={styles.inner}>
-        {/* Left: typographic story */}
-        <div className={styles.text}>
-          <span data-reveal className={styles.rule} aria-hidden="true" />
+      <div className={styles.plate} data-reveal>
+        <div className={styles.topbar}>
+          <p className={styles.eyebrow}>
+            <span>S2</span>
+            <span>Position</span>
+          </p>
+          <p className={styles.geo}>45.5017 N / 73.5673 W</p>
+        </div>
 
-          <h2 data-reveal className={styles.title}>
-            Independent information
-            management for the projects
-            the country can&rsquo;t afford
-            to fail.
-          </h2>
+        <div className={styles.grid}>
+          <div className={styles.diagramPane}>
+            <div className={styles.diagramWrap} data-reveal>
+              <PositionDiagram active={active} onHoverParty={setActive} />
+            </div>
 
-          <div className={styles.spread}>
-            <p data-reveal className={styles.para}>
-              Infraforma operates at the{" "}
-              <span data-fill className={styles.fill}>
-                intersection of owners, designers, contractors, and
-                operators
-              </span>
-              , embedded within delivery teams and aligned to the needs
-              of the project as a whole.
-            </p>
-
-            <p data-reveal className={styles.para}>
-              We establish the information framework that allows
-              delivery teams to{" "}
-              <span data-fill className={styles.fill}>
-                understand, control, and trust
-              </span>{" "}
-              what is being designed, built, approved, and handed over,
-              turning{" "}
-              <span data-fill className={styles.fill}>
-                project data
-              </span>{" "}
-              into{" "}
-              <span data-fill className={styles.fill}>
-                usable intelligence
-              </span>{" "}
-              from execution through operations.
+            <p className={styles.xy} aria-label="Diagram coordinates">
+              <span>X: 0512</span>
+              <span>Y: 0760</span>
             </p>
           </div>
 
-          <a data-reveal href="#layers" className={styles.cta}>
-            Explore the practice
-            <span aria-hidden="true" className={styles.arr}>
-              →
-            </span>
-          </a>
-        </div>
+          <div className={styles.copyPane}>
+            <div className={styles.statement} data-reveal>
+              <h2 id="position-title" className={styles.title}>
+                Independent information management for the projects the country
+                can't afford to fail.
+              </h2>
+              <p className={styles.subhead}>
+                Between every party.
+                <br />
+                Aligned with the asset.
+              </p>
+            </div>
 
-        {/* Right: overlapping photo collage */}
-        <div className={styles.collage}>
-          <figure
-            data-photo
-            className={`${styles.photo} ${styles.photoTop}`}
-          >
-            <img
-              src="https://images.pexels.com/photos/6032899/pexels-photo-6032899.jpeg?auto=compress&cs=tinysrgb&w=1400"
-              alt="Bridge structure under construction"
-              loading="lazy"
-            />
-          </figure>
+            <div className={styles.cells}>
+              <article className={styles.cell} data-reveal>
+                <div className={styles.cellLabel}>
+                  <span>Position</span>
+                  <span className={styles.dot} aria-hidden="true" />
+                </div>
+                <p>
+                  We sit between the parties on a delivery, not for any one of
+                  them.
+                </p>
+                <a href="#layers" className={styles.link}>
+                  Explore <span aria-hidden="true">-&gt;</span>
+                </a>
+              </article>
 
-          <figure
-            data-photo
-            className={`${styles.photo} ${styles.photoMain}`}
-          >
-            <img
-              src="https://images.pexels.com/photos/15450239/pexels-photo-15450239.jpeg?auto=compress&cs=tinysrgb&w=1800"
-              alt="Aerial view of a multi-level highway interchange"
-              loading="lazy"
-            />
-          </figure>
-
-          <figure
-            data-photo
-            className={`${styles.photo} ${styles.photoBottom}`}
-          >
-            <img
-              src="https://images.pexels.com/photos/9242803/pexels-photo-9242803.jpeg?auto=compress&cs=tinysrgb&w=1200"
-              alt="Design team coordinating around drawings"
-              loading="lazy"
-            />
-          </figure>
+              <article className={styles.cell} data-reveal>
+                <div className={styles.cellLabel}>
+                  <span>Practice</span>
+                  <span className={styles.dot} aria-hidden="true" />
+                </div>
+                <p>
+                  We turn project data into usable intelligence from brief
+                  through operations.
+                </p>
+                <a href="#howwework" className={styles.link}>
+                  How we work <span aria-hidden="true">-&gt;</span>
+                </a>
+              </article>
+            </div>
+          </div>
         </div>
       </div>
     </section>
