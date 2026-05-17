@@ -59,44 +59,58 @@ export default function PositionBrief() {
         return;
       }
 
-      // Scroll-driven photo reveal: clip-path expands from top-left
-      // corner outward as the user scrolls into the section, and
-      // retracts in reverse if they scroll back up.
+      // Scroll-driven cube reveal: image clip-path expands from
+      // top-left to bottom-right while the crosshair and coordinate
+      // readouts follow the bottom-right edge of the visible cube
+      // and the coord numbers count up.
       const crossImg = root.querySelector(
         `.${CSS.escape(styles.photoClip)}`,
       ) as HTMLElement | null;
-      if (crossImg) {
-        gsap.fromTo(
-          crossImg,
-          { clipPath: "inset(0 90% 90% 0)" },
-          {
-            clipPath: "inset(0 0% 0% 0)",
-            ease: "none",
-            scrollTrigger: {
-              trigger: root,
-              start: "top 85%",
-              end: "top 15%",
-              scrub: 0.6,
-            },
-          },
-        );
-      }
-      if (photo) {
-        gsap.fromTo(
-          photo,
-          { scale: 1.12 },
-          {
-            scale: 1.0,
-            ease: "none",
-            scrollTrigger: {
-              trigger: root,
-              start: "top 85%",
-              end: "top 15%",
-              scrub: 0.6,
-            },
-          },
-        );
-      }
+      const crossOverlay = root.querySelector(
+        `.${CSS.escape(styles.crossOverlay)}`,
+      ) as HTMLElement | null;
+      const coordXEl = root.querySelector(
+        `.${CSS.escape(styles.coordX)}`,
+      ) as HTMLElement | null;
+      const coordYEl = root.querySelector(
+        `.${CSS.escape(styles.coordY)}`,
+      ) as HTMLElement | null;
+
+      const pad4 = (n: number) => String(Math.round(n)).padStart(4, "0");
+
+      ScrollTrigger.create({
+        trigger: root,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 0.6,
+        onUpdate: (self) => {
+          // Spread the reveal across the middle 60% of the section's
+          // scroll lifetime so a paper-coloured gap stays visible
+          // between the bottom of the cube and the bottom of the
+          // viewport throughout the expansion.
+          const raw = (self.progress - 0.2) / 0.6;
+          const p = Math.max(0, Math.min(1, raw));
+          const inset = 90 * (1 - p);
+          if (crossImg) {
+            crossImg.style.clipPath = `inset(0 ${inset}% ${inset}% 0)`;
+          }
+          if (photo) {
+            const scale = 1.12 - 0.12 * p;
+            (photo as HTMLImageElement).style.transform = `scale(${scale.toFixed(4)})`;
+          }
+          if (crossOverlay) {
+            const revealPct = (10 + 90 * p).toFixed(2) + "%";
+            crossOverlay.style.setProperty("--reveal-x", revealPct);
+            crossOverlay.style.setProperty("--reveal-y", revealPct);
+          }
+          if (coordXEl) {
+            coordXEl.textContent = `X: ${pad4(1250 * (0.1 + 0.9 * p))}`;
+          }
+          if (coordYEl) {
+            coordYEl.textContent = `Y: ${pad4(1285 * (0.1 + 0.9 * p))}`;
+          }
+        },
+      });
       if (curtain) gsap.set(curtain, { display: "none" });
 
       if (coords.length) {
