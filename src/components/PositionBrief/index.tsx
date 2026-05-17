@@ -80,19 +80,21 @@ export default function PositionBrief() {
 
       ScrollTrigger.create({
         trigger: root,
-        // Hold the cube at its 10% start state while the section
-        // enters the viewport, so the user sees a small static cube
-        // sitting in the middle of the viewport with paper space
-        // around it before the expansion begins. Animation runs from
-        // section.top crossing 60% of the viewport (cube visible,
-        // big gap below) to section.top reaching the top of the
-        // viewport (section fully landed, cube at full size).
-        start: "top 60%",
+        // Reveal runs across the entire section entry. At the moment
+        // the section's top crosses the viewport bottom, no image is
+        // visible — only the small crosshair marker in the top-left.
+        // As the user scrolls, the image unwinds outward toward the
+        // bottom-right corner; the crosshair tracks that edge and the
+        // X/Y coordinates count up. When the section's top reaches
+        // the viewport top, the image is fully revealed and the
+        // crosshair has reached its full extent.
+        start: "top bottom",
         end: "top top",
         scrub: 0.6,
         onUpdate: (self) => {
           const p = self.progress;
-          const inset = 90 * (1 - p);
+          // Image: fully clipped at p=0, fully visible at p=1.
+          const inset = 100 * (1 - p);
           if (crossImg) {
             crossImg.style.clipPath = `inset(0 ${inset}% ${inset}% 0)`;
           }
@@ -100,16 +102,17 @@ export default function PositionBrief() {
             const scale = 1.12 - 0.12 * p;
             (photo as HTMLImageElement).style.transform = `scale(${scale.toFixed(4)})`;
           }
+          // Crosshair tracks the corner of the revealed image.
           if (crossOverlay) {
-            const revealPct = (10 + 90 * p).toFixed(2) + "%";
+            const revealPct = (p * 100).toFixed(2) + "%";
             crossOverlay.style.setProperty("--reveal-x", revealPct);
             crossOverlay.style.setProperty("--reveal-y", revealPct);
           }
           if (coordXEl) {
-            coordXEl.textContent = `X: ${pad4(1250 * (0.1 + 0.9 * p))}`;
+            coordXEl.textContent = `X: ${pad4(1250 * p)}`;
           }
           if (coordYEl) {
-            coordYEl.textContent = `Y: ${pad4(1285 * (0.1 + 0.9 * p))}`;
+            coordYEl.textContent = `Y: ${pad4(1285 * p)}`;
           }
         },
       });
