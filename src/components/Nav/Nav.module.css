@@ -25,17 +25,13 @@
 }
 
 .light {
-  background: rgba(230, 231, 227, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: #FAFAF8;
   border-bottom-color: var(--rule);
   color: var(--ink);
 }
 
 .dark {
-  background: rgba(10, 16, 25, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: #0a1019;
   border-bottom-color: var(--dark-rule);
   color: var(--dark-text);
 }

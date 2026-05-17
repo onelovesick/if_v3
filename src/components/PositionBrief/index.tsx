@@ -117,18 +117,47 @@ export default function PositionBrief() {
     const cellLabels = Array.from(
       root.querySelectorAll<HTMLElement>(`.${CSS.escape(styles.cellLabel)}`),
     );
+    const cardsEl = root.querySelector<HTMLElement>(
+      `.${CSS.escape(styles.cards)}`,
+    );
 
-    // Pre-scramble the cell labels so they show as random chars until
-    // the cells finish fading in and the scramble resolve kicks off.
-    // Guard against the effect re-running and overwriting data-final
-    // with already-scrambled chars.
+    // Remember the final label text so we can resolve back to it once
+    // the scramble starts. Don't mutate the label text yet — that
+    // happens at the moment the cards enter the viewport.
     cellLabels.forEach((el) => {
       if (!el.hasAttribute("data-final")) {
         el.setAttribute("data-final", el.textContent ?? "");
       }
-      const final = el.getAttribute("data-final") ?? "";
-      if (!reduce) el.textContent = randomScramble(final);
     });
+
+    // Trigger the label scramble via IntersectionObserver so it fires
+    // reliably even if the user lands directly on the section. GSAP's
+    // scrollTrigger onEnter does not fire when the trigger is already
+    // past at create-time, which was causing the scramble to silently
+    // never run.
+    let scrambleFired = false;
+    const observer =
+      cardsEl && !reduce && cellLabels.length
+        ? new IntersectionObserver(
+            ([entry]) => {
+              if (!entry.isIntersecting || scrambleFired) return;
+              scrambleFired = true;
+              window.setTimeout(() => {
+                cellLabels.forEach((el, i) => {
+                  const final = el.getAttribute("data-final") ?? "";
+                  el.textContent = randomScramble(final);
+                  window.setTimeout(
+                    () => scrambleResolve(el, final, 1800),
+                    i * 280,
+                  );
+                });
+              }, 500);
+              observer?.disconnect();
+            },
+            { threshold: 0.2 },
+          )
+        : null;
+    if (observer && cardsEl) observer.observe(cardsEl);
 
     const ctx = gsap.context(() => {
       if (reduce) {
@@ -256,8 +285,9 @@ export default function PositionBrief() {
         },
       });
 
-      // Cards fade up + on the way out, kick off the label scramble
-      // so it runs against fully-visible cells.
+      // Cards fade up. Label scramble is handled separately via the
+      // IntersectionObserver above so it fires regardless of whether
+      // GSAP's scrollTrigger onEnter would have fired.
       gsap.from(cells, {
         opacity: 0,
         y: 28,
@@ -268,21 +298,6 @@ export default function PositionBrief() {
           trigger: root,
           start: "top 55%",
           toggleActions: "play none none none",
-          onEnter: () => {
-            if (reduce || !cellLabels.length) return;
-            // Cells fade-in finishes at ~1.12s (1.0 + 0.12 stagger).
-            // Kick off the scramble just after, with its own stagger.
-            cellLabels.forEach((el, i) => {
-              const final = el.getAttribute("data-final") ?? "";
-              // Make sure the scrambled state is fresh in case the
-              // label was already partially mutated.
-              el.textContent = randomScramble(final);
-              window.setTimeout(
-                () => scrambleResolve(el, final, 1500),
-                1150 + i * 260,
-              );
-            });
-          },
         },
       });
 
@@ -309,7 +324,10 @@ export default function PositionBrief() {
       ScrollTrigger.refresh();
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      observer?.disconnect();
+      ctx.revert();
+    };
   }, [ready]);
 
   return (
