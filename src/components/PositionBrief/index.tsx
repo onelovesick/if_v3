@@ -12,9 +12,9 @@ const useIsoLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const HEADLINE_LINES = [
-  "We connect the people, data, and",
-  "the decisions behind critical",
-  "infrastructure projects.",
+  "We connect the people, data,",
+  "and the decisions behind",
+  "critical infrastructure projects.",
 ];
 const SUBHEAD = "A governed information structure from design to handover.";
 
