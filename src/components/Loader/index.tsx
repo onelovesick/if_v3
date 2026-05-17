@@ -1,20 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { gsap } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./Loader.module.css";
 
 /**
- * Matter-style intro loader: top bar with brand + locale, centered
- * tagline, bottom bar with massive 0% → 100% counter. Locks body
- * scroll while active; on exit, slides up and flips MotionReady to
- * true so Lenis + hero entry can fire.
+ * White splash loader: ghost "infraforma" watermark across the
+ * viewport, the brand's open circle wrapping the wordmark, and a
+ * left-to-right blue fill that resolves as the page becomes ready.
+ * Locks body scroll while active; on exit, slides up and flips
+ * MotionReady so Lenis + hero entry can fire.
  */
 export default function Loader() {
   const { setReady } = useMotionReady();
   const rootRef = useRef<HTMLDivElement>(null);
-  const counterRef = useRef<HTMLSpanElement>(null);
+  const fillRef = useRef<HTMLSpanElement>(null);
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function Loader() {
     if (!root) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const counter = counterRef.current;
+    const fill = fillRef.current;
 
     const tl = gsap.timeline({
       defaults: { ease: "power2.out" },
@@ -38,37 +39,36 @@ export default function Loader() {
     });
 
     if (reduce) {
-      // Fast path: skip the staged loader, jump to "ready"
-      if (counter) counter.textContent = "100";
-      tl.to({}, { duration: 0.2 });
+      if (fill) fill.style.setProperty("--fill", "0%");
+      tl.set(root, { opacity: 1 });
+      tl.to({}, { duration: 0.3 });
     } else {
-      tl.to(root.querySelectorAll<HTMLElement>("[data-brand]"), { opacity: 1, duration: 0.6 }, 0.2)
-        .to(root.querySelectorAll<HTMLElement>("[data-corner]"), { opacity: 1, duration: 0.6 }, 0.3)
-        .to(root.querySelectorAll<HTMLElement>("[data-tagline]"), { opacity: 1, duration: 0.7 }, 0.5)
-        .to(root.querySelectorAll<HTMLElement>("[data-counter]"), { opacity: 1, duration: 0.5 }, 0.5)
-        .to(root.querySelectorAll<HTMLElement>("[data-meta]"), { opacity: 1, duration: 0.5 }, 0.6);
+      tl.to(root, { opacity: 1, duration: 0.5 }, 0)
+        .to(root.querySelectorAll<HTMLElement>("[data-ghost]"), { opacity: 1, duration: 0.9 }, 0.1)
+        .to(root.querySelectorAll<HTMLElement>("[data-stage]"), { opacity: 1, duration: 0.7 }, 0.25)
+        .to(root.querySelectorAll<HTMLElement>("[data-caption]"), { opacity: 1, duration: 0.6 }, 0.55);
 
-      if (counter) {
-        const obj = { val: 0 };
+      if (fill) {
+        const obj = { val: 100 };
         tl.to(
           obj,
           {
-            val: 100,
-            duration: 2.6,
-            ease: "power2.out",
+            val: 0,
+            duration: 2.4,
+            ease: "power2.inOut",
             onUpdate: () => {
-              counter.textContent = String(Math.floor(obj.val)).padStart(2, "0");
+              fill.style.setProperty("--fill", `${obj.val}%`);
             },
             onComplete: () => {
-              counter.textContent = "100";
+              fill.style.setProperty("--fill", "0%");
             },
           },
-          0.7,
+          0.55,
         );
       }
 
-      // Hold a beat before exit
-      tl.to({}, { duration: 0.3 });
+      // Hold a beat at full fill before exit
+      tl.to({}, { duration: 0.35 });
     }
 
     return () => {
@@ -82,32 +82,25 @@ export default function Loader() {
       className={`${styles.loader} ${exiting ? styles.exiting : ""}`}
       aria-hidden="true"
     >
-      <div className={styles.top}>
-        <span data-brand className={styles.brand}>
-          <span className={styles.mark} /> Infraforma
-        </span>
-        <span data-corner className={styles.corner}>
+      <div className={styles.ghost} aria-hidden="true">
+        <span data-ghost className={styles.ghostWord}>infraforma</span>
+      </div>
+
+      <div data-stage className={styles.stage}>
+        <div className={styles.circle}>
+          <span className={styles.wordWrap}>
+            <span className={styles.wordBase}>infraforma</span>
+            <span
+              ref={fillRef}
+              className={styles.wordFill}
+              style={{ "--fill": "100%" } as CSSProperties}
+            >
+              infraforma
+            </span>
+          </span>
+        </div>
+        <span data-caption className={styles.caption}>
           Est. Quebec · 2026
-        </span>
-      </div>
-
-      <div className={styles.center}>
-        <p data-tagline className={styles.tagline}>
-          An information management practice for major infrastructure
-          programs. We work between owners, designers, and contractors.
-        </p>
-      </div>
-
-      <div className={styles.bottom}>
-        <span data-meta className={styles.meta}>
-          Loading practice
-        </span>
-        <span data-counter className={styles.counter}>
-          <span ref={counterRef}>00</span>
-          <span className={styles.pct}>%</span>
-        </span>
-        <span data-meta className={`${styles.meta} ${styles.right}`}>
-          QC · MTL · OTT
         </span>
       </div>
     </div>
