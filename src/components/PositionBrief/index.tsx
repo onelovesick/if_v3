@@ -80,13 +80,15 @@ export default function PositionBrief() {
 
       ScrollTrigger.create({
         trigger: root,
-        // Reveal starts when section's top is 90% down the viewport
-        // (section just entering) and reaches 100% when section's top
-        // is 10% from the viewport top (section nearly fully in view).
-        // Cube is therefore fully revealed by the time the user lands
-        // on the section.
-        start: "top 90%",
-        end: "top 10%",
+        // Hold the cube at its 10% start state while the section
+        // enters the viewport, so the user sees a small static cube
+        // sitting in the middle of the viewport with paper space
+        // around it before the expansion begins. Animation runs from
+        // section.top crossing 60% of the viewport (cube visible,
+        // big gap below) to section.top reaching the top of the
+        // viewport (section fully landed, cube at full size).
+        start: "top 60%",
+        end: "top top",
         scrub: 0.6,
         onUpdate: (self) => {
           const p = self.progress;
