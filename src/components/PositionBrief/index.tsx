@@ -13,8 +13,8 @@ const cards = [
   {
     label: "Process",
     body: [
-      "Infraforma starts by understanding how the project is organized, how teams work, what systems are in place, and where decisions are made.",
-      "We then define the digital delivery structure: governance, workflows, platforms, data strategy, coordination processes, reporting, integrations, and handover requirements. The goal is simple: give the project a clearer operating system from design through construction and operations.",
+      "We map how the project runs: teams, systems, and where decisions are made.",
+      "Then we define the digital delivery structure: governance, workflows, platforms, data. A clearer operating system from design to operations.",
     ],
     href: "#layers",
   },
@@ -22,8 +22,7 @@ const cards = [
     label: "Company",
     body: [
       "A digital delivery partner for complex infrastructure programs.",
-      "Infraforma works between owners, designers, contractors, and operators to bring structure, visibility, and control to the way projects are delivered.",
-      "We combine infrastructure experience, digital systems, BIM, information strategy, and project execution knowledge to help teams work with clearer data, stronger workflows, and better decision-making across the full lifecycle.",
+      "We sit between owners, designers, contractors, and operators, pairing infrastructure experience with BIM and information strategy across the full lifecycle.",
     ],
     href: "#howwework",
   },
