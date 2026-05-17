@@ -1,7 +1,8 @@
 /* ═══════════════════════════════════════════════════════
    INFRAFORMA · BRAND
    PP Neue Corp Compact + PP Fraktion Mono typography,
-   cool-concrete + electric blue palette.
+   off-white + Deep Infrastructure Blue + Signal Blue palette
+   with Infrastructure Amber as the pop accent.
    Reference anchor: Matter Intelligence, Polestar, Enerblock.
    ═══════════════════════════════════════════════════════ */
 
@@ -42,34 +43,37 @@
   --body: 'PP Neue Corp Compact', system-ui, sans-serif;
   --mono: 'PP Fraktion Mono', ui-monospace, monospace;
 
-  /* Surfaces — cool concrete, NOT cream */
-  --bg: #e6e7e3;
-  --bg-soft: #dfe0dc;
-  --bg-deep: #d4d5d1;
+  /* Surfaces — soft off-white + blue-tinted greys */
+  --bg: #F5F7FA;
+  --bg-soft: #EAF3F8;
+  --bg-deep: #DCE6EF;
 
-  /* Ink */
-  --ink: #0a0e16;
-  --ink-2: #1d2330;
-  --ink-mute: #5e6473;
-  --ink-faint: #8a8e96;
+  /* Ink — Charcoal Black + Deep Infrastructure Blue accents */
+  --ink: #1C1F23;
+  --ink-2: #0B3C5D;
+  --ink-mute: #8A9199;
+  --ink-faint: #B5BCC4;
 
-  /* Dark sections — brand-tinted near-black */
-  --dark: #0a1019;
-  --dark-2: #131a26;
-  --dark-text: #e6e4dd;
-  --dark-text-mute: rgba(230, 228, 221, 0.55);
-  --dark-text-faint: rgba(230, 228, 221, 0.30);
-  --dark-rule: rgba(230, 228, 221, 0.10);
-  --dark-rule-strong: rgba(230, 228, 221, 0.20);
+  /* Dark sections — Deep Infrastructure Blue */
+  --dark: #0B3C5D;
+  --dark-2: #0E466E;
+  --dark-text: #F5F7FA;
+  --dark-text-mute: rgba(245, 247, 250, 0.62);
+  --dark-text-faint: rgba(245, 247, 250, 0.34);
+  --dark-rule: rgba(245, 247, 250, 0.12);
+  --dark-rule-strong: rgba(245, 247, 250, 0.22);
 
-  /* Rules */
-  --rule: #c5c6c1;
-  --rule-strong: #a0a19c;
+  /* Rules — soft blue-grey hairlines */
+  --rule: #D6DDE3;
+  --rule-strong: #8A9199;
 
-  /* Electric Engineering Blue */
-  --blue: #0050ff;
-  --blue-deep: #1538b3;
-  --blue-glow: rgba(0, 80, 255, 0.4);
+  /* Signal Blue (primary) + Digital Blue (bright accent) +
+     Deep Infrastructure Blue (deep) + Infrastructure Amber (pop) */
+  --blue: #1E88E5;
+  --blue-bright: #47B5FF;
+  --blue-deep: #0B3C5D;
+  --blue-glow: rgba(30, 136, 229, 0.4);
+  --amber: #F4B740;
 
   /* Layout */
   --gutter: clamp(20px, 3vw, 44px);

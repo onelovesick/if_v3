@@ -25,13 +25,13 @@
 }
 
 .light {
-  background: #FAFAF8;
+  background: var(--bg);
   border-bottom-color: var(--rule);
   color: var(--ink);
 }
 
 .dark {
-  background: #0a1019;
+  background: var(--dark);
   border-bottom-color: var(--dark-rule);
   color: var(--dark-text);
 }

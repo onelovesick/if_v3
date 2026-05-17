@@ -9,8 +9,8 @@
 
 .section {
   position: relative;
-  background: #FAFAF8;
-  color: #111111;
+  background: #F5F7FA;
+  color: #1C1F23;
 }
 
 .shell {
@@ -92,12 +92,12 @@
   inset: 0;
   pointer-events: none;
   z-index: 5;
-  color: #111111;
+  color: #1C1F23;
 }
 
 .crossLine {
   position: absolute;
-  background: #111111;
+  background: #1C1F23;
   will-change: top, left, width, height;
 }
 
@@ -126,7 +126,7 @@
   top: var(--cy);
   width: 9px;
   height: 9px;
-  background: #111111;
+  background: #1C1F23;
   transform: translate(-4.5px, -4.5px);
 }
 
@@ -139,7 +139,7 @@
   letter-spacing: 0.04em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  color: #111111;
+  color: #1C1F23;
   white-space: nowrap;
   will-change: top, left;
 }
@@ -168,10 +168,10 @@
   display: flex;
   flex-direction: column;
   padding: clamp(24px, 2.4vw, 56px);
-  border-top: 1px solid #D9D5CC;
-  border-left: 1px solid #D9D5CC;
-  border-right: 1px solid #D9D5CC;
-  border-bottom: 1px solid #D9D5CC;
+  border-top: 1px solid #D6DDE3;
+  border-left: 1px solid #D6DDE3;
+  border-right: 1px solid #D6DDE3;
+  border-bottom: 1px solid #D6DDE3;
 }
 
 @media (min-width: 1024px) {
@@ -197,7 +197,7 @@
   font-weight: 400;
   line-height: 1.02;
   letter-spacing: -0.025em;
-  color: #111111;
+  color: #1C1F23;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -220,7 +220,7 @@
 .titleLineSweep {
   position: absolute;
   inset: -0.1em -0.05em;
-  background: #111111;
+  background: #1C1F23;
   z-index: 2;
   pointer-events: none;
   will-change: transform;
@@ -234,7 +234,7 @@
   font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.01em;
-  color: #111111;
+  color: #1C1F23;
   text-wrap: balance;
 }
 
@@ -258,7 +258,7 @@
 .rule {
   height: 1px;
   width: 100%;
-  background: #D9D5CC;
+  background: #D6DDE3;
   margin: 0;
 }
 
@@ -289,7 +289,7 @@
     padding: 28px 0 0;
   }
   .cell + .cell {
-    border-left: 1px solid #D9D5CC;
+    border-left: 1px solid #D6DDE3;
     padding-left: 40px;
   }
   .cell:not(:last-child) {
@@ -299,7 +299,7 @@
 
 @media (max-width: 767.98px) {
   .cell + .cell {
-    border-top: 1px solid #D9D5CC;
+    border-top: 1px solid #D6DDE3;
     margin-top: 40px;
   }
 }
@@ -318,7 +318,7 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #111111;
+  color: #1C1F23;
 }
 
 /* cellLabel needs its own rule so CSS modules export the class
@@ -331,7 +331,7 @@
   display: block;
   width: 16px;
   height: 16px;
-  background: #2453FF;
+  background: #1E88E5;
   transform: rotate(45deg);
 }
 
@@ -355,7 +355,7 @@
   font-size: clamp(17px, 1.25vw, 20px);
   font-weight: 400;
   line-height: 1.45;
-  color: #111111;
+  color: #1C1F23;
 }
 
 .cellCta {
@@ -367,13 +367,13 @@
   gap: 20px;
   padding: 22px 26px;
   background: transparent;
-  color: #111111;
+  color: #1C1F23;
   font-family: var(--display);
   font-size: 16px;
   font-weight: 500;
   letter-spacing: -0.005em;
   text-decoration: none;
-  border: 1px solid #111111;
+  border: 1px solid #1C1F23;
   overflow: hidden;
   transition: color 380ms var(--ease);
 }
@@ -382,7 +382,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: #111111;
+  background: #1C1F23;
   transform: translateY(101%);
   transition: transform 460ms var(--ease-snap);
   z-index: 0;
@@ -415,7 +415,7 @@
 
 .cellCta:hover,
 .cellCta:focus-visible {
-  color: #FAFAF8;
+  color: #F5F7FA;
 }
 
 .cellCta:hover .cellArr,
