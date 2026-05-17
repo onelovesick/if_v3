@@ -311,13 +311,20 @@
   gap: 12px;
 }
 
-.cellHead > span:first-child {
+.cellHead > span:first-child,
+.cellLabel {
   font-family: var(--mono);
   font-size: clamp(18px, 1.45vw, 26px);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #111111;
+}
+
+/* cellLabel needs its own rule so CSS modules export the class
+   name. The scramble effect targets it by class. */
+.cellLabel {
+  display: inline-block;
 }
 
 .cellMark {
