@@ -11,29 +11,16 @@ const SUBHEAD = "behind critical infrastructure projects.";
 const blocks = [
   {
     label: "Approach",
-    phrase: "Structure the project from the start",
     body: "We define how information is organized, exchanged, reviewed, approved, and delivered. From CDE workflows to model data, document control, requirements, and asset information, we build the framework that keeps project information usable.",
     href: "#layers",
   },
   {
-    label: "Delivery",
-    phrase: "Give teams a clearer view",
-    body: "We connect the information sitting across design, construction, coordination, controls, and handover. The result is a clearer view of what is being developed, reviewed, delayed, approved, and delivered.",
-    href: "#howwework",
-  },
-  {
     label: "Outcome",
-    phrase: "Turn information into control",
     body: "Infraforma gives project teams the structure needed to manage complexity, track obligations, support decisions, and carry clean information from execution into operations.",
     href: "#close",
   },
 ];
 
-/**
- * Render text as a sequence of word-masked spans suitable for a
- * stagger reveal. Each word sits inside a mask (overflow hidden) and
- * the inner span is translated 110% below; GSAP slides it back to 0.
- */
 function splitWords(text: string) {
   const words = text.split(" ");
   return words.map((word, i) => (
@@ -59,63 +46,45 @@ export default function PositionBrief() {
       `.${CSS.escape(styles.wordInner)}`,
     );
     const photo = root.querySelector(`.${CSS.escape(styles.photoImg)}`);
+    const overlay = root.querySelector(`.${CSS.escape(styles.photoCurtain)}`);
     const coords = root.querySelectorAll(`.${CSS.escape(styles.coordItem)}`);
     const cornerMark = root.querySelector(`.${CSS.escape(styles.cornerMark)}`);
-    const crossH = root.querySelector(`.${CSS.escape(styles.crossH)}`);
-    const crossV = root.querySelector(`.${CSS.escape(styles.crossV)}`);
     const cells = root.querySelectorAll(`.${CSS.escape(styles.cell)}`);
 
     const ctx = gsap.context(() => {
       if (reduce) {
         gsap.set(wordInners, { y: 0 });
+        if (overlay) gsap.set(overlay, { yPercent: 100 });
         return;
       }
 
-      // Photo scales in slightly from oversized.
+      // Curtain reveal: white overlay slides down to reveal the photo
+      // beneath. Simultaneously the photo scales from 1.12 to 1.0.
+      const photoTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: root,
+          start: "top 75%",
+          toggleActions: "play none none none",
+        },
+      });
+      if (overlay) {
+        photoTl.fromTo(
+          overlay,
+          { yPercent: 0 },
+          { yPercent: 100, duration: 1.4, ease: "expo.inOut" },
+          0,
+        );
+      }
       if (photo) {
-        gsap.from(photo, {
-          scale: 1.08,
-          duration: 1.6,
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: root,
-            start: "top 75%",
-            toggleActions: "play none none none",
-          },
-        });
+        photoTl.fromTo(
+          photo,
+          { scale: 1.12 },
+          { scale: 1.0, duration: 1.6, ease: "expo.out" },
+          0,
+        );
       }
 
-      // Crosshair lines draw outward from centre.
-      if (crossH) {
-        gsap.from(crossH, {
-          scaleX: 0,
-          transformOrigin: "50% 50%",
-          duration: 1.1,
-          ease: "expo.out",
-          delay: 0.35,
-          scrollTrigger: {
-            trigger: root,
-            start: "top 75%",
-            toggleActions: "play none none none",
-          },
-        });
-      }
-      if (crossV) {
-        gsap.from(crossV, {
-          scaleY: 0,
-          transformOrigin: "50% 50%",
-          duration: 1.1,
-          ease: "expo.out",
-          delay: 0.45,
-          scrollTrigger: {
-            trigger: root,
-            start: "top 75%",
-            toggleActions: "play none none none",
-          },
-        });
-      }
-
-      // Coords + corner mark fade in after the photo settles.
+      // Coords + corner mark fade in after the photo curtain has cleared.
       const overlayTargets = [
         ...Array.from(coords),
         cornerMark,
@@ -127,7 +96,7 @@ export default function PositionBrief() {
           duration: 0.7,
           ease: "expo.out",
           stagger: 0.08,
-          delay: 0.7,
+          delay: 1.05,
           scrollTrigger: {
             trigger: root,
             start: "top 75%",
@@ -136,7 +105,7 @@ export default function PositionBrief() {
         });
       }
 
-      // Headline word-mask reveal.
+      // Headline + subhead word-mask reveal.
       gsap.to(wordInners, {
         y: 0,
         duration: 1.0,
@@ -149,13 +118,13 @@ export default function PositionBrief() {
         },
       });
 
-      // Cards rise in stagger after the headline is mostly through.
+      // Cards rise in stagger after the headline lands.
       gsap.from(cells, {
         opacity: 0,
         y: 28,
         duration: 1.0,
         ease: "expo.out",
-        stagger: 0.09,
+        stagger: 0.1,
         scrollTrigger: {
           trigger: root,
           start: "top 55%",
@@ -186,8 +155,7 @@ export default function PositionBrief() {
             alt="Aerial view of a multi-level highway interchange"
             loading="lazy"
           />
-          <span className={`${styles.crossLine} ${styles.crossH}`} aria-hidden="true" />
-          <span className={`${styles.crossLine} ${styles.crossV}`} aria-hidden="true" />
+          <span className={styles.photoCurtain} aria-hidden="true" />
           <p className={styles.coords}>
             <span className={styles.coordItem}>X: 1250</span>
             <span className={styles.coordItem}>Y: 1285</span>
@@ -210,14 +178,15 @@ export default function PositionBrief() {
                   <span>{b.label}</span>
                   <i aria-hidden="true" />
                 </div>
-                <h3 className={styles.cellPhrase}>{b.phrase}</h3>
                 <p>{b.body}</p>
                 <a className={styles.cellCta} href={b.href}>
                   <span className={styles.cellCtaText} aria-hidden="true">
                     <span className={styles.cellCtaText1}>Learn more</span>
                     <span className={styles.cellCtaText2}>Learn more</span>
                   </span>
-                  <span className="sr-only">Learn more about {b.label.toLowerCase()}</span>
+                  <span className="sr-only">
+                    Learn more about {b.label.toLowerCase()}
+                  </span>
                   <span aria-hidden="true" className={styles.cellArr}>
                     &rarr;
                   </span>

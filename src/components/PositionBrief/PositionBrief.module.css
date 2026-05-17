@@ -1,10 +1,9 @@
 /* ═══════════════════════════════════════════════════════
    POSITION BRIEF (S2)
-   Photo + crosshair overlay on the left, white content pane
-   on the right with the headline at top and three cards in
-   a single row at the bottom. Reveal FX driven by GSAP in
-   index.tsx (word mask, photo scale, crosshair draw, cards
-   stagger).
+   Two-column section. Photo with curtain reveal on the left,
+   white content pane on the right: headline + subhead bracketed
+   at the top section, two cards at the bottom row. All reveal
+   FX driven by GSAP in index.tsx.
    ═══════════════════════════════════════════════════════ */
 
 .section {
@@ -28,7 +27,7 @@
   min-height: min(880px, calc(100svh - 96px));
 }
 
-/* ─── Left: photo with crosshair overlay ─── */
+/* ─── Left: photo with curtain reveal ─── */
 
 .photoPane {
   position: relative;
@@ -45,27 +44,13 @@
   will-change: transform;
 }
 
-.crossLine {
+.photoCurtain {
   position: absolute;
-  background: rgba(255, 255, 255, 0.55);
+  inset: 0;
+  background: var(--paper);
+  z-index: 2;
   pointer-events: none;
-  mix-blend-mode: difference;
-}
-
-.crossH {
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-  transform: translateY(-0.5px);
-}
-
-.crossV {
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 1px;
-  transform: translateX(-0.5px);
+  will-change: transform;
 }
 
 .coords {
@@ -77,6 +62,7 @@
   align-items: flex-end;
   gap: 6px;
   margin: 0;
+  z-index: 3;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.16em;
@@ -95,6 +81,7 @@
   position: absolute;
   right: clamp(12px, 1vw, 16px);
   bottom: clamp(12px, 1vw, 16px);
+  z-index: 3;
   width: 6px;
   height: 6px;
   background: var(--ink-local);
@@ -150,7 +137,7 @@
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
-  line-height: 1.02;
+  line-height: 1.05;
 }
 
 .wordInner {
@@ -159,19 +146,19 @@
   will-change: transform;
 }
 
-/* ─── 3-up cards row ─── */
+/* ─── 2-up cards row ─── */
 
 .cells {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   border-top: 1px solid var(--rule);
 }
 
 .cell {
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: clamp(14px, 1.2vw, 22px);
-  padding: clamp(24px, 2vw, 36px);
+  grid-template-rows: auto 1fr auto;
+  gap: clamp(18px, 1.6vw, 28px);
+  padding: clamp(28px, 2.4vw, 44px);
   will-change: transform, opacity;
 }
 
@@ -198,25 +185,13 @@
   background: var(--ink-local);
 }
 
-.cellPhrase {
-  margin: 0;
-  max-width: 18ch;
-  font-family: var(--display);
-  font-size: clamp(20px, 1.55vw, 28px);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.05;
-  color: var(--ink-local);
-  text-wrap: balance;
-}
-
 .cell p {
   margin: 0;
-  max-width: 38ch;
+  max-width: 42ch;
   font-family: var(--display);
-  font-size: clamp(13px, 0.9vw, 15px);
+  font-size: clamp(14px, 0.95vw, 16px);
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--mute);
 }
 
@@ -229,8 +204,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 18px;
-  margin-top: clamp(8px, 1vw, 14px);
+  padding: 16px 20px;
+  margin-top: clamp(12px, 1.5vw, 22px);
   font-family: var(--display);
   font-size: 14px;
   font-weight: 500;
@@ -239,8 +214,7 @@
   border: 1px solid var(--rule);
   transition:
     color 260ms var(--ease),
-    border-color 260ms var(--ease),
-    background-color 260ms var(--ease);
+    border-color 260ms var(--ease);
   overflow: hidden;
 }
 
@@ -363,6 +337,9 @@
 @media (prefers-reduced-motion: reduce) {
   .wordInner {
     transform: none;
+  }
+  .photoCurtain {
+    transform: translateY(100%);
   }
   .cellCtaText1,
   .cellCtaText2,
