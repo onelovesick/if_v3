@@ -1,9 +1,15 @@
 "use client";
 
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./PositionBrief.module.css";
+
+// useLayoutEffect emits a warning during SSR; fall back to useEffect
+// on the server so the warning is silenced. On the client this still
+// runs synchronously before paint.
+const useIsoLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const HEADLINE_LINES = [
   "We connect the people, data, and",
@@ -99,6 +105,27 @@ export default function PositionBrief() {
   const sectionRef = useRef<HTMLElement>(null);
   const { ready } = useMotionReady();
 
+  // Pre-scramble the cell labels synchronously on mount, before the
+  // first paint, so they are already random characters by the time
+  // the cells fade in. This guarantees the user sees the scramble
+  // effect resolve, not the final word.
+  useIsoLayoutEffect(() => {
+    const root = sectionRef.current;
+    if (!root) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+
+    const labels = root.querySelectorAll<HTMLElement>(
+      `.${CSS.escape(styles.cellLabel)}`,
+    );
+    labels.forEach((el) => {
+      if (!el.hasAttribute("data-final")) {
+        el.setAttribute("data-final", el.textContent ?? "");
+      }
+      el.textContent = randomScramble(el.getAttribute("data-final") ?? "");
+    });
+  }, []);
+
   useEffect(() => {
     const root = sectionRef.current;
     if (!root || !ready) return;
@@ -130,11 +157,12 @@ export default function PositionBrief() {
       }
     });
 
-    // Trigger the label scramble via IntersectionObserver so it fires
-    // reliably even if the user lands directly on the section. GSAP's
-    // scrollTrigger onEnter does not fire when the trigger is already
-    // past at create-time, which was causing the scramble to silently
-    // never run.
+    // Labels are pre-scrambled by useIsoLayoutEffect, so by the time
+    // the cells fade in the user already sees random chars. This
+    // observer just triggers the resolution back to the real word.
+    // Threshold is low so the resolve kicks off as soon as the cards
+    // peek into view; the cells' opacity fade lines up with the
+    // first half of the scramble so the user clearly sees both.
     let scrambleFired = false;
     const observer =
       cardsEl && !reduce && cellLabels.length
@@ -142,19 +170,17 @@ export default function PositionBrief() {
             ([entry]) => {
               if (!entry.isIntersecting || scrambleFired) return;
               scrambleFired = true;
-              window.setTimeout(() => {
-                cellLabels.forEach((el, i) => {
-                  const final = el.getAttribute("data-final") ?? "";
-                  el.textContent = randomScramble(final);
-                  window.setTimeout(
-                    () => scrambleResolve(el, final, 1800),
-                    i * 280,
-                  );
-                });
-              }, 500);
+              cellLabels.forEach((el, i) => {
+                const final = el.getAttribute("data-final") ?? "";
+                el.textContent = randomScramble(final);
+                window.setTimeout(
+                  () => scrambleResolve(el, final, 1800),
+                  i * 280,
+                );
+              });
               observer?.disconnect();
             },
-            { threshold: 0.2 },
+            { threshold: 0.05 },
           )
         : null;
     if (observer && cardsEl) observer.observe(cardsEl);

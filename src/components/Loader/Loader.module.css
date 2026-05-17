@@ -11,7 +11,9 @@
 
 .exiting {
   transition: transform 1.1s var(--ease);
-  transform: translateY(-100%) scale(1.05);
+  /* translateY(-100%) leaves a sliver visible because the scale(1.05)
+     pushes 2.5vh below the original bottom edge. -110% covers it. */
+  transform: translateY(-110%) scale(1.05);
 }
 
 .top {
