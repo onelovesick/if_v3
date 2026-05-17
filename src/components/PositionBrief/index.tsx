@@ -5,8 +5,11 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./PositionBrief.module.css";
 
-const HEADLINE =
-  "We connect the people, data, and the decisions behind critical infrastructure projects.";
+const HEADLINE_LINES = [
+  "We connect the people, data, and",
+  "the decisions behind critical",
+  "infrastructure projects.",
+];
 const SUBHEAD = "A governed information structure from design to handover.";
 
 const cards = [
@@ -108,19 +111,22 @@ export default function PositionBrief() {
     const curtain = root.querySelector(`.${CSS.escape(styles.photoCurtain)}`);
     const coords = root.querySelectorAll(`.${CSS.escape(styles.coordItem)}`);
     const cells = root.querySelectorAll(`.${CSS.escape(styles.cell)}`);
-    const titleSweepEl = root.querySelector<HTMLElement>(
-      `.${CSS.escape(styles.titleSweep)}`,
+    const titleLineSweeps = root.querySelectorAll<HTMLElement>(
+      `.${CSS.escape(styles.titleLineSweep)}`,
     );
     const cellLabels = Array.from(
       root.querySelectorAll<HTMLElement>(`.${CSS.escape(styles.cellLabel)}`),
     );
 
     // Pre-scramble the cell labels so they show as random chars until
-    // the scroll trigger resolves them. Cells start at opacity 0 from
-    // the existing cell reveal, so this mutation is not visible.
+    // the cells finish fading in and the scramble resolve kicks off.
+    // Guard against the effect re-running and overwriting data-final
+    // with already-scrambled chars.
     cellLabels.forEach((el) => {
-      const final = el.textContent ?? "";
-      el.setAttribute("data-final", final);
+      if (!el.hasAttribute("data-final")) {
+        el.setAttribute("data-final", el.textContent ?? "");
+      }
+      const final = el.getAttribute("data-final") ?? "";
       if (!reduce) el.textContent = randomScramble(final);
     });
 
@@ -250,6 +256,8 @@ export default function PositionBrief() {
         },
       });
 
+      // Cards fade up + on the way out, kick off the label scramble
+      // so it runs against fully-visible cells.
       gsap.from(cells, {
         opacity: 0,
         y: 28,
@@ -260,18 +268,35 @@ export default function PositionBrief() {
           trigger: root,
           start: "top 55%",
           toggleActions: "play none none none",
+          onEnter: () => {
+            if (reduce || !cellLabels.length) return;
+            // Cells fade-in finishes at ~1.12s (1.0 + 0.12 stagger).
+            // Kick off the scramble just after, with its own stagger.
+            cellLabels.forEach((el, i) => {
+              const final = el.getAttribute("data-final") ?? "";
+              // Make sure the scrambled state is fresh in case the
+              // label was already partially mutated.
+              el.textContent = randomScramble(final);
+              window.setTimeout(
+                () => scrambleResolve(el, final, 1500),
+                1150 + i * 260,
+              );
+            });
+          },
         },
       });
 
-      // Title: black sweep slides off to the right to reveal the text.
-      if (titleSweepEl) {
+      // Title: per-line black sweep. Each line's panel slides off to
+      // the right, staggered top-to-bottom.
+      if (titleLineSweeps.length) {
         gsap.fromTo(
-          titleSweepEl,
+          titleLineSweeps,
           { xPercent: 0 },
           {
             xPercent: 101,
-            duration: 1.2,
+            duration: 1.1,
             ease: "power3.inOut",
+            stagger: 0.18,
             scrollTrigger: {
               trigger: root,
               start: "top 75%",
@@ -279,25 +304,6 @@ export default function PositionBrief() {
             },
           },
         );
-      }
-
-      // Card labels: resolve from scrambled chars to their final text
-      // when the cards enter the viewport. Staggered per label.
-      if (cellLabels.length) {
-        ScrollTrigger.create({
-          trigger: root,
-          start: "top 60%",
-          once: true,
-          onEnter: () => {
-            cellLabels.forEach((el, i) => {
-              const final = el.getAttribute("data-final") || "";
-              window.setTimeout(
-                () => scrambleResolve(el, final, 850),
-                160 + i * 180,
-              );
-            });
-          },
-        });
       }
 
       ScrollTrigger.refresh();
@@ -347,8 +353,15 @@ export default function PositionBrief() {
           <div className={styles.contentCol}>
             <div className={styles.statement}>
               <h2 id="position-brief-title" className={styles.title}>
-                <span className={styles.titleText}>{HEADLINE}</span>
-                <span className={styles.titleSweep} aria-hidden="true" />
+                {HEADLINE_LINES.map((line, i) => (
+                  <span key={i} className={styles.titleLine}>
+                    <span className={styles.titleLineText}>{line}</span>
+                    <span
+                      className={styles.titleLineSweep}
+                      aria-hidden="true"
+                    />
+                  </span>
+                ))}
               </h2>
               <p className={styles.subhead}>{splitWords(SUBHEAD)}</p>
             </div>
