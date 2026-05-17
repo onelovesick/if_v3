@@ -164,15 +164,34 @@
 /* ─── RIGHT: content column ─── */
 
 .contentCol {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: clamp(24px, 2.4vw, 56px);
+  border-top: 1px solid #D9D5CC;
+  border-left: 1px solid #D9D5CC;
+  border-right: 1px solid #D9D5CC;
+  border-bottom: 1px solid #D9D5CC;
 }
 
 @media (min-width: 1024px) {
   .contentCol {
-    padding: clamp(32px, 3vw, 64px) clamp(32px, 3vw, 64px)
-      clamp(32px, 3vw, 64px) 0;
+    padding: clamp(32px, 3vw, 64px);
+  }
+
+  /* Continuous vertical hairline that splits the right column at 50%.
+     Aligns with the cards divider below and runs the full height,
+     extending up through the statement area. */
+  .contentCol::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: #D9D5CC;
+    transform: translateX(-0.5px);
+    pointer-events: none;
   }
 }
 
@@ -186,7 +205,7 @@
 
 .title {
   margin: 0;
-  max-width: none;
+  max-width: 14ch;
   font-family: var(--display);
   font-size: clamp(2.5rem, 4.6vw, 5.25rem);
   font-weight: 400;
