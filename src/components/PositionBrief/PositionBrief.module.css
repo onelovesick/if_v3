@@ -190,6 +190,7 @@
 }
 
 .title {
+  position: relative;
   margin: 0;
   max-width: none;
   font-family: var(--display);
@@ -199,8 +200,26 @@
   letter-spacing: -0.025em;
   color: #111111;
   text-wrap: balance;
+  overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.titleText {
+  position: relative;
+  display: block;
+  z-index: 1;
+}
+
+/* Black sweep panel: covers the title at rest, slides off to the
+   right on scroll-into-view to reveal the text. */
+.titleSweep {
+  position: absolute;
+  inset: -0.1em -0.05em;
+  background: #111111;
+  z-index: 2;
+  pointer-events: none;
+  will-change: transform;
 }
 
 .subhead {

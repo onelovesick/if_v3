@@ -40,6 +40,58 @@ function splitWords(text: string) {
   ));
 }
 
+// Hacker-style scramble effect for short text strings.
+const SCRAMBLE_CHARS =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+function randomScramble(text: string) {
+  let out = "";
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === " " || ch === "\n") {
+      out += ch;
+    } else {
+      out +=
+        SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+    }
+  }
+  return out;
+}
+
+function scrambleResolve(
+  el: HTMLElement,
+  finalText: string,
+  duration: number,
+) {
+  const start = performance.now();
+  const len = finalText.length;
+
+  function step(now: number) {
+    const t = Math.min((now - start) / duration, 1);
+    // Characters resolve from left to right, slightly faster than
+    // linear so the tail of the string settles quickly.
+    const resolved = Math.floor(t * (len + 4));
+    let out = "";
+    for (let i = 0; i < len; i++) {
+      const ch = finalText[i];
+      if (i < resolved || ch === " " || ch === "\n") {
+        out += ch;
+      } else {
+        out +=
+          SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+      }
+    }
+    el.textContent = out;
+    if (t < 1) {
+      requestAnimationFrame(step);
+    } else {
+      el.textContent = finalText;
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
 export default function PositionBrief() {
   const sectionRef = useRef<HTMLElement>(null);
   const { ready } = useMotionReady();
@@ -56,6 +108,21 @@ export default function PositionBrief() {
     const curtain = root.querySelector(`.${CSS.escape(styles.photoCurtain)}`);
     const coords = root.querySelectorAll(`.${CSS.escape(styles.coordItem)}`);
     const cells = root.querySelectorAll(`.${CSS.escape(styles.cell)}`);
+    const titleSweepEl = root.querySelector<HTMLElement>(
+      `.${CSS.escape(styles.titleSweep)}`,
+    );
+    const cellLabels = Array.from(
+      root.querySelectorAll<HTMLElement>(`.${CSS.escape(styles.cellLabel)}`),
+    );
+
+    // Pre-scramble the cell labels so they show as random chars until
+    // the scroll trigger resolves them. Cells start at opacity 0 from
+    // the existing cell reveal, so this mutation is not visible.
+    cellLabels.forEach((el) => {
+      const final = el.textContent ?? "";
+      el.setAttribute("data-final", final);
+      if (!reduce) el.textContent = randomScramble(final);
+    });
 
     const ctx = gsap.context(() => {
       if (reduce) {
@@ -196,6 +263,43 @@ export default function PositionBrief() {
         },
       });
 
+      // Title: black sweep slides off to the right to reveal the text.
+      if (titleSweepEl) {
+        gsap.fromTo(
+          titleSweepEl,
+          { xPercent: 0 },
+          {
+            xPercent: 101,
+            duration: 1.2,
+            ease: "power3.inOut",
+            scrollTrigger: {
+              trigger: root,
+              start: "top 75%",
+              toggleActions: "play none none none",
+            },
+          },
+        );
+      }
+
+      // Card labels: resolve from scrambled chars to their final text
+      // when the cards enter the viewport. Staggered per label.
+      if (cellLabels.length) {
+        ScrollTrigger.create({
+          trigger: root,
+          start: "top 60%",
+          once: true,
+          onEnter: () => {
+            cellLabels.forEach((el, i) => {
+              const final = el.getAttribute("data-final") || "";
+              window.setTimeout(
+                () => scrambleResolve(el, final, 850),
+                160 + i * 180,
+              );
+            });
+          },
+        });
+      }
+
       ScrollTrigger.refresh();
     }, sectionRef);
 
@@ -243,7 +347,8 @@ export default function PositionBrief() {
           <div className={styles.contentCol}>
             <div className={styles.statement}>
               <h2 id="position-brief-title" className={styles.title}>
-                {splitWords(HEADLINE)}
+                <span className={styles.titleText}>{HEADLINE}</span>
+                <span className={styles.titleSweep} aria-hidden="true" />
               </h2>
               <p className={styles.subhead}>{splitWords(SUBHEAD)}</p>
             </div>
@@ -254,7 +359,7 @@ export default function PositionBrief() {
               {cards.map((c) => (
                 <article key={c.label} className={styles.cell}>
                   <div className={styles.cellHead}>
-                    <span>{c.label}</span>
+                    <span className={styles.cellLabel}>{c.label}</span>
                     <span className={styles.cellMark} aria-hidden="true" />
                   </div>
 
