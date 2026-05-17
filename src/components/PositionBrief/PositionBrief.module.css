@@ -336,9 +336,12 @@
 }
 
 /* Body stack takes the slot between cellHead and cellCta. Individual
-   paragraphs stack with a consistent gap. */
+   paragraphs stack with a consistent gap. padding-bottom carves a
+   small breathing room between the last paragraph word and the
+   button below. */
 .cellBodyStack {
   margin: 32px 0 0;
+  padding-bottom: clamp(20px, 1.8vw, 32px);
   display: flex;
   flex-direction: column;
   gap: 18px;
