@@ -9,7 +9,7 @@
 
 .section {
   position: relative;
-  background: #F5F2EC;
+  background: #FAFAF8;
   color: #111111;
 }
 
@@ -178,34 +178,20 @@
   .contentCol {
     padding: clamp(32px, 3vw, 64px);
   }
-
-  /* Continuous vertical hairline that splits the right column at 50%.
-     Aligns with the cards divider below and runs the full height,
-     extending up through the statement area. */
-  .contentCol::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 1px;
-    background: #D9D5CC;
-    transform: translateX(-0.5px);
-    pointer-events: none;
-  }
 }
 
 .statement {
   display: flex;
   flex-direction: column;
-  gap: clamp(28px, 3vw, 56px);
+  justify-content: space-between;
+  gap: clamp(32px, 4vw, 64px);
   flex: 1 1 auto;
-  padding-bottom: clamp(40px, 5vw, 80px);
+  padding-bottom: clamp(14px, 1.2vw, 22px);
 }
 
 .title {
   margin: 0;
-  max-width: 14ch;
+  max-width: none;
   font-family: var(--display);
   font-size: clamp(2.5rem, 4.6vw, 5.25rem);
   font-weight: 400;
@@ -250,7 +236,7 @@
   height: 1px;
   width: 100%;
   background: #D9D5CC;
-  margin: 40px 0 0;
+  margin: 0;
 }
 
 /* ─── Cards (50/50 with 1px vertical divider) ─── */
@@ -270,14 +256,14 @@
 .cell {
   display: flex;
   flex-direction: column;
-  padding: 40px 0 0;
+  padding: 28px 0 0;
   min-height: 18rem;
   will-change: opacity, transform;
 }
 
 @media (min-width: 768px) {
   .cell {
-    padding: 40px 0 0;
+    padding: 28px 0 0;
   }
   .cell + .cell {
     border-left: 1px solid #D9D5CC;
@@ -304,17 +290,17 @@
 
 .cellHead > span:first-child {
   font-family: var(--mono);
-  font-size: clamp(16px, 1.15vw, 20px);
+  font-size: clamp(18px, 1.45vw, 26px);
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #111111;
 }
 
 .cellMark {
   display: block;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   background: #2453FF;
   transform: rotate(45deg);
 }
@@ -322,12 +308,12 @@
 /* Body + button use space-between so the button settles at the
    bottom of the card and the body sits at the top of that area */
 .cellBody {
-  margin: 40px 0 0;
-  max-width: 34ch;
+  margin: 32px 0 0;
+  max-width: 32ch;
   font-family: var(--display);
-  font-size: 17px;
+  font-size: clamp(18px, 1.4vw, 22px);
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.4;
   color: #111111;
   flex: 1 1 auto;
 }
@@ -339,9 +325,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 20px 24px;
-  background: #111111;
-  color: #F5F2EC;
+  padding: 22px 26px;
+  background: transparent;
+  color: #111111;
   font-family: var(--display);
   font-size: 16px;
   font-weight: 500;
@@ -349,19 +335,16 @@
   text-decoration: none;
   border: 1px solid #111111;
   overflow: hidden;
-  transition:
-    background-color 320ms var(--ease),
-    color 320ms var(--ease),
-    border-color 320ms var(--ease);
+  transition: color 380ms var(--ease);
 }
 
 .cellCta::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: #2453FF;
+  background: #111111;
   transform: translateY(101%);
-  transition: transform 380ms var(--ease-snap);
+  transition: transform 460ms var(--ease-snap);
   z-index: 0;
 }
 
@@ -374,13 +357,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border: 1px solid currentColor;
   border-radius: 50%;
   font-size: 14px;
   line-height: 1;
-  transition: transform 320ms var(--ease-snap);
+  transition:
+    transform 320ms var(--ease-snap),
+    border-color 380ms var(--ease);
 }
 
 .cellCta:hover::before,
@@ -390,7 +375,7 @@
 
 .cellCta:hover,
 .cellCta:focus-visible {
-  border-color: #2453FF;
+  color: #FAFAF8;
 }
 
 .cellCta:hover .cellArr,
