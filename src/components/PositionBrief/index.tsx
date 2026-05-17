@@ -78,35 +78,67 @@ export default function PositionBrief() {
 
       const pad4 = (n: number) => String(Math.round(n)).padStart(4, "0");
 
+      const photoPaneEl = root.querySelector(
+        `.${CSS.escape(styles.photoPane)}`,
+      ) as HTMLElement | null;
+
+      // PHASE_SPLIT controls how much of the scroll is spent on the
+      // approach (cross travels from section top-left to image
+      // top-left) vs the reveal (cross travels across the image while
+      // it unwinds). 0.18 = first 18% is approach, remainder is reveal.
+      const PHASE_SPLIT = 0.18;
+
       ScrollTrigger.create({
         trigger: root,
-        // Reveal runs across the entire section entry. At the moment
-        // the section's top crosses the viewport bottom, no image is
-        // visible — only the small crosshair marker in the top-left.
-        // As the user scrolls, the image unwinds outward toward the
-        // bottom-right corner; the crosshair tracks that edge and the
-        // X/Y coordinates count up. When the section's top reaches
-        // the viewport top, the image is fully revealed and the
-        // crosshair has reached its full extent.
         start: "top bottom",
         end: "top top",
         scrub: 0.6,
         onUpdate: (self) => {
           const p = self.progress;
-          // Image: fully clipped at p=0, fully visible at p=1.
-          const inset = 100 * (1 - p);
+
+          // Measure section + photo positions each frame so resizes
+          // stay accurate without an explicit refresh listener.
+          if (!photoPaneEl) return;
+          const sectionRect = root.getBoundingClientRect();
+          const photoRect = photoPaneEl.getBoundingClientRect();
+          const imageX = photoRect.left - sectionRect.left;
+          const imageY = photoRect.top - sectionRect.top;
+          const imageW = photoRect.width;
+          const imageH = photoRect.height;
+
+          let cx: number;
+          let cy: number;
+          let inset: number;
+          let revealP: number; // reveal progress for clip-path
+
+          if (p < PHASE_SPLIT) {
+            // Phase 1: cross approaches image's top-left corner. The
+            // image stays fully clipped.
+            const ph = p / PHASE_SPLIT;
+            cx = imageX * ph;
+            cy = imageY * ph;
+            inset = 100;
+            revealP = 0;
+          } else {
+            // Phase 2: cross traverses the image's diagonal while the
+            // image unwinds from top-left to bottom-right.
+            const ph = (p - PHASE_SPLIT) / (1 - PHASE_SPLIT);
+            cx = imageX + imageW * ph;
+            cy = imageY + imageH * ph;
+            inset = 100 * (1 - ph);
+            revealP = ph;
+          }
+
           if (crossImg) {
             crossImg.style.clipPath = `inset(0 ${inset}% ${inset}% 0)`;
           }
           if (photo) {
-            const scale = 1.12 - 0.12 * p;
+            const scale = 1.12 - 0.12 * revealP;
             (photo as HTMLImageElement).style.transform = `scale(${scale.toFixed(4)})`;
           }
-          // Crosshair tracks the corner of the revealed image.
           if (crossOverlay) {
-            const revealPct = (p * 100).toFixed(2) + "%";
-            crossOverlay.style.setProperty("--reveal-x", revealPct);
-            crossOverlay.style.setProperty("--reveal-y", revealPct);
+            crossOverlay.style.setProperty("--cx", `${cx.toFixed(2)}px`);
+            crossOverlay.style.setProperty("--cy", `${cy.toFixed(2)}px`);
           }
           if (coordXEl) {
             coordXEl.textContent = `X: ${pad4(1250 * p)}`;
@@ -174,9 +206,20 @@ export default function PositionBrief() {
       className={styles.section}
       aria-labelledby="position-brief-title"
     >
+      {/* Cross overlay spans the entire section so the crosshair can
+          start from the section's top-left corner, travel diagonally
+          to the photo's top-left, and continue across the photo. */}
+      <div className={styles.crossOverlay} aria-hidden="true">
+        <span className={`${styles.crossLine} ${styles.crossLineV}`} />
+        <span className={`${styles.crossLine} ${styles.crossLineH}`} />
+        <span className={styles.crossPoint} />
+        <span className={`${styles.coordItem} ${styles.coordY}`}>Y: 0000</span>
+        <span className={`${styles.coordItem} ${styles.coordX}`}>X: 0000</span>
+      </div>
+
       <div className={styles.shell}>
         <div className={styles.grid}>
-          {/* LEFT — image with clip-path reveal and coordinate overlay */}
+          {/* LEFT — image with clip-path reveal */}
           <div className={styles.photoCol}>
             <figure className={styles.photoPane}>
               <div className={styles.photoClip}>
@@ -188,14 +231,6 @@ export default function PositionBrief() {
                 />
               </div>
               <span className={styles.photoCurtain} aria-hidden="true" />
-
-              <div className={styles.crossOverlay} aria-hidden="true">
-                <span className={`${styles.crossLine} ${styles.crossLineRight}`} />
-                <span className={`${styles.crossLine} ${styles.crossLineBottom}`} />
-                <span className={`${styles.coordItem} ${styles.coordY}`}>Y: 1285</span>
-                <span className={`${styles.coordItem} ${styles.coordX}`}>X: 1250</span>
-                <span className={styles.crossPoint} />
-              </div>
             </figure>
           </div>
 
