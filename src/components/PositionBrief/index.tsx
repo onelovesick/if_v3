@@ -80,16 +80,16 @@ export default function PositionBrief() {
 
       ScrollTrigger.create({
         trigger: root,
-        start: "top bottom",
-        end: "bottom top",
+        // Reveal starts when section's top is 90% down the viewport
+        // (section just entering) and reaches 100% when section's top
+        // is 10% from the viewport top (section nearly fully in view).
+        // Cube is therefore fully revealed by the time the user lands
+        // on the section.
+        start: "top 90%",
+        end: "top 10%",
         scrub: 0.6,
         onUpdate: (self) => {
-          // Spread the reveal across the middle 60% of the section's
-          // scroll lifetime so a paper-coloured gap stays visible
-          // between the bottom of the cube and the bottom of the
-          // viewport throughout the expansion.
-          const raw = (self.progress - 0.2) / 0.6;
-          const p = Math.max(0, Math.min(1, raw));
+          const p = self.progress;
           const inset = 90 * (1 - p);
           if (crossImg) {
             crossImg.style.clipPath = `inset(0 ${inset}% ${inset}% 0)`;
