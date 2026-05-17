@@ -6,19 +6,25 @@ import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./PositionBrief.module.css";
 
 const HEADLINE =
-  "Independent information management for the projects the country can’t afford to fail.";
-const SUBHEAD_1 = "Between every party.";
-const SUBHEAD_2 = "Aligned with the asset.";
+  "We connect the people, data, and the decisions behind critical infrastructure projects.";
+const SUBHEAD = "A governed information structure from design to handover.";
 
 const cards = [
   {
-    label: "Position",
-    body: "An independent layer between owners, designers, contractors and operators. We govern project information so it serves the asset, not any one party on the delivery.",
+    label: "Process",
+    body: [
+      "Infraforma starts by understanding how the project is organized, how teams work, what systems are in place, and where decisions are made.",
+      "We then define the digital delivery structure: governance, workflows, platforms, data strategy, coordination processes, reporting, integrations, and handover requirements. The goal is simple: give the project a clearer operating system from design through construction and operations.",
+    ],
     href: "#layers",
   },
   {
-    label: "Practice",
-    body: "We turn brief, design, construction and operations into one continuous record. Every decision is traceable, every handover is verifiable, every model outlasts the team that produced it.",
+    label: "Company",
+    body: [
+      "A digital delivery partner for complex infrastructure programs.",
+      "Infraforma works between owners, designers, contractors, and operators to bring structure, visibility, and control to the way projects are delivered.",
+      "We combine infrastructure experience, digital systems, BIM, information strategy, and project execution knowledge to help teams work with clearer data, stronger workflows, and better decision-making across the full lifecycle.",
+    ],
     href: "#howwework",
   },
 ];
@@ -240,11 +246,7 @@ export default function PositionBrief() {
               <h2 id="position-brief-title" className={styles.title}>
                 {splitWords(HEADLINE)}
               </h2>
-              <p className={styles.subhead}>
-                {splitWords(SUBHEAD_1)}
-                <br />
-                {splitWords(SUBHEAD_2)}
-              </p>
+              <p className={styles.subhead}>{splitWords(SUBHEAD)}</p>
             </div>
 
             <div className={styles.rule} aria-hidden="true" />
@@ -257,7 +259,11 @@ export default function PositionBrief() {
                     <span className={styles.cellMark} aria-hidden="true" />
                   </div>
 
-                  <p className={styles.cellBody}>{c.body}</p>
+                  <div className={styles.cellBodyStack}>
+                    {c.body.map((para, i) => (
+                      <p key={i} className={styles.cellBody}>{para}</p>
+                    ))}
+                  </div>
 
                   <a className={styles.cellCta} href={c.href}>
                     <span>Learn more</span>

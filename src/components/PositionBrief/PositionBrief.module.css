@@ -305,17 +305,24 @@
   transform: rotate(45deg);
 }
 
-/* Body + button use space-between so the button settles at the
-   bottom of the card and the body sits at the top of that area */
-.cellBody {
+/* Body stack takes the slot between cellHead and cellCta. Individual
+   paragraphs stack with a consistent gap. */
+.cellBodyStack {
   margin: 32px 0 0;
-  max-width: 32ch;
-  font-family: var(--display);
-  font-size: clamp(18px, 1.4vw, 22px);
-  font-weight: 400;
-  line-height: 1.4;
-  color: #111111;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   flex: 1 1 auto;
+}
+
+.cellBody {
+  margin: 0;
+  max-width: 36ch;
+  font-family: var(--display);
+  font-size: clamp(17px, 1.25vw, 20px);
+  font-weight: 400;
+  line-height: 1.45;
+  color: #111111;
 }
 
 .cellCta {
