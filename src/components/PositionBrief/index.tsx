@@ -5,19 +5,21 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./PositionBrief.module.css";
 
-const HEADLINE = "We connect the people, the data, and the decisions";
-const SUBHEAD = "behind critical infrastructure projects.";
+const HEADLINE =
+  "Independent information management for the projects the country can’t afford to fail.";
+const SUBHEAD_1 = "Between every party.";
+const SUBHEAD_2 = "Aligned with the asset.";
 
-const blocks = [
+const cards = [
   {
-    label: "Approach",
-    body: "We define how information is organized, exchanged, reviewed, approved, and delivered. From CDE workflows to model data, document control, requirements, and asset information, we build the framework that keeps project information usable.",
+    label: "Position",
+    body: "An independent layer between owners, designers, contractors and operators. We govern project information so it serves the asset, not any one party on the delivery.",
     href: "#layers",
   },
   {
-    label: "Outcome",
-    body: "Infraforma gives project teams the structure needed to manage complexity, track obligations, support decisions, and carry clean information from execution into operations.",
-    href: "#close",
+    label: "Practice",
+    body: "We turn brief, design, construction and operations into one continuous record. Every decision is traceable, every handover is verifiable, every model outlasts the team that produced it.",
+    href: "#howwework",
   },
 ];
 
@@ -46,20 +48,17 @@ export default function PositionBrief() {
       `.${CSS.escape(styles.wordInner)}`,
     );
     const photo = root.querySelector(`.${CSS.escape(styles.photoImg)}`);
-    const overlay = root.querySelector(`.${CSS.escape(styles.photoCurtain)}`);
+    const curtain = root.querySelector(`.${CSS.escape(styles.photoCurtain)}`);
     const coords = root.querySelectorAll(`.${CSS.escape(styles.coordItem)}`);
-    const cornerMark = root.querySelector(`.${CSS.escape(styles.cornerMark)}`);
     const cells = root.querySelectorAll(`.${CSS.escape(styles.cell)}`);
 
     const ctx = gsap.context(() => {
       if (reduce) {
         gsap.set(wordInners, { y: 0 });
-        if (overlay) gsap.set(overlay, { yPercent: 100 });
+        if (curtain) gsap.set(curtain, { yPercent: 100 });
         return;
       }
 
-      // Curtain reveal: white overlay slides down to reveal the photo
-      // beneath. Simultaneously the photo scales from 1.12 to 1.0.
       const photoTl = gsap.timeline({
         scrollTrigger: {
           trigger: root,
@@ -67,9 +66,9 @@ export default function PositionBrief() {
           toggleActions: "play none none none",
         },
       });
-      if (overlay) {
+      if (curtain) {
         photoTl.fromTo(
-          overlay,
+          curtain,
           { yPercent: 0 },
           { yPercent: 100, duration: 1.4, ease: "expo.inOut" },
           0,
@@ -84,19 +83,14 @@ export default function PositionBrief() {
         );
       }
 
-      // Coords + corner mark fade in after the photo curtain has cleared.
-      const overlayTargets = [
-        ...Array.from(coords),
-        cornerMark,
-      ].filter(Boolean) as Element[];
-      if (overlayTargets.length) {
-        gsap.from(overlayTargets, {
+      if (coords.length) {
+        gsap.from(coords, {
           opacity: 0,
-          y: 6,
-          duration: 0.7,
+          y: 4,
+          duration: 0.6,
           ease: "expo.out",
-          stagger: 0.08,
-          delay: 1.05,
+          stagger: 0.1,
+          delay: 1.1,
           scrollTrigger: {
             trigger: root,
             start: "top 75%",
@@ -105,7 +99,6 @@ export default function PositionBrief() {
         });
       }
 
-      // Headline + subhead word-mask reveal.
       gsap.to(wordInners, {
         y: 0,
         duration: 1.0,
@@ -118,13 +111,12 @@ export default function PositionBrief() {
         },
       });
 
-      // Cards rise in stagger after the headline lands.
       gsap.from(cells, {
         opacity: 0,
         y: 28,
         duration: 1.0,
         ease: "expo.out",
-        stagger: 0.1,
+        stagger: 0.12,
         scrollTrigger: {
           trigger: root,
           start: "top 55%",
@@ -147,52 +139,67 @@ export default function PositionBrief() {
       className={styles.section}
       aria-labelledby="position-brief-title"
     >
-      <div className={styles.grid}>
-        <figure className={styles.photoPane}>
-          <img
-            className={styles.photoImg}
-            src="https://images.pexels.com/photos/15450239/pexels-photo-15450239.jpeg?auto=compress&cs=tinysrgb&w=2000"
-            alt="Aerial view of a multi-level highway interchange"
-            loading="lazy"
-          />
-          <span className={styles.photoCurtain} aria-hidden="true" />
-          <p className={styles.coords}>
-            <span className={styles.coordItem}>X: 1250</span>
-            <span className={styles.coordItem}>Y: 1285</span>
-          </p>
-          <span className={styles.cornerMark} aria-hidden="true" />
-        </figure>
+      <div className={styles.shell}>
+        <div className={styles.grid}>
+          {/* LEFT — image with coord readouts in the gutter */}
+          <div className={styles.photoCol}>
+            <figure className={styles.photoPane}>
+              <img
+                className={styles.photoImg}
+                src="https://images.pexels.com/photos/6032899/pexels-photo-6032899.jpeg?auto=compress&cs=tinysrgb&w=1400"
+                alt="Bridge structure under construction"
+                loading="lazy"
+              />
+              <span className={styles.photoCurtain} aria-hidden="true" />
+            </figure>
 
-        <div className={styles.contentPane}>
-          <div className={styles.statement}>
-            <h2 id="position-brief-title" className={styles.title}>
-              {splitWords(HEADLINE)}
-            </h2>
-            <p className={styles.subhead}>{splitWords(SUBHEAD)}</p>
+            <span className={`${styles.coordItem} ${styles.coordX}`}>
+              X: 1250
+            </span>
+            <span className={`${styles.coordItem} ${styles.coordY}`}>
+              Y: 1285
+            </span>
+
+            <div className={styles.coordsMobile}>
+              <span className={styles.coordItem}>X: 1250</span>
+              <span className={styles.coordItem}>Y: 1285</span>
+            </div>
           </div>
 
-          <div className={styles.cells}>
-            {blocks.map((b) => (
-              <article key={b.label} className={styles.cell}>
-                <div className={styles.cellHead}>
-                  <span>{b.label}</span>
-                  <i aria-hidden="true" />
-                </div>
-                <p>{b.body}</p>
-                <a className={styles.cellCta} href={b.href}>
-                  <span className={styles.cellCtaText} aria-hidden="true">
-                    <span className={styles.cellCtaText1}>Learn more</span>
-                    <span className={styles.cellCtaText2}>Learn more</span>
-                  </span>
-                  <span className="sr-only">
-                    Learn more about {b.label.toLowerCase()}
-                  </span>
-                  <span aria-hidden="true" className={styles.cellArr}>
-                    &rarr;
-                  </span>
-                </a>
-              </article>
-            ))}
+          {/* RIGHT — headline / subhead bracket + 2 cards */}
+          <div className={styles.contentCol}>
+            <div className={styles.statement}>
+              <h2 id="position-brief-title" className={styles.title}>
+                {splitWords(HEADLINE)}
+              </h2>
+              <p className={styles.subhead}>
+                {splitWords(SUBHEAD_1)}
+                <br />
+                {splitWords(SUBHEAD_2)}
+              </p>
+            </div>
+
+            <div className={styles.rule} aria-hidden="true" />
+
+            <div className={styles.cards}>
+              {cards.map((c) => (
+                <article key={c.label} className={styles.cell}>
+                  <div className={styles.cellHead}>
+                    <span>{c.label}</span>
+                    <span className={styles.cellMark} aria-hidden="true" />
+                  </div>
+
+                  <p className={styles.cellBody}>{c.body}</p>
+
+                  <a className={styles.cellCta} href={c.href}>
+                    <span>Learn more</span>
+                    <span aria-hidden="true" className={styles.cellArr}>
+                      &rarr;
+                    </span>
+                  </a>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </div>
