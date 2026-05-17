@@ -384,8 +384,8 @@ export default function PositionBrief() {
               <div className={styles.photoClip}>
                 <img
                   className={styles.photoImg}
-                  src="https://images.pexels.com/photos/6032899/pexels-photo-6032899.jpeg?auto=compress&cs=tinysrgb&w=1400"
-                  alt="Bridge structure under construction"
+                  src="/section2.jpg"
+                  alt="Infrastructure project context"
                   loading="lazy"
                 />
               </div>
