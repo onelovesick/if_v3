@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════════════════
    POSITION BRIEF (S2)
-   Warm-paper section. Portrait photo with curtain reveal on
-   the left, coordinate readouts sitting in the gutter outside
-   the image. Right column: headline + subhead bracketed top
-   and bottom of a tall block, hairline, two cards beneath with
-   deep internal padding and an invert-on-hover ghost button.
+   Warm-paper section. Square photo (1:1 desktop, 1:1.2 below
+   1024px) with clip-path reveal from top-left, coordinate
+   overlay along the bottom-right edge, headline + subhead
+   bracketed in a tall block, hairline, two cards with the
+   body + button pushed apart vertically via flex space-between.
    ═══════════════════════════════════════════════════════ */
 
 .section {
@@ -31,7 +31,7 @@
   }
 }
 
-/* ─── LEFT: photo column + gutter coords ─── */
+/* ─── LEFT: photo + clip-path reveal + coord overlay ─── */
 
 .photoCol {
   position: relative;
@@ -41,8 +41,23 @@
   position: relative;
   margin: 0;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1.2;
+  overflow: visible;
+}
+
+@media (min-width: 1024px) {
+  .photoPane {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+/* photoClip is the layer GSAP animates with clip-path */
+.photoClip {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
+  clip-path: inset(0 0% 0% 0);
+  will-change: clip-path;
 }
 
 .photoImg {
@@ -53,65 +68,71 @@
   will-change: transform;
 }
 
+/* photoCurtain kept in DOM so existing CSS selectors don't 404;
+   the JS sets display:none after the timeline binds. */
 .photoCurtain {
+  display: none;
+}
+
+/* ─── Coordinate overlay on the photo ─── */
+
+.crossOverlay {
   position: absolute;
   inset: 0;
-  background: #F5F2EC;
-  z-index: 2;
   pointer-events: none;
-  will-change: transform;
+  z-index: 3;
+  color: #111111;
 }
 
-/* Desktop: coords sit in the gutter outside the photo */
-.coordX,
-.coordY {
-  display: none;
+.crossLine {
   position: absolute;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: #737373;
-  font-variant-numeric: tabular-nums;
+  background: #111111;
 }
 
-.coordX {
-  right: -40px;
+.crossLineRight {
+  top: 0;
   bottom: 0;
-}
-
-.coordY {
   right: 0;
-  bottom: -24px;
+  width: 1px;
 }
 
-@media (min-width: 1024px) {
-  .coordX,
-  .coordY {
-    display: block;
-  }
+.crossLineBottom {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
 }
 
-/* Mobile: coords inline below the image */
-.coordsMobile {
-  display: flex;
-  justify-content: flex-end;
-  gap: 24px;
-  margin-top: 12px;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: #737373;
-  font-variant-numeric: tabular-nums;
-}
-
-@media (min-width: 1024px) {
-  .coordsMobile {
-    display: none;
-  }
+.crossPoint {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 7px;
+  height: 7px;
+  background: #111111;
 }
 
 .coordItem {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: #111111;
   will-change: opacity, transform;
+}
+
+.coordX {
+  right: 14px;
+  bottom: -22px;
+}
+
+.coordY {
+  right: -28px;
+  bottom: 14px;
+  transform: rotate(-90deg);
+  transform-origin: right bottom;
 }
 
 /* ─── RIGHT: content column ─── */
@@ -136,32 +157,37 @@
 
 .title {
   margin: 0;
+  max-width: 35rem;
   font-family: var(--display);
-  font-size: clamp(2.25rem, 4.5vw, 4.5rem);
-  font-weight: 500;
-  line-height: 1.05;
+  font-size: clamp(2rem, 3.6vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.06;
   letter-spacing: -0.02em;
   color: #111111;
+  text-wrap: balance;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .subhead {
   margin: 48px 0 0;
+  max-width: 20rem;
   font-family: var(--display);
-  font-size: clamp(1.125rem, 1.5vw, 1.5rem);
-  font-weight: 500;
-  line-height: 1.4;
+  font-size: clamp(1.125rem, 1.45vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
   color: #111111;
+  text-wrap: balance;
 }
 
-/* Word mask reveal — used by both headline and subhead */
+/* Word mask reveal */
 
 .wordMask {
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
-  line-height: 1.05;
+  line-height: 1.06;
 }
 
 .wordInner {
@@ -176,35 +202,49 @@
   height: 1px;
   width: 100%;
   background: #D9D5CC;
-  margin: 40px 0;
+  margin: 40px 0 0;
 }
 
-/* ─── Cards ─── */
+/* ─── Cards (50/50 with 1px vertical divider) ─── */
 
 .cards {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 48px;
+  border-top: 1px solid transparent;
 }
 
 @media (min-width: 768px) {
   .cards {
     grid-template-columns: 1fr 1fr;
-    gap: 0;
-  }
-  .cards > * + * {
-    border-left: 1px solid #D9D5CC;
-    padding-left: 40px;
-  }
-  .cards > *:not(:last-child) {
-    padding-right: 40px;
   }
 }
 
 .cell {
   display: flex;
   flex-direction: column;
+  padding: 40px 0 0;
+  min-height: 28rem;
   will-change: opacity, transform;
+}
+
+@media (min-width: 768px) {
+  .cell {
+    padding: 40px 0 0;
+  }
+  .cell + .cell {
+    border-left: 1px solid #D9D5CC;
+    padding-left: 40px;
+  }
+  .cell:not(:last-child) {
+    padding-right: 40px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .cell + .cell {
+    border-top: 1px solid #D9D5CC;
+    margin-top: 40px;
+  }
 }
 
 .cellHead {
@@ -216,9 +256,9 @@
 
 .cellHead > span:first-child {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: clamp(15px, 1.05vw, 18px);
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #111111;
 }
@@ -231,26 +271,21 @@
   transform: rotate(45deg);
 }
 
+/* Body + button use space-between so the button settles at the
+   bottom of the card and the body sits at the top of that area */
 .cellBody {
-  margin: 96px 0 0;
+  margin: 40px 0 0;
   max-width: 34ch;
   font-family: var(--display);
   font-size: 17px;
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.5;
   color: #111111;
+  flex: 1 1 auto;
 }
-
-@media (min-width: 1024px) {
-  .cellBody {
-    margin-top: 128px;
-  }
-}
-
-/* Learn more button — ghost with hover invert */
 
 .cellCta {
-  margin-top: 96px;
+  margin-top: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -264,12 +299,6 @@
   transition:
     color 220ms var(--ease),
     background-color 220ms var(--ease);
-}
-
-@media (min-width: 1024px) {
-  .cellCta {
-    margin-top: 128px;
-  }
 }
 
 .cellArr {
@@ -294,8 +323,8 @@
   .wordInner {
     transform: none;
   }
-  .photoCurtain {
-    transform: translateY(100%);
+  .photoClip {
+    clip-path: inset(0 0% 0% 0);
   }
   .cellCta,
   .cellArr {

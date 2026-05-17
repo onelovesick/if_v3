@@ -66,11 +66,19 @@ export default function PositionBrief() {
           toggleActions: "play none none none",
         },
       });
-      if (curtain) {
+      const crossImg = root.querySelector(
+        `.${CSS.escape(styles.photoClip)}`,
+      ) as HTMLElement | null;
+      if (crossImg) {
+        // Clip-path reveal: top-left 10% visible, expands outward
         photoTl.fromTo(
-          curtain,
-          { yPercent: 0 },
-          { yPercent: 100, duration: 1.4, ease: "expo.inOut" },
+          crossImg,
+          { clipPath: "inset(0 90% 90% 0)" },
+          {
+            clipPath: "inset(0 0% 0% 0)",
+            duration: 1.6,
+            ease: "expo.inOut",
+          },
           0,
         );
       }
@@ -78,10 +86,11 @@ export default function PositionBrief() {
         photoTl.fromTo(
           photo,
           { scale: 1.12 },
-          { scale: 1.0, duration: 1.6, ease: "expo.out" },
+          { scale: 1.0, duration: 1.8, ease: "expo.out" },
           0,
         );
       }
+      if (curtain) gsap.set(curtain, { display: "none" });
 
       if (coords.length) {
         gsap.from(coords, {
@@ -141,29 +150,27 @@ export default function PositionBrief() {
     >
       <div className={styles.shell}>
         <div className={styles.grid}>
-          {/* LEFT — image with coord readouts in the gutter */}
+          {/* LEFT — image with clip-path reveal and coordinate overlay */}
           <div className={styles.photoCol}>
             <figure className={styles.photoPane}>
-              <img
-                className={styles.photoImg}
-                src="https://images.pexels.com/photos/6032899/pexels-photo-6032899.jpeg?auto=compress&cs=tinysrgb&w=1400"
-                alt="Bridge structure under construction"
-                loading="lazy"
-              />
+              <div className={styles.photoClip}>
+                <img
+                  className={styles.photoImg}
+                  src="https://images.pexels.com/photos/6032899/pexels-photo-6032899.jpeg?auto=compress&cs=tinysrgb&w=1400"
+                  alt="Bridge structure under construction"
+                  loading="lazy"
+                />
+              </div>
               <span className={styles.photoCurtain} aria-hidden="true" />
+
+              <div className={styles.crossOverlay} aria-hidden="true">
+                <span className={`${styles.crossLine} ${styles.crossLineRight}`} />
+                <span className={`${styles.crossLine} ${styles.crossLineBottom}`} />
+                <span className={`${styles.coordItem} ${styles.coordY}`}>Y: 1285</span>
+                <span className={`${styles.coordItem} ${styles.coordX}`}>X: 1250</span>
+                <span className={styles.crossPoint} />
+              </div>
             </figure>
-
-            <span className={`${styles.coordItem} ${styles.coordX}`}>
-              X: 1250
-            </span>
-            <span className={`${styles.coordItem} ${styles.coordY}`}>
-              Y: 1285
-            </span>
-
-            <div className={styles.coordsMobile}>
-              <span className={styles.coordItem}>X: 1250</span>
-              <span className={styles.coordItem}>Y: 1285</span>
-            </div>
           </div>
 
           {/* RIGHT — headline / subhead bracket + 2 cards */}
