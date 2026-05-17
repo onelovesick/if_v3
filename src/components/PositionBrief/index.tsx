@@ -59,35 +59,42 @@ export default function PositionBrief() {
         return;
       }
 
-      const photoTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root,
-          start: "top 75%",
-          toggleActions: "play none none none",
-        },
-      });
+      // Scroll-driven photo reveal: clip-path expands from top-left
+      // corner outward as the user scrolls into the section, and
+      // retracts in reverse if they scroll back up.
       const crossImg = root.querySelector(
         `.${CSS.escape(styles.photoClip)}`,
       ) as HTMLElement | null;
       if (crossImg) {
-        // Clip-path reveal: top-left 10% visible, expands outward
-        photoTl.fromTo(
+        gsap.fromTo(
           crossImg,
           { clipPath: "inset(0 90% 90% 0)" },
           {
             clipPath: "inset(0 0% 0% 0)",
-            duration: 1.6,
-            ease: "expo.inOut",
+            ease: "none",
+            scrollTrigger: {
+              trigger: root,
+              start: "top 85%",
+              end: "top 15%",
+              scrub: 0.6,
+            },
           },
-          0,
         );
       }
       if (photo) {
-        photoTl.fromTo(
+        gsap.fromTo(
           photo,
           { scale: 1.12 },
-          { scale: 1.0, duration: 1.8, ease: "expo.out" },
-          0,
+          {
+            scale: 1.0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: root,
+              start: "top 85%",
+              end: "top 15%",
+              scrub: 0.6,
+            },
+          },
         );
       }
       if (curtain) gsap.set(curtain, { display: "none" });
