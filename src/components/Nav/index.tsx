@@ -22,9 +22,8 @@ type Mode = "transparent" | "is-light" | "is-dark";
 export default function Nav() {
   const { ready } = useMotionReady();
   const [mode, setMode] = useState<Mode>("transparent");
-  const [collapsed, setCollapsed] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const lastYRef = useRef(0);
-  const stopTimerRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const sections = Array.from(
@@ -37,7 +36,6 @@ export default function Nav() {
     const computeMode = () => {
       const probe = 60;
 
-      // While the hero is still on screen, stay transparent.
       if (hero) {
         const r = hero.getBoundingClientRect();
         if (r.bottom > probe) {
@@ -46,8 +44,6 @@ export default function Nav() {
         }
       }
 
-      // Past the hero, pick light/dark glass based on the current
-      // section's tone.
       let next: Mode = "transparent";
       for (const s of sections) {
         if (s === hero) continue;
@@ -66,24 +62,17 @@ export default function Nav() {
       const delta = y - lastYRef.current;
       const atTop = y < 60;
 
-      // Collapse on active downward scroll past the top of the page.
-      // Expand on upward scroll or at the very top.
+      // Always show at the top of the page. Scrolling down hides the
+      // nav by translating it off-screen; scrolling up brings it back.
       if (atTop) {
-        setCollapsed(false);
-      } else if (delta > 3) {
-        setCollapsed(true);
-      } else if (delta < -3) {
-        setCollapsed(false);
+        setHidden(false);
+      } else if (delta > 5) {
+        setHidden(true);
+      } else if (delta < -5) {
+        setHidden(false);
       }
 
       lastYRef.current = y;
-
-      // Expand again after the scroll has stopped for ~320ms.
-      window.clearTimeout(stopTimerRef.current);
-      stopTimerRef.current = window.setTimeout(() => {
-        setCollapsed(false);
-      }, 320);
-
       computeMode();
     };
 
@@ -92,7 +81,6 @@ export default function Nav() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.clearTimeout(stopTimerRef.current);
     };
   }, []);
 
@@ -104,7 +92,7 @@ export default function Nav() {
           : mode === "is-dark"
             ? styles.dark
             : ""
-      } ${collapsed ? styles.collapsed : ""}`}
+      } ${hidden ? styles.hidden : ""}`}
     >
       <nav
         className={`${styles.links} ${styles.leftLinks}`}

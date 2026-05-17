@@ -12,9 +12,12 @@
   transition:
     background 600ms var(--ease),
     border-color 600ms var(--ease),
-    color 600ms var(--ease);
+    color 600ms var(--ease),
+    transform 440ms var(--ease),
+    opacity 320ms var(--ease);
   opacity: 0;
   color: var(--dark-text);
+  will-change: transform;
 }
 
 .visible {
@@ -37,12 +40,10 @@
   color: var(--dark-text);
 }
 
-/* ─── Collapsed: nav bar disappears, brand becomes a floating pill ─── */
-.collapsed {
-  background: transparent !important;
-  border-bottom-color: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+/* Hidden: nav slides up off-screen while the user is scrolling down.
+   Slides back down on scroll-up or when the user is back at the top. */
+.hidden {
+  transform: translateY(-100%);
 }
 
 /* ─── Stacked brand: open circle mark above wordmark ─── */
@@ -53,15 +54,7 @@
   align-items: center;
   gap: 8px;
   color: inherit;
-  padding: 4px 8px 0;
-  border-radius: 999px;
-  background: transparent;
-  transition:
-    background 420ms var(--ease),
-    padding 420ms var(--ease),
-    gap 420ms var(--ease),
-    color 420ms var(--ease),
-    backdrop-filter 420ms var(--ease);
+  padding-top: 4px;
 }
 
 .brandMark {
@@ -85,26 +78,6 @@
   font-weight: 500;
   text-transform: uppercase;
   color: currentColor;
-  max-height: 14px;
-  overflow: hidden;
-  transition:
-    opacity 280ms var(--ease),
-    max-height 380ms var(--ease);
-}
-
-/* Collapsed brand: dark pill, wordmark slides away, circle stays. */
-.collapsed .brand {
-  background: rgba(10, 16, 25, 0.88);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  padding: 14px;
-  gap: 0;
-  color: var(--dark-text);
-}
-
-.collapsed .brandName {
-  opacity: 0;
-  max-height: 0;
 }
 
 /* ─── Side link clusters ─── */
@@ -113,15 +86,6 @@
   gap: 32px;
   align-items: center;
   padding-top: 14px;
-  transition:
-    opacity 320ms var(--ease),
-    transform 420ms var(--ease);
-}
-
-.collapsed .links {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-12px);
 }
 
 .leftLinks {
