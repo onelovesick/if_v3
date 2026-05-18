@@ -33,7 +33,17 @@ import numpy as np
 IFC_DIR = Path("C:/Users/yousi/Downloads/bow-river-ifc")
 OUT_PATH = Path(__file__).resolve().parents[2] / "public" / "models" / "bridge.json"
 TARGET_LENGTH = 200.0  # world units along the longest horizontal axis
-EXCLUDE_TOKEN = "test"
+
+# File-name substrings that exclude an IFC from the federation:
+#   - "test"      → in-progress / WIP exports
+#   - "OGBR"      → a separate adjacent bridge ~700m away in real-world
+#                   coords; including it pushes the camera bounds out
+#                   so the main bridge collapses to a sliver.
+#   - "STR9"      → the 3 mega-plates are each modelled as one giant
+#                   triangulated face set spanning the whole deck, so
+#                   their world-AABBs visually swallow every other part.
+#   - "STR4-00002" → similar mega-plate variant.
+EXCLUDE_TOKENS = ("test", "ogbr", "str9", "str4-00002")
 
 
 # ─── Material classification ────────────────────────────────────────
@@ -219,8 +229,12 @@ def extract():
         sys.exit(1)
 
     ifc_files = sorted(IFC_DIR.glob("*.ifc"))
-    ifc_files = [f for f in ifc_files if EXCLUDE_TOKEN not in f.name.lower()]
-    print(f"Processing {len(ifc_files)} IFC files…")
+    ifc_files = [
+        f
+        for f in ifc_files
+        if not any(t in f.name.lower() for t in EXCLUDE_TOKENS)
+    ]
+    print(f"Processing {len(ifc_files)} IFC files (excluded tokens: {EXCLUDE_TOKENS})")
 
     settings = ifcopenshell.geom.settings()
     settings.set("use-world-coords", True)  # AABB-in-world per element
