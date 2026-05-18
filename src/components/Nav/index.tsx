@@ -24,6 +24,21 @@ export default function Nav() {
   const [mode, setMode] = useState<Mode>("transparent");
   const [hidden, setHidden] = useState(false);
   const lastYRef = useRef(0);
+  // True while a pinned section (e.g. BridgeStudy) holds the page in
+  // place. The nav is forced hidden during that window so it can't
+  // pop back in over the locked canvas when the user wheels up.
+  const pinSuppressRef = useRef(false);
+
+  // Listen for pin-activity events dispatched by pinned sections.
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ active: boolean }>).detail;
+      pinSuppressRef.current = !!detail?.active;
+      if (pinSuppressRef.current) setHidden(true);
+    };
+    window.addEventListener("infraforma:pin", handler);
+    return () => window.removeEventListener("infraforma:pin", handler);
+  }, []);
 
   useEffect(() => {
     const sections = Array.from(
@@ -61,6 +76,16 @@ export default function Nav() {
       const y = window.scrollY;
       const delta = y - lastYRef.current;
       const atTop = y < 60;
+
+      // While a pinned section owns the viewport, keep the nav hidden
+      // regardless of wheel direction. Mode + last-y still update so
+      // we resume cleanly when the pin releases.
+      if (pinSuppressRef.current) {
+        setHidden(true);
+        lastYRef.current = y;
+        computeMode();
+        return;
+      }
 
       // Always show at the top of the page. Scrolling down hides the
       // nav by translating it off-screen; scrolling up brings it back.

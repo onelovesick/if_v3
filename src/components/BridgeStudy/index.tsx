@@ -79,8 +79,15 @@ export default function BridgeStudy() {
       const mm = gsap.matchMedia();
 
       // Desktop: pin + scrub. Section locks at viewport top for the
-      // duration of the explosion, then releases.
+      // duration of the explosion, then releases. We dispatch a
+      // "pin" event so the Nav can suppress its scroll-up reveal
+      // while the user is wheeling through the locked canvas.
       mm.add("(min-width: 1024px)", () => {
+        const emitPin = (active: boolean) => {
+          window.dispatchEvent(
+            new CustomEvent("infraforma:pin", { detail: { active } }),
+          );
+        };
         const trigger = ScrollTrigger.create({
           trigger: section,
           start: "top top",
@@ -89,11 +96,18 @@ export default function BridgeStudy() {
           pinSpacing: true,
           anticipatePin: 1,
           scrub: 0.4,
+          onEnter: () => emitPin(true),
+          onLeave: () => emitPin(false),
+          onEnterBack: () => emitPin(true),
+          onLeaveBack: () => emitPin(false),
           onUpdate: (self) => {
             sceneRef.current?.setProgress(self.progress);
           },
         });
-        return () => trigger.kill();
+        return () => {
+          emitPin(false);
+          trigger.kill();
+        };
       });
 
       // Mobile: no pin. The canvas is in flow under the text, the
