@@ -1,0 +1,263 @@
+/* ═══════════════════════════════════════════════════════
+   BRIDGE STUDY (S5)
+   Full-bleed 50/50 dark section. Left = narrative + sort
+   toggles. Right = pinned Three.js canvas. Section is 220vh
+   tall so a single scrubbed ScrollTrigger has runway to
+   drive the camera tilt + per-part explosion from assembled
+   to BOQ/material grid layouts.
+   ═══════════════════════════════════════════════════════ */
+
+.section {
+  position: relative;
+  width: 100%;
+  /* Extra runway beyond the viewport so the sticky canvas
+     can be scrolled through. 100vh = "pinned" duration. */
+  height: 220vh;
+  background: var(--dark);
+  color: var(--dark-text);
+  overflow: hidden;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+  align-items: start;
+}
+
+/* ─── LEFT: narrative + toggles ─── */
+
+.text {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: clamp(48px, 6vh, 96px) clamp(28px, 4vw, 72px);
+  border-right: 1px solid var(--dark-rule);
+}
+
+.textInner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.6vh, 36px);
+  max-width: 36rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dark-text-mute);
+}
+
+.eyebrowMark {
+  width: 22px;
+  height: 1px;
+  background: var(--blue);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(2.25rem, 3.4vw, 3.75rem);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.028em;
+  color: var(--dark-text);
+  text-wrap: balance;
+}
+
+.title em {
+  font-style: normal;
+  color: var(--blue-bright);
+}
+
+.body {
+  margin: 0;
+  max-width: 36ch;
+  font-family: var(--display);
+  font-size: clamp(15px, 1.05vw, 17px);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--dark-text-mute);
+}
+
+/* Mode toggle — segmented pill with hairline divider */
+.toggles {
+  display: inline-flex;
+  align-self: flex-start;
+  border: 1px solid var(--dark-rule-strong);
+  background: transparent;
+}
+
+.toggleBtn {
+  padding: 12px 22px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dark-text-mute);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition:
+    color 240ms var(--ease),
+    background 240ms var(--ease);
+}
+
+.toggleBtn + .toggleBtn {
+  border-left: 1px solid var(--dark-rule-strong);
+}
+
+.toggleBtn:hover,
+.toggleBtn:focus-visible {
+  color: var(--dark-text);
+}
+
+.toggleBtn[aria-pressed="true"] {
+  color: var(--dark);
+  background: var(--dark-text);
+}
+
+/* Meta row — small mono stats above the toggles */
+.meta {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: clamp(28px, 3vw, 52px);
+  margin: 0;
+  padding-top: clamp(16px, 1.8vh, 24px);
+  border-top: 1px solid var(--dark-rule);
+}
+
+.meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meta dt {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--dark-text-faint);
+}
+
+.meta dd {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(18px, 1.2vw, 22px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--dark-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── RIGHT: pinned canvas column ─── */
+
+.canvasCol {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+}
+
+.canvasWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hairline frame + corner labels reading like a CAD viewport */
+.canvasFrame {
+  position: absolute;
+  inset: clamp(22px, 2.6vw, 44px);
+  pointer-events: none;
+  border: 1px solid var(--dark-rule);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: clamp(14px, 1.6vw, 22px) clamp(16px, 1.8vw, 26px);
+  color: var(--dark-text-mute);
+}
+
+.frameLabel,
+.frameCoord {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.frameLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.frameDot {
+  width: 7px;
+  height: 7px;
+  background: var(--blue-bright);
+  display: inline-block;
+}
+
+/* ─── Mobile: stack, no pin ───
+   On small viewports the scrollytelling stops being legible,
+   so we drop the sticky layout. The canvas still renders
+   (parts assembled, camera held at iso) and the toggles
+   still re-arrange via the scene's mode tween. */
+@media (max-width: 1023px) {
+  .section {
+    height: auto;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .text {
+    position: relative;
+    top: auto;
+    height: auto;
+    padding: clamp(64px, 12vh, 120px) clamp(24px, 5vw, 56px);
+    border-right: 0;
+    border-bottom: 1px solid var(--dark-rule);
+  }
+  .canvasCol {
+    position: relative;
+    top: auto;
+    height: 80vh;
+    min-height: 520px;
+  }
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .section {
+    height: auto;
+    min-height: 100vh;
+  }
+  .canvasCol {
+    position: relative;
+    height: 80vh;
+    min-height: 520px;
+  }
+  .text {
+    position: relative;
+    height: auto;
+  }
+}
