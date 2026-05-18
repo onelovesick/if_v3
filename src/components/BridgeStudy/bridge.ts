@@ -84,7 +84,9 @@ interface SerializedBridge {
  */
 export async function loadBridge(): Promise<BridgeData | null> {
   try {
-    const res = await fetch(BRIDGE_JSON_URL, { cache: "force-cache" });
+    // No-store so iterating on the extractor + redeploy always serves
+    // a fresh bridge.json instead of the browser-cached version.
+    const res = await fetch(BRIDGE_JSON_URL, { cache: "no-store" });
     if (!res.ok) return null;
     const data = (await res.json()) as SerializedBridge;
     if (!Array.isArray(data.parts) || data.parts.length === 0) return null;
