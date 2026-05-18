@@ -56,3 +56,8 @@ next-env.d.ts
 # unrelated project residue
 /cleaning company/
 /.claude/settings.json
+
+# python tooling envs (tools/ifc-convert uses uv)
+**/.venv/
+__pycache__/
+*.pyc

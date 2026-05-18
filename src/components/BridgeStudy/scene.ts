@@ -1,8 +1,10 @@
 /**
  * Three.js scene controller for BridgeStudy. Owns the renderer,
- * camera, lights, and InstancedMesh-per-material rigging. Exposes a
- * thin imperative API so the React component just calls setProgress /
- * setMode / resize / dispose.
+ * camera, lights, and InstancedMesh-per-material rigging. Accepts a
+ * BridgeData object up front so the React component can decide
+ * whether to feed it the IFC-extracted data or the synthetic fallback.
+ * Camera waypoints are computed from the bridge's own bounding box
+ * so swapping models doesn't require hand-tuning.
  */
 
 import * as THREE from "three";
@@ -10,9 +12,9 @@ import { gsap } from "@/lib/gsap";
 import {
   computeBoqLayout,
   computeMaterialLayout,
-  generateBridge,
   MATERIAL_COLORS,
   MATERIALS,
+  type BridgeData,
   type Material,
 } from "./bridge";
 
@@ -28,7 +30,31 @@ export interface SceneController {
 const easeInOutQuart = (t: number): number =>
   t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
 
-export function createScene(canvas: HTMLCanvasElement): SceneController {
+function computeCameraWaypoints(bridge: BridgeData) {
+  const center = bridge.bounds.getCenter(new THREE.Vector3());
+  const size = bridge.bounds.getSize(new THREE.Vector3());
+  const horizontal = Math.max(size.x, size.z, 1);
+
+  // Distance derived loosely from horizontal extent so a 200u or a
+  // 300u bridge both end up framed comfortably at the iso pose.
+  const isoDist = horizontal * 1.5;
+
+  const camIso = new THREE.Vector3(
+    center.x + isoDist * 0.65,
+    center.y + Math.max(size.y, horizontal * 0.35) + isoDist * 0.35,
+    center.z + isoDist * 0.85,
+  );
+  const camTop = new THREE.Vector3(0, horizontal * 2.2, 0.001);
+  const targetIso = center.clone();
+  const targetTop = new THREE.Vector3(0, 0, 0);
+
+  return { camIso, camTop, targetIso, targetTop };
+}
+
+export function createScene(
+  canvas: HTMLCanvasElement,
+  bridge: BridgeData,
+): SceneController {
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
@@ -40,32 +66,26 @@ export function createScene(canvas: HTMLCanvasElement): SceneController {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.5, 8000);
 
-  // Camera ─ keep FOV mid-tight so the bridge reads as architectural.
-  const camera = new THREE.PerspectiveCamera(32, 1, 0.5, 4000);
-
-  // Lighting ─ hemisphere fill + key directional with soft falloff +
-  // a subtle warm rim from the opposite side for dimensional reads.
+  // Lighting: hemisphere fill + key directional + warm rim opposite.
   const hemi = new THREE.HemisphereLight(0xeaf3f8, 0x0b3c5d, 0.55);
   scene.add(hemi);
-
   const key = new THREE.DirectionalLight(0xffffff, 1.1);
   key.position.set(120, 200, 100);
   scene.add(key);
-
   const rim = new THREE.DirectionalLight(0xf4b740, 0.35);
   rim.position.set(-150, 60, -120);
   scene.add(rim);
-
   const ambient = new THREE.AmbientLight(0xffffff, 0.25);
   scene.add(ambient);
 
-  // Bridge data + layouts.
-  const { parts } = generateBridge();
+  // Bridge data + per-mode layouts.
+  const { parts } = bridge;
   const boqMap = computeBoqLayout(parts);
   const matMap = computeMaterialLayout(parts);
 
-  // InstancedMesh per material.
+  // One InstancedMesh per material; one BoxGeometry shared.
   const baseGeom = new THREE.BoxGeometry(1, 1, 1);
   const meshes = new Map<Material, THREE.InstancedMesh>();
   const slot = new Map<number, { mesh: THREE.InstancedMesh; index: number }>();
@@ -91,7 +111,7 @@ export function createScene(canvas: HTMLCanvasElement): SceneController {
     meshes.set(mat, mesh);
   }
 
-  // Pre-built per-part references for the render loop.
+  // Per-part references (no allocations in the hot loop).
   const assembledPos = new Map<number, THREE.Vector3>();
   const assembledQuat = new Map<number, THREE.Quaternion>();
   parts.forEach((p) => {
@@ -100,19 +120,14 @@ export function createScene(canvas: HTMLCanvasElement): SceneController {
   });
   const identityQuat = new THREE.Quaternion();
 
-  // Camera waypoints. Iso = looking from front-right-up at deck height.
-  // Top = directly above the exploded layout grid centre.
-  const camIso = new THREE.Vector3(180, 110, 200);
-  const camTop = new THREE.Vector3(0, 360, 0.001);
-  const targetIso = new THREE.Vector3(0, 22, 0);
-  const targetTop = new THREE.Vector3(0, 0, 0);
+  const { camIso, camTop, targetIso, targetTop } = computeCameraWaypoints(bridge);
 
-  // State driven by React.
+  // React-driven state.
   let scrollP = 0;
   const modeBlend = { val: 0 };
   let modeTween: gsap.core.Tween | null = null;
 
-  // Scratch objects ─ avoid allocations in the hot loop.
+  // Scratch.
   const sPos = new THREE.Vector3();
   const sQuat = new THREE.Quaternion();
   const sMat = new THREE.Matrix4();
@@ -128,9 +143,6 @@ export function createScene(canvas: HTMLCanvasElement): SceneController {
       const m = matMap.get(part.id)!;
       const aQ = assembledQuat.get(part.id)!;
 
-      // Target exploded position blends BOQ -> Material on the
-      // explosion plane. The plane sits at y=0 by construction so
-      // parts come "down" out of the assembled bridge.
       const tx = b.x + (m.x - b.x) * blend;
       const ty = b.y + (m.y - b.y) * blend;
       const tz = b.z + (m.z - b.z) * blend;
@@ -167,8 +179,6 @@ export function createScene(canvas: HTMLCanvasElement): SceneController {
     camera.lookAt(camTarget);
   }
 
-  // RAF loop. We always tick (even at scrollP=0) so material toggle
-  // tweens are visible without scrolling.
   let rafId = 0;
   function tick() {
     updateMatrices();

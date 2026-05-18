@@ -1,12 +1,19 @@
 /**
- * Synthetic cable-stayed bridge generator. Produces exactly 1000 parts
- * with BOQ numbers + material assignments so it can stand in for a
- * real IFC dataset while we wire scroll choreography and explosion
- * layouts. Swap-out point: replace `generateBridge()` with a loader
- * that reads the same Part shape from a converted IFC -> glTF.
+ * Bridge data layer. Primary path loads the Bow River bridge from
+ * /models/bridge.json (1072 parts extracted from 15 federated IFC4X3
+ * files by tools/ifc-convert/extract_bridge.py). Falls back to a
+ * synthetic cable-stayed bridge generator if the JSON fetch fails so
+ * the scene keeps rendering in dev when the asset is missing.
+ *
+ * Each part is represented as an oriented bounding box (position +
+ * size + quaternion + material). Geometry detail is intentionally
+ * coarse — the scene's job is to show 1000+ countable, sortable
+ * parts exploding, not photoreal lighting.
  */
 
 import * as THREE from "three";
+
+export const BRIDGE_JSON_URL = "/models/bridge.json";
 
 export type Material = "concrete" | "steel" | "plate" | "cable" | "rebar";
 
@@ -50,6 +57,62 @@ export const MATERIAL_COLORS: Record<Material, number> = {
 export interface BridgeData {
   parts: Part[];
   bounds: THREE.Box3;
+  source: "ifc" | "synthetic";
+}
+
+interface SerializedPart {
+  id: number;
+  boq: number;
+  material: Material;
+  type: string;
+  position: [number, number, number];
+  size: [number, number, number];
+  quaternion: [number, number, number, number];
+  guid?: string;
+  source?: string;
+}
+
+interface SerializedBridge {
+  partCount: number;
+  bounds: { min: [number, number, number]; max: [number, number, number] };
+  parts: SerializedPart[];
+}
+
+/**
+ * Fetch the IFC-extracted bridge JSON. Returns null on failure so
+ * the caller can fall back to the synthetic generator.
+ */
+export async function loadBridge(): Promise<BridgeData | null> {
+  try {
+    const res = await fetch(BRIDGE_JSON_URL, { cache: "force-cache" });
+    if (!res.ok) return null;
+    const data = (await res.json()) as SerializedBridge;
+    if (!Array.isArray(data.parts) || data.parts.length === 0) return null;
+
+    const parts: Part[] = data.parts.map((p) => ({
+      id: p.id,
+      boq: p.boq,
+      material: p.material,
+      type: p.type,
+      position: new THREE.Vector3(...p.position),
+      size: new THREE.Vector3(...p.size),
+      quaternion: new THREE.Quaternion(
+        p.quaternion[0],
+        p.quaternion[1],
+        p.quaternion[2],
+        p.quaternion[3],
+      ),
+    }));
+
+    const bounds = new THREE.Box3(
+      new THREE.Vector3(...data.bounds.min),
+      new THREE.Vector3(...data.bounds.max),
+    );
+
+    return { parts, bounds, source: "ifc" };
+  } catch {
+    return null;
+  }
 }
 
 export function generateBridge(): BridgeData {
@@ -206,7 +269,7 @@ export function generateBridge(): BridgeData {
     bounds.expandByPoint(p.position.clone().add(half));
   });
 
-  return { parts, bounds };
+  return { parts, bounds, source: "synthetic" };
 }
 
 /**

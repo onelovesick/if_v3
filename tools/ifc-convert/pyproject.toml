@@ -1,0 +1,9 @@
+[project]
+name = "ifc-convert"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "ifcopenshell>=0.8.5",
+    "numpy>=2.4.5",
+    "pygltflib>=1.16.5",
+]

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
+import { generateBridge, loadBridge, type BridgeData } from "./bridge";
 import { createScene, type Mode, type SceneController } from "./scene";
 import styles from "./BridgeStudy.module.css";
 
@@ -11,15 +12,18 @@ const MODE_LABELS: Record<Mode, string> = {
   material: "By material",
 };
 
+interface Stats {
+  parts: number;
+  materials: number;
+  source: "ifc" | "synthetic";
+}
+
 /**
  * Scrolly-driven 3D study: pinned scene tilts isometric -> top-down
- * while a synthetic 1000-part cable-stayed bridge explodes from the
- * assembled state into a sortable layout. Toggle on the left panel
- * blends the explosion target between BOQ order and material clusters.
- *
- * Swap point for real IFC: replace generateBridge() in ./bridge with
- * a glTF loader that emits the same Part[] shape (BOQ + material on
- * each mesh's `extras`).
+ * while the Bow River Bridge (1072 parts extracted from a 15-IFC
+ * federated model) explodes from assembled into a sortable layout.
+ * Toggle on the left blends the explosion target between BOQ order
+ * and material clusters.
  */
 export default function BridgeStudy() {
   const { ready } = useMotionReady();
@@ -27,12 +31,37 @@ export default function BridgeStudy() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<SceneController | null>(null);
   const [mode, setMode] = useState<Mode>("boq");
+  const [stats, setStats] = useState<Stats | null>(null);
 
-  // Boot the Three.js scene once the canvas is mounted.
+  // Fetch the IFC dataset, then boot the scene. Falls back to the
+  // synthetic generator if the JSON isn't available so dev never
+  // breaks on a missing asset.
   useEffect(() => {
     if (!canvasRef.current) return;
-    sceneRef.current = createScene(canvasRef.current);
+    let cancelled = false;
+
+    (async () => {
+      const fromIfc = await loadBridge();
+      const bridge: BridgeData = fromIfc ?? generateBridge();
+      if (cancelled || !canvasRef.current) return;
+
+      sceneRef.current = createScene(canvasRef.current, bridge);
+
+      const distinctMaterials = new Set(bridge.parts.map((p) => p.material))
+        .size;
+      setStats({
+        parts: bridge.parts.length,
+        materials: distinctMaterials,
+        source: bridge.source,
+      });
+
+      // ScrollTrigger.refresh so the pin recalculates after we mounted
+      // the heavier scene asynchronously.
+      ScrollTrigger.refresh();
+    })();
+
     return () => {
+      cancelled = true;
       sceneRef.current?.dispose();
       sceneRef.current = null;
     };
@@ -53,7 +82,6 @@ export default function BridgeStudy() {
     const ctx = gsap.context(() => {
       if (reduce) {
         sceneRef.current?.setProgress(1);
-        // Still reveal the text without motion.
         gsap.set(section.querySelectorAll("[data-reveal]"), {
           opacity: 1,
           y: 0,
@@ -61,8 +89,6 @@ export default function BridgeStudy() {
         return;
       }
 
-      // Text reveal on the left panel — fires when the section is
-      // first approaching the viewport, before the pin engages.
       gsap.from(section.querySelectorAll<HTMLElement>("[data-reveal]"), {
         opacity: 0,
         y: 28,
@@ -78,10 +104,6 @@ export default function BridgeStudy() {
 
       const mm = gsap.matchMedia();
 
-      // Desktop: pin + scrub. Section locks at viewport top for the
-      // duration of the explosion, then releases. We dispatch a
-      // "pin" event so the Nav can suppress its scroll-up reveal
-      // while the user is wheeling through the locked canvas.
       mm.add("(min-width: 1024px)", () => {
         const emitPin = (active: boolean) => {
           window.dispatchEvent(
@@ -110,8 +132,6 @@ export default function BridgeStudy() {
         };
       });
 
-      // Mobile: no pin. The canvas is in flow under the text, the
-      // scroll-driven explosion still runs as the user passes by.
       mm.add("(max-width: 1023.99px)", () => {
         const trigger = ScrollTrigger.create({
           trigger: section,
@@ -131,10 +151,20 @@ export default function BridgeStudy() {
     return () => ctx.revert();
   }, [ready]);
 
-  // Push mode changes to the scene.
   useEffect(() => {
     sceneRef.current?.setMode(mode);
   }, [mode]);
+
+  // Stat display values — fall back to the synthetic counts until
+  // the fetch resolves so the layout doesn't shift.
+  const statParts = stats?.parts ?? 1072;
+  const statMats = stats?.materials ?? 3;
+  const statSource =
+    stats?.source === "ifc"
+      ? "Bow River · IFC4X3"
+      : stats?.source === "synthetic"
+        ? "IFC · synthetic"
+        : "Loading…";
 
   return (
     <section
@@ -183,15 +213,15 @@ export default function BridgeStudy() {
             <dl data-reveal className={styles.meta}>
               <div>
                 <dt>Parts</dt>
-                <dd>1,000</dd>
+                <dd>{statParts.toLocaleString()}</dd>
               </div>
               <div>
                 <dt>Source</dt>
-                <dd>IFC · synthetic</dd>
+                <dd>{statSource}</dd>
               </div>
               <div>
                 <dt>Materials</dt>
-                <dd>5</dd>
+                <dd>{statMats}</dd>
               </div>
             </dl>
           </div>
@@ -204,10 +234,10 @@ export default function BridgeStudy() {
             <div className={styles.canvasFrame} aria-hidden="true">
               <span className={styles.frameLabel}>
                 <span className={styles.frameDot} />
-                Cable-stayed bridge / study A
+                Bow River bridge · federated study
               </span>
               <span className={styles.frameCoord}>
-                LOD 300 · IFC4
+                LOD 300 · IFC4X3
               </span>
             </div>
           </div>
