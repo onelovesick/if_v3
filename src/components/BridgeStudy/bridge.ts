@@ -80,25 +80,39 @@ export async function loadBridge(): Promise<BridgeData | null> {
     const parts: Part[] = [];
     const bounds = new THREE.Box3();
 
-    // Each top-level node in the GLB is one IFC element. The mesh
-    // child carries the centred geometry; the node carries the
-    // assembled-world position via .position and the IFC metadata
-    // via .userData (glTF extras).
+    // Each top-level node in the GLB is one IFC element. GLTFLoader
+    // collapses our 1-mesh-no-children nodes directly into Meshes, so
+    // the mesh itself carries the translation (.position) and the
+    // extras (.userData). Walking obj.parent gives us gltf.scene
+    // which has position (0,0,0) and would stack everything at the
+    // origin — bug bait. Use obj.getWorldPosition + obj.userData.
+    const worldPos = new THREE.Vector3();
     gltf.scene.traverse((obj) => {
       if (!(obj instanceof THREE.Mesh)) return;
-      const node = obj.parent;
-      const extras: NodeExtras =
-        (node?.userData as NodeExtras) ?? (obj.userData as NodeExtras);
+
+      // Walk up the parent chain looking for extras (most nodes have
+      // them on the mesh itself, but if GLTFLoader ever wraps a node
+      // in an Object3D we still find them).
+      let extras: NodeExtras = {};
+      let cursor: THREE.Object3D | null = obj;
+      while (cursor) {
+        const ud = cursor.userData as NodeExtras;
+        if (ud && (ud.boq !== undefined || ud.material)) {
+          extras = ud;
+          break;
+        }
+        cursor = cursor.parent;
+      }
+
       const material = (extras.material ?? "plate") as Material;
       const id = parts.length;
       const boq = extras.boq ?? id + 1;
 
-      // Detach the geometry from the gltf scene graph; we'll own it
-      // from here in our own Mesh wrapper.
       const geometry = obj.geometry as THREE.BufferGeometry;
       geometry.computeVertexNormals();
 
-      const pos = node ? node.position.clone() : new THREE.Vector3();
+      obj.getWorldPosition(worldPos);
+      const pos = worldPos.clone();
 
       parts.push({
         id,
@@ -111,8 +125,6 @@ export async function loadBridge(): Promise<BridgeData | null> {
         guid: extras.guid,
       });
 
-      // Expand bounds by the part's world extents (centroid + local
-      // geometry AABB).
       const localBox = new THREE.Box3().setFromBufferAttribute(
         geometry.getAttribute("position") as THREE.BufferAttribute,
       );
