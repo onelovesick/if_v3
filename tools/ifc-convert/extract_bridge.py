@@ -265,7 +265,11 @@ def extract():
             # renders as a thin shim instead of disappearing.
             size = np.maximum(size, 0.05)
 
-            q_ifc = [0.0, 0.0, 0.0, 1.0]  # identity for world AABB
+            # World AABB has no orientation info, and `_ifc_to_three_size`
+            # already permutes the dimensions onto Three.js axes. So the
+            # rendered box needs IDENTITY rotation in Three.js — don't
+            # run it through _ifc_to_three_quat (that would double-rotate
+            # every part 90 degrees onto its edge).
             material = _material_from_element(element, ifc_path.stem, size)
             ifc_type = element.is_a()
 
@@ -280,7 +284,7 @@ def extract():
                     "type": ifc_type,
                     "position": _ifc_to_three_vec(center_world),
                     "size": _ifc_to_three_size(size),
-                    "quaternion": _ifc_to_three_quat(q_ifc),
+                    "quaternion": [0.0, 0.0, 0.0, 1.0],
                     "guid": element.GlobalId,
                     "source": ifc_path.stem,
                 }
