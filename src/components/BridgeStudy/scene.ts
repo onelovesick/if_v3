@@ -1,10 +1,11 @@
 /**
- * Three.js scene controller for BridgeStudy. Owns the renderer,
- * camera, lights, and InstancedMesh-per-material rigging. Accepts a
- * BridgeData object up front so the React component can decide
- * whether to feed it the IFC-extracted data or the synthetic fallback.
- * Camera waypoints are computed from the bridge's own bounding box
- * so swapping models doesn't require hand-tuning.
+ * Three.js scene controller for BridgeStudy. Renders one Mesh per IFC
+ * part with the real triangulated geometry shipped in bridge.glb.
+ * Materials are shared per category (one MeshStandardMaterial reused
+ * across all "concrete" parts, etc.) to keep state-changes minimal.
+ *
+ * Camera waypoints are derived from the bridge's own bounding box so
+ * swapping models doesn't require hand-tuning.
  */
 
 import * as THREE from "three";
@@ -35,8 +36,6 @@ function computeCameraWaypoints(bridge: BridgeData) {
   const size = bridge.bounds.getSize(new THREE.Vector3());
   const horizontal = Math.max(size.x, size.z, 1);
 
-  // Distance derived loosely from horizontal extent so a 200u or a
-  // 300u bridge both end up framed comfortably at the iso pose.
   const isoDist = horizontal * 1.5;
 
   const camIso = new THREE.Vector3(
@@ -68,7 +67,6 @@ export function createScene(
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 0.5, 8000);
 
-  // Lighting: hemisphere fill + key directional + warm rim opposite.
   const hemi = new THREE.HemisphereLight(0xeaf3f8, 0x0b3c5d, 0.55);
   scene.add(hemi);
   const key = new THREE.DirectionalLight(0xffffff, 1.1);
@@ -80,57 +78,51 @@ export function createScene(
   const ambient = new THREE.AmbientLight(0xffffff, 0.25);
   scene.add(ambient);
 
-  // Bridge data + per-mode layouts.
   const { parts } = bridge;
   const boqMap = computeBoqLayout(parts);
   const matMap = computeMaterialLayout(parts);
 
-  // One InstancedMesh per material; one BoxGeometry shared.
-  const baseGeom = new THREE.BoxGeometry(1, 1, 1);
-  const meshes = new Map<Material, THREE.InstancedMesh>();
-  const slot = new Map<number, { mesh: THREE.InstancedMesh; index: number }>();
-
+  // Shared materials, one per category. Every part with the same
+  // `material` field references the same THREE.Material instance.
+  const materials = new Map<Material, THREE.MeshStandardMaterial>();
   for (const mat of MATERIALS) {
-    const matParts = parts.filter((p) => p.material === mat);
-    if (matParts.length === 0) continue;
-
     const isMetal = mat === "cable" || mat === "steel" || mat === "plate";
-    const material = new THREE.MeshStandardMaterial({
-      color: MATERIAL_COLORS[mat],
-      roughness: isMetal ? 0.4 : 0.78,
-      metalness: isMetal ? 0.55 : 0.05,
-      flatShading: false,
-    });
-
-    const mesh = new THREE.InstancedMesh(baseGeom, material, matParts.length);
-    mesh.frustumCulled = false;
-    matParts.forEach((p, i) => {
-      slot.set(p.id, { mesh, index: i });
-    });
-    scene.add(mesh);
-    meshes.set(mat, mesh);
+    materials.set(
+      mat,
+      new THREE.MeshStandardMaterial({
+        color: MATERIAL_COLORS[mat],
+        roughness: isMetal ? 0.4 : 0.78,
+        metalness: isMetal ? 0.55 : 0.05,
+        flatShading: false,
+      }),
+    );
   }
 
-  // Per-part references (no allocations in the hot loop).
+  // One Mesh per part. Geometry is the real triangulated IFC mesh,
+  // already centred on its own centroid by the extractor. The mesh's
+  // position carries the assembled-world centroid; we lerp it
+  // towards the exploded slot as scrollP advances.
+  const meshes = new Map<number, THREE.Mesh>();
   const assembledPos = new Map<number, THREE.Vector3>();
-  const assembledQuat = new Map<number, THREE.Quaternion>();
-  parts.forEach((p) => {
-    assembledPos.set(p.id, p.position.clone());
-    assembledQuat.set(p.id, p.quaternion.clone());
-  });
-  const identityQuat = new THREE.Quaternion();
 
-  const { camIso, camTop, targetIso, targetTop } = computeCameraWaypoints(bridge);
+  for (const part of parts) {
+    const material = materials.get(part.material) ?? materials.get("plate")!;
+    const mesh = new THREE.Mesh(part.geometry, material);
+    mesh.frustumCulled = false; // parts travel far during explosion
+    mesh.position.copy(part.position);
+    scene.add(mesh);
+    meshes.set(part.id, mesh);
+    assembledPos.set(part.id, part.position.clone());
+  }
 
-  // React-driven state.
+  const { camIso, camTop, targetIso, targetTop } = computeCameraWaypoints(
+    bridge,
+  );
+
   let scrollP = 0;
   const modeBlend = { val: 0 };
   let modeTween: gsap.core.Tween | null = null;
 
-  // Scratch.
-  const sPos = new THREE.Vector3();
-  const sQuat = new THREE.Quaternion();
-  const sMat = new THREE.Matrix4();
   const camTarget = new THREE.Vector3();
 
   function updateMatrices() {
@@ -141,27 +133,18 @@ export function createScene(
       const a = assembledPos.get(part.id)!;
       const b = boqMap.get(part.id)!;
       const m = matMap.get(part.id)!;
-      const aQ = assembledQuat.get(part.id)!;
+      const mesh = meshes.get(part.id)!;
 
       const tx = b.x + (m.x - b.x) * blend;
       const ty = b.y + (m.y - b.y) * blend;
       const tz = b.z + (m.z - b.z) * blend;
 
-      sPos.set(
+      mesh.position.set(
         a.x + (tx - a.x) * t,
         a.y + (ty - a.y) * t,
         a.z + (tz - a.z) * t,
       );
-      sQuat.copy(aQ).slerp(identityQuat, t);
-      sMat.compose(sPos, sQuat, part.size);
-
-      const s = slot.get(part.id)!;
-      s.mesh.setMatrixAt(s.index, sMat);
     }
-
-    meshes.forEach((mesh) => {
-      mesh.instanceMatrix.needsUpdate = true;
-    });
   }
 
   function updateCamera() {
@@ -219,11 +202,9 @@ export function createScene(
       ro.disconnect();
       modeTween?.kill();
       meshes.forEach((mesh) => {
-        const m = mesh.material as THREE.Material | THREE.Material[];
-        if (Array.isArray(m)) m.forEach((mm) => mm.dispose());
-        else m.dispose();
+        mesh.geometry.dispose();
       });
-      baseGeom.dispose();
+      materials.forEach((m) => m.dispose());
       renderer.dispose();
     },
   };

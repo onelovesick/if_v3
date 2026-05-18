@@ -1,16 +1,17 @@
 """
-Bow River Bridge IFC -> bridge.json extractor.
+Bow River Bridge IFC -> bridge.glb extractor.
 
-Loads every IFC in the source directory (excluding *test*), pulls one
-oriented bounding box per geometric element, classifies its material
-from IFC type + material associations, and writes a compact JSON the
-web component can fetch and feed directly into the existing scene
-controller (Part[] shape unchanged).
+Loads every IFC in the source directory (excluding *test*, *OGBR*,
+*STR9*, *STR4-00002*), pulls each element's real triangulated mesh
+via ifcopenshell.geom in world coords, recentres each part on its
+own centroid, then writes a single binary glTF (GLB) with one node
+per element. Node extras carry the assembled world position
+(centroid), material class, BOQ number, source file, and IFC GUID
+so the web scene can rebuild Part[] with real per-element geometry.
 
-Coordinate convention is converted from IFC right-handed Z-up to
-Three.js right-handed Y-up. The full model is recentred on origin and
-uniformly scaled so the largest horizontal extent matches the
-synthetic bridge length (200 world units) used by the camera path.
+The whole federation is uniformly scaled so the longest horizontal
+extent matches the synthetic bridge length (200 world units) and
+recentred so the lowest point sits at Y = 0.
 
 Run from tools/ifc-convert via:
     uv run python extract_bridge.py
@@ -18,9 +19,8 @@ Run from tools/ifc-convert via:
 
 from __future__ import annotations
 
-import json
-import math
 import multiprocessing
+import struct
 import sys
 from collections import Counter
 from pathlib import Path
@@ -28,63 +28,23 @@ from pathlib import Path
 import ifcopenshell
 import ifcopenshell.geom
 import numpy as np
+import pygltflib
 
 
 IFC_DIR = Path("C:/Users/yousi/Downloads/bow-river-ifc")
-OUT_PATH = Path(__file__).resolve().parents[2] / "public" / "models" / "bridge.json"
-TARGET_LENGTH = 200.0  # world units along the longest horizontal axis
-
-# File-name substrings that exclude an IFC from the federation:
-#   - "test"      → in-progress / WIP exports
-#   - "OGBR"      → a separate adjacent bridge ~700m away in real-world
-#                   coords; including it pushes the camera bounds out
-#                   so the main bridge collapses to a sliver.
-#   - "STR9"      → the 3 mega-plates are each modelled as one giant
-#                   triangulated face set spanning the whole deck, so
-#                   their world-AABBs visually swallow every other part.
-#   - "STR4-00002" → similar mega-plate variant.
+OUT_PATH = Path(__file__).resolve().parents[2] / "public" / "models" / "bridge.glb"
+TARGET_LENGTH = 200.0
 EXCLUDE_TOKENS = ("test", "ogbr", "str9", "str4-00002")
-
-
-# ─── Material classification ────────────────────────────────────────
-# We map every IFC element into one of five buckets that match the
-# scene's InstancedMesh groups. Heuristic order:
-#   1) explicit IFC entity type (rebar, plate, etc.)
-#   2) associated material name (English / French keywords)
-#   3) fallback by entity family
 
 MAT_CONCRETE = "concrete"
 MAT_STEEL = "steel"
 MAT_PLATE = "plate"
 MAT_CABLE = "cable"
 MAT_REBAR = "rebar"
-
 DEFAULT_MATERIAL = MAT_PLATE
 
 
-def _material_from_name(name: str) -> str | None:
-    n = name.lower()
-    if "rebar" in n or "reinforc" in n or "armature" in n:
-        return MAT_REBAR
-    if "cable" in n or "tendon" in n or "câble" in n or "stay" in n:
-        return MAT_CABLE
-    if "concrete" in n or "béton" in n or "beton" in n:
-        return MAT_CONCRETE
-    if "steel" in n or "acier" in n:
-        # Refine: plate vs structural steel
-        if "plate" in n or "plaque" in n:
-            return MAT_PLATE
-        return MAT_STEEL
-    if "plate" in n or "plaque" in n:
-        return MAT_PLATE
-    return None
-
-
 def _material_from_source(source: str) -> str:
-    """The Bow River IFCs ship with zero IfcMaterial entities, so we
-    classify by file/discipline code: TRK = trackwork (steel rails),
-    CIV / BRA / OGBR = concrete civil works, STR9 = large structural
-    plates, other STR* = structural steel members."""
     s = source.upper()
     if "TRK" in s:
         return MAT_STEEL
@@ -97,148 +57,43 @@ def _material_from_source(source: str) -> str:
     return DEFAULT_MATERIAL
 
 
-def _material_from_element(element, source: str, size_xyz) -> str:
+def _material_from_element(element, source: str) -> str:
     ifc_type = element.is_a()
-
-    # Direct entity type signals win first.
     if "Reinforc" in ifc_type:
         return MAT_REBAR
     if "Cable" in ifc_type or "Tendon" in ifc_type:
         return MAT_CABLE
     if ifc_type == "IfcPlate":
         return MAT_PLATE
-
-    # Walk material associations (no-op for these IFCs but keeps the
-    # path open if the user re-runs against an IFC that has them).
-    for assoc in getattr(element, "HasAssociations", None) or []:
-        if not assoc.is_a("IfcRelAssociatesMaterial"):
-            continue
-        mat = assoc.RelatingMaterial
-        names: list[str] = []
-        if hasattr(mat, "Name") and mat.Name:
-            names.append(mat.Name)
-        if mat.is_a("IfcMaterialList"):
-            for m in mat.Materials or []:
-                if m.Name:
-                    names.append(m.Name)
-        if mat.is_a("IfcMaterialLayerSetUsage") or mat.is_a("IfcMaterialLayerSet"):
-            layer_set = getattr(mat, "ForLayerSet", None) or mat
-            for layer in layer_set.MaterialLayers or []:
-                if layer.Material and layer.Material.Name:
-                    names.append(layer.Material.Name)
-        for n in names:
-            hit = _material_from_name(n)
-            if hit:
-                return hit
-
-    # Heuristic: tiny long-thin elements are most likely rebar.
-    # size is (x, y, z) in IFC frame (Z-up), so longest dim vs
-    # cross-section gives an aspect ratio.
-    longest = max(size_xyz)
-    cross = min(size_xyz[0], size_xyz[2])  # horizontal cross-section
-    if longest > 0 and cross > 0:
-        if cross < 0.04 and longest / cross > 12:
-            return MAT_REBAR
-
     return _material_from_source(source)
 
 
-def _world_aabb(verts: np.ndarray):
-    """World-space axis-aligned bounding box. Each part loses its
-    orientation in this representation, which is acceptable for the
-    explosion view because the *quantity* and *spatial layout* of
-    parts is what reads, not their individual rotation. Cables and
-    other rotated elements will appear slightly chunkier than their
-    true volume, which the scene's cable colour palette handles."""
-    mn = verts.min(axis=0)
-    mx = verts.max(axis=0)
-    return (mn + mx) / 2.0, mx - mn
+# IFC right-handed Z-up -> Three.js right-handed Y-up: (x,y,z) -> (x,z,-y).
+def _ifc_verts_to_three(verts: np.ndarray) -> np.ndarray:
+    out = np.empty_like(verts, dtype=np.float32)
+    out[:, 0] = verts[:, 0]
+    out[:, 1] = verts[:, 2]
+    out[:, 2] = -verts[:, 1]
+    return out
 
 
-def _quat_from_matrix3(m: np.ndarray):
-    """Three.js-style (x, y, z, w) quaternion from a 3x3 rotation matrix."""
-    t = m[0, 0] + m[1, 1] + m[2, 2]
-    if t > 0:
-        s = math.sqrt(t + 1.0) * 2
-        w = 0.25 * s
-        x = (m[2, 1] - m[1, 2]) / s
-        y = (m[0, 2] - m[2, 0]) / s
-        z = (m[1, 0] - m[0, 1]) / s
-    elif (m[0, 0] > m[1, 1]) and (m[0, 0] > m[2, 2]):
-        s = math.sqrt(1.0 + m[0, 0] - m[1, 1] - m[2, 2]) * 2
-        w = (m[2, 1] - m[1, 2]) / s
-        x = 0.25 * s
-        y = (m[0, 1] + m[1, 0]) / s
-        z = (m[0, 2] + m[2, 0]) / s
-    elif m[1, 1] > m[2, 2]:
-        s = math.sqrt(1.0 + m[1, 1] - m[0, 0] - m[2, 2]) * 2
-        w = (m[0, 2] - m[2, 0]) / s
-        x = (m[0, 1] + m[1, 0]) / s
-        y = 0.25 * s
-        z = (m[1, 2] + m[2, 1]) / s
-    else:
-        s = math.sqrt(1.0 + m[2, 2] - m[0, 0] - m[1, 1]) * 2
-        w = (m[1, 0] - m[0, 1]) / s
-        x = (m[0, 2] + m[2, 0]) / s
-        y = (m[1, 2] + m[2, 1]) / s
-        z = 0.25 * s
-    return [x, y, z, w]
-
-
-# IFC right-handed Z-up -> Three.js right-handed Y-up.
-# Rotation about X axis by -90 degrees: (x, y, z) -> (x, z, -y)
-# Applied to position vectors, sizes (component swap), and quaternions
-# (compose: q_three = q_xrot * q_ifc).
-_X_NEG90_QUAT = np.array(
-    [-math.sin(math.pi / 4), 0.0, 0.0, math.cos(math.pi / 4)],  # x, y, z, w
-    dtype=np.float64,
-)
-
-
-def _quat_mul(a: np.ndarray, b: np.ndarray) -> np.ndarray:
-    ax, ay, az, aw = a
-    bx, by, bz, bw = b
-    return np.array(
-        [
-            aw * bx + ax * bw + ay * bz - az * by,
-            aw * by - ax * bz + ay * bw + az * bx,
-            aw * bz + ax * by - ay * bx + az * bw,
-            aw * bw - ax * bx - ay * by - az * bz,
-        ]
-    )
-
-
-def _ifc_to_three_vec(v):
-    return [v[0], v[2], -v[1]]
-
-
-def _ifc_to_three_size(s):
-    return [s[0], s[2], s[1]]
-
-
-def _ifc_to_three_quat(q_ifc):
-    return _quat_mul(_X_NEG90_QUAT, np.asarray(q_ifc)).tolist()
-
-
-# ─── Main extraction ────────────────────────────────────────────────
-
-
-def extract():
+def extract() -> None:
     if not IFC_DIR.exists():
         print(f"IFC dir not found: {IFC_DIR}", file=sys.stderr)
         sys.exit(1)
 
     ifc_files = sorted(IFC_DIR.glob("*.ifc"))
     ifc_files = [
-        f
-        for f in ifc_files
-        if not any(t in f.name.lower() for t in EXCLUDE_TOKENS)
+        f for f in ifc_files if not any(t in f.name.lower() for t in EXCLUDE_TOKENS)
     ]
-    print(f"Processing {len(ifc_files)} IFC files (excluded tokens: {EXCLUDE_TOKENS})")
+    print(f"Processing {len(ifc_files)} IFC files (excluded: {EXCLUDE_TOKENS})")
 
     settings = ifcopenshell.geom.settings()
-    settings.set("use-world-coords", True)  # AABB-in-world per element
+    settings.set("use-world-coords", True)
 
+    # First pass: read every element's mesh, convert coords, centre on
+    # its own centroid. Store everything in memory; total triangle
+    # count for ~1000 parts of medium complexity is tractable.
     parts: list[dict] = []
     type_counter: Counter[str] = Counter()
     material_counter: Counter[str] = Counter()
@@ -248,103 +103,82 @@ def extract():
         print(f"  {ifc_path.name}")
         model = ifcopenshell.open(str(ifc_path))
         try:
-            iterator = ifcopenshell.geom.iterator(
+            it = ifcopenshell.geom.iterator(
                 settings, model, max(1, multiprocessing.cpu_count() - 1)
             )
         except Exception as e:
-            print(f"    iterator failed: {e}; falling back to per-element")
-            iterator = None
+            print(f"    iterator init failed: {e}", file=sys.stderr)
+            continue
+        if not it.initialize():
+            continue
 
-        def emit_for_element(element):
-            nonlocal skipped
-            try:
-                shape = ifcopenshell.geom.create_shape(settings, element)
-            except Exception:
-                skipped += 1
-                return
-            _process_shape(element, shape)
-
-        def _process_shape(element, shape):
-            nonlocal skipped
+        while True:
+            shape = it.get()
+            element = model.by_id(shape.id)
             geom = shape.geometry
-            verts_flat = np.asarray(geom.verts, dtype=np.float64)
-            if verts_flat.size == 0:
+            verts = np.asarray(geom.verts, dtype=np.float64)
+            faces = np.asarray(geom.faces, dtype=np.uint32)
+            if verts.size == 0 or faces.size == 0:
                 skipped += 1
-                return
-            verts = verts_flat.reshape(-1, 3)
+                if not it.next():
+                    break
+                continue
 
-            center_world, size = _world_aabb(verts)
+            verts = verts.reshape(-1, 3)
+            verts_three = _ifc_verts_to_three(verts)
+            centroid = verts_three.mean(axis=0)
+            verts_centered = (verts_three - centroid).astype(np.float32)
 
-            # Clamp degenerate sizes so a 0-thickness element still
-            # renders as a thin shim instead of disappearing.
-            size = np.maximum(size, 0.05)
-
-            # World AABB has no orientation info, and `_ifc_to_three_size`
-            # already permutes the dimensions onto Three.js axes. So the
-            # rendered box needs IDENTITY rotation in Three.js — don't
-            # run it through _ifc_to_three_quat (that would double-rotate
-            # every part 90 degrees onto its edge).
-            material = _material_from_element(element, ifc_path.stem, size)
+            material = _material_from_element(element, ifc_path.stem)
             ifc_type = element.is_a()
-
             type_counter[ifc_type] += 1
             material_counter[material] += 1
 
             parts.append(
                 {
-                    "id": len(parts),
-                    "boq": 0,  # assigned after sorting
+                    "verts": verts_centered,
+                    "indices": faces.astype(np.uint32),
+                    "centroid": centroid.astype(np.float32),
                     "material": material,
                     "type": ifc_type,
-                    "position": _ifc_to_three_vec(center_world),
-                    "size": _ifc_to_three_size(size),
-                    "quaternion": [0.0, 0.0, 0.0, 1.0],
                     "guid": element.GlobalId,
                     "source": ifc_path.stem,
                 }
             )
-
-        if iterator and iterator.initialize():
-            while True:
-                shape = iterator.get()
-                element = model.by_id(shape.id)
-                _process_shape(element, shape)
-                if not iterator.next():
-                    break
-        else:
-            for element in model.by_type("IfcProduct"):
-                if element.Representation is not None:
-                    emit_for_element(element)
+            if not it.next():
+                break
 
     if not parts:
         print("No geometric parts extracted.", file=sys.stderr)
         sys.exit(1)
 
-    # ─── Recentre + uniform scale ──────────────────────────────────
-    positions = np.array([p["position"] for p in parts])
-    sizes = np.array([p["size"] for p in parts])
-    mins = (positions - sizes / 2).min(axis=0)
-    maxs = (positions + sizes / 2).max(axis=0)
-    centre = (mins + maxs) / 2.0
-    extent = maxs - mins
-    longest_horizontal = max(extent[0], extent[2])
-    scale = TARGET_LENGTH / longest_horizontal if longest_horizontal > 0 else 1.0
+    # ─── Recentre + uniform scale based on world-aggregate bounds ───
+    all_min = np.array([float("inf")] * 3, dtype=np.float64)
+    all_max = np.array([float("-inf")] * 3, dtype=np.float64)
+    for p in parts:
+        v_world = p["verts"] + p["centroid"]
+        all_min = np.minimum(all_min, v_world.min(axis=0))
+        all_max = np.maximum(all_max, v_world.max(axis=0))
 
-    # Drop everything onto the same world: subtract centre, then scale.
-    # We keep Y resting at 0 (lowest point on the ground).
-    y_lift = -(mins[1] - centre[1]) * scale
+    centre = ((all_min + all_max) / 2.0).astype(np.float32)
+    extent = all_max - all_min
+    longest = float(max(extent[0], extent[2]))
+    scale = TARGET_LENGTH / longest if longest > 0 else 1.0
+    y_lift = -(all_min[1] - centre[1]) * scale
 
     for p in parts:
-        p["position"] = [
-            (p["position"][0] - centre[0]) * scale,
-            (p["position"][1] - centre[1]) * scale + y_lift,
-            (p["position"][2] - centre[2]) * scale,
-        ]
-        p["size"] = [s * scale for s in p["size"]]
+        c = p["centroid"]
+        p["centroid"] = np.array(
+            [
+                (c[0] - centre[0]) * scale,
+                (c[1] - centre[1]) * scale + y_lift,
+                (c[2] - centre[2]) * scale,
+            ],
+            dtype=np.float32,
+        )
+        p["verts"] = (p["verts"] * scale).astype(np.float32)
 
-    # ─── BOQ sort: group by type, then by source file, then by Y ───
-    # gives the explosion a sensible reading order (subgrade items
-    # before deck items before rails).
+    # ─── BOQ sort (structural-bottom-to-top, by source, by height) ──
     type_order = {
         "IfcFooting": 0,
         "IfcPile": 1,
@@ -364,39 +198,118 @@ def extract():
         key=lambda p: (
             type_order.get(p["type"], 99),
             p["source"],
-            p["position"][1],
-            p["position"][0],
+            float(p["centroid"][1]),
+            float(p["centroid"][0]),
         )
     )
-    for i, p in enumerate(parts):
-        p["boq"] = i + 1
-        p["id"] = i
 
-    # ─── Recompute bounds in world coords post-scale ───────────────
-    positions = np.array([p["position"] for p in parts])
-    sizes = np.array([p["size"] for p in parts])
-    mins = (positions - sizes / 2).min(axis=0)
-    maxs = (positions + sizes / 2).max(axis=0)
+    # ─── Build GLB ─────────────────────────────────────────────────
+    gltf = pygltflib.GLTF2()
+    gltf.scene = 0
+    gltf.scenes = [pygltflib.Scene(nodes=list(range(len(parts))))]
+    gltf.buffers = [pygltflib.Buffer()]
 
-    out = {
-        "partCount": len(parts),
-        "bounds": {"min": mins.tolist(), "max": maxs.tolist()},
-        "materials": dict(material_counter),
-        "types": dict(type_counter.most_common(20)),
-        "parts": parts,
-    }
+    binary = bytearray()
+
+    def append_blob(arr: np.ndarray) -> tuple[int, int]:
+        """Append a numpy array's bytes to the binary buffer with
+        4-byte padding and return (byteOffset, byteLength)."""
+        data = arr.tobytes()
+        offset = len(binary)
+        binary.extend(data)
+        pad = (4 - len(data) % 4) % 4
+        if pad:
+            binary.extend(b"\x00" * pad)
+        return offset, len(data)
+
+    for boq, p in enumerate(parts, start=1):
+        verts_offset, verts_len = append_blob(p["verts"])
+        idx_offset, idx_len = append_blob(p["indices"])
+
+        verts_bv = pygltflib.BufferView(
+            buffer=0,
+            byteOffset=verts_offset,
+            byteLength=verts_len,
+            target=pygltflib.ARRAY_BUFFER,
+        )
+        idx_bv = pygltflib.BufferView(
+            buffer=0,
+            byteOffset=idx_offset,
+            byteLength=idx_len,
+            target=pygltflib.ELEMENT_ARRAY_BUFFER,
+        )
+
+        verts_bv_i = len(gltf.bufferViews)
+        gltf.bufferViews.append(verts_bv)
+        idx_bv_i = len(gltf.bufferViews)
+        gltf.bufferViews.append(idx_bv)
+
+        vmin = p["verts"].min(axis=0).tolist()
+        vmax = p["verts"].max(axis=0).tolist()
+
+        verts_acc = pygltflib.Accessor(
+            bufferView=verts_bv_i,
+            componentType=pygltflib.FLOAT,
+            count=len(p["verts"]),
+            type=pygltflib.VEC3,
+            min=vmin,
+            max=vmax,
+        )
+        idx_acc = pygltflib.Accessor(
+            bufferView=idx_bv_i,
+            componentType=pygltflib.UNSIGNED_INT,
+            count=len(p["indices"]),
+            type=pygltflib.SCALAR,
+        )
+
+        verts_acc_i = len(gltf.accessors)
+        gltf.accessors.append(verts_acc)
+        idx_acc_i = len(gltf.accessors)
+        gltf.accessors.append(idx_acc)
+
+        mesh = pygltflib.Mesh(
+            primitives=[
+                pygltflib.Primitive(
+                    attributes=pygltflib.Attributes(POSITION=verts_acc_i),
+                    indices=idx_acc_i,
+                )
+            ]
+        )
+        mesh_i = len(gltf.meshes)
+        gltf.meshes.append(mesh)
+
+        node = pygltflib.Node(
+            mesh=mesh_i,
+            translation=[
+                float(p["centroid"][0]),
+                float(p["centroid"][1]),
+                float(p["centroid"][2]),
+            ],
+            extras={
+                "boq": boq,
+                "material": p["material"],
+                "type": p["type"],
+                "guid": p["guid"],
+                "source": p["source"],
+            },
+        )
+        gltf.nodes.append(node)
+
+    gltf.buffers[0].byteLength = len(binary)
+    gltf.set_binary_blob(bytes(binary))
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUT_PATH.write_text(json.dumps(out, separators=(",", ":")))
+    gltf.save_binary(str(OUT_PATH))
+
     print()
     print(f"Wrote {len(parts)} parts to {OUT_PATH}")
-    print(f"  Skipped (no/bad geometry): {skipped}")
-    print(f"  Bounds: X [{mins[0]:.1f}..{maxs[0]:.1f}]")
-    print(f"          Y [{mins[1]:.1f}..{maxs[1]:.1f}]")
-    print(f"          Z [{mins[2]:.1f}..{maxs[2]:.1f}]")
+    print(f"  Skipped (empty geometry): {skipped}")
+    print(f"  Bounds X [{(all_min[0] - centre[0]) * scale:.1f}..{(all_max[0] - centre[0]) * scale:.1f}]")
+    print(f"  Bounds Y [{(all_min[1] - centre[1]) * scale + y_lift:.1f}..{(all_max[1] - centre[1]) * scale + y_lift:.1f}]")
+    print(f"  Bounds Z [{(all_min[2] - centre[2]) * scale:.1f}..{(all_max[2] - centre[2]) * scale:.1f}]")
     print(f"  Materials: {dict(material_counter)}")
-    print(f"  Top types: {dict(type_counter.most_common(8))}")
-    print(f"  File size: {OUT_PATH.stat().st_size / 1024:.1f} KB")
+    print(f"  Top types: {dict(type_counter.most_common(5))}")
+    print(f"  File size: {OUT_PATH.stat().st_size / 1024 / 1024:.2f} MB")
 
 
 if __name__ == "__main__":

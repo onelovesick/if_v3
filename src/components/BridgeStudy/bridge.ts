@@ -1,19 +1,19 @@
 /**
  * Bridge data layer. Primary path loads the Bow River bridge from
- * /models/bridge.json (1072 parts extracted from 15 federated IFC4X3
- * files by tools/ifc-convert/extract_bridge.py). Falls back to a
- * synthetic cable-stayed bridge generator if the JSON fetch fails so
- * the scene keeps rendering in dev when the asset is missing.
+ * /models/bridge.glb (985 parts extracted from 12 federated IFC4X3
+ * files by tools/ifc-convert/extract_bridge.py). The extractor pulls
+ * real triangulated mesh geometry per element, recentres each part on
+ * its own centroid, encodes the centroid as the glTF node translation,
+ * and stores BOQ + material + IFC metadata in node extras.
  *
- * Each part is represented as an oriented bounding box (position +
- * size + quaternion + material). Geometry detail is intentionally
- * coarse — the scene's job is to show 1000+ countable, sortable
- * parts exploding, not photoreal lighting.
+ * Falls back to a synthetic generator that builds simple BoxGeometry
+ * parts so the scene keeps rendering in dev when the GLB is missing.
  */
 
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
-export const BRIDGE_JSON_URL = "/models/bridge.json";
+export const BRIDGE_GLB_URL = "/models/bridge.glb";
 
 export type Material = "concrete" | "steel" | "plate" | "cable" | "rebar";
 
@@ -22,9 +22,12 @@ export interface Part {
   boq: number;
   material: Material;
   type: string;
+  /** True triangulated mesh, vertices centred on the part's centroid. */
+  geometry: THREE.BufferGeometry;
+  /** Assembled-world centroid (where the mesh sits at scrollP = 0). */
   position: THREE.Vector3;
-  size: THREE.Vector3;
-  quaternion: THREE.Quaternion;
+  source?: string;
+  guid?: string;
 }
 
 export const MATERIALS: Material[] = [
@@ -43,9 +46,6 @@ export const MATERIAL_LABELS: Record<Material, string> = {
   rebar: "Rebar",
 };
 
-// Colours chosen to read on a deep-navy background. Metals get a
-// slight cool tilt, rebar gets warm amber so it pops in the cluster
-// view.
 export const MATERIAL_COLORS: Record<Material, number> = {
   concrete: 0xb8c0c8,
   steel: 0x9aa3ad,
@@ -60,63 +60,81 @@ export interface BridgeData {
   source: "ifc" | "synthetic";
 }
 
-interface SerializedPart {
-  id: number;
-  boq: number;
-  material: Material;
-  type: string;
-  position: [number, number, number];
-  size: [number, number, number];
-  quaternion: [number, number, number, number];
-  guid?: string;
+interface NodeExtras {
+  boq?: number;
+  material?: Material;
+  type?: string;
   source?: string;
+  guid?: string;
 }
 
-interface SerializedBridge {
-  partCount: number;
-  bounds: { min: [number, number, number]; max: [number, number, number] };
-  parts: SerializedPart[];
-}
+const gltfLoader = new GLTFLoader();
 
 /**
- * Fetch the IFC-extracted bridge JSON. Returns null on failure so
- * the caller can fall back to the synthetic generator.
+ * Fetch the IFC-extracted GLB. Returns null on failure so the caller
+ * can fall back to the synthetic generator.
  */
 export async function loadBridge(): Promise<BridgeData | null> {
   try {
-    // No-store so iterating on the extractor + redeploy always serves
-    // a fresh bridge.json instead of the browser-cached version.
-    const res = await fetch(BRIDGE_JSON_URL, { cache: "no-store" });
-    if (!res.ok) return null;
-    const data = (await res.json()) as SerializedBridge;
-    if (!Array.isArray(data.parts) || data.parts.length === 0) return null;
+    const gltf = await gltfLoader.loadAsync(BRIDGE_GLB_URL);
+    const parts: Part[] = [];
+    const bounds = new THREE.Box3();
 
-    const parts: Part[] = data.parts.map((p) => ({
-      id: p.id,
-      boq: p.boq,
-      material: p.material,
-      type: p.type,
-      position: new THREE.Vector3(...p.position),
-      size: new THREE.Vector3(...p.size),
-      quaternion: new THREE.Quaternion(
-        p.quaternion[0],
-        p.quaternion[1],
-        p.quaternion[2],
-        p.quaternion[3],
-      ),
-    }));
+    // Each top-level node in the GLB is one IFC element. The mesh
+    // child carries the centred geometry; the node carries the
+    // assembled-world position via .position and the IFC metadata
+    // via .userData (glTF extras).
+    gltf.scene.traverse((obj) => {
+      if (!(obj instanceof THREE.Mesh)) return;
+      const node = obj.parent;
+      const extras: NodeExtras =
+        (node?.userData as NodeExtras) ?? (obj.userData as NodeExtras);
+      const material = (extras.material ?? "plate") as Material;
+      const id = parts.length;
+      const boq = extras.boq ?? id + 1;
 
-    const bounds = new THREE.Box3(
-      new THREE.Vector3(...data.bounds.min),
-      new THREE.Vector3(...data.bounds.max),
-    );
+      // Detach the geometry from the gltf scene graph; we'll own it
+      // from here in our own Mesh wrapper.
+      const geometry = obj.geometry as THREE.BufferGeometry;
+      geometry.computeVertexNormals();
 
+      const pos = node ? node.position.clone() : new THREE.Vector3();
+
+      parts.push({
+        id,
+        boq,
+        material,
+        type: extras.type ?? "IfcBuiltElement",
+        geometry,
+        position: pos,
+        source: extras.source,
+        guid: extras.guid,
+      });
+
+      // Expand bounds by the part's world extents (centroid + local
+      // geometry AABB).
+      const localBox = new THREE.Box3().setFromBufferAttribute(
+        geometry.getAttribute("position") as THREE.BufferAttribute,
+      );
+      bounds.expandByPoint(pos.clone().add(localBox.min));
+      bounds.expandByPoint(pos.clone().add(localBox.max));
+    });
+
+    if (parts.length === 0) return null;
     return { parts, bounds, source: "ifc" };
-  } catch {
+  } catch (err) {
+    if (typeof console !== "undefined") {
+      console.warn("[BridgeStudy] GLB load failed, falling back:", err);
+    }
     return null;
   }
 }
 
+/**
+ * Synthetic fallback. Builds a small cable-stayed bridge from
+ * BoxGeometry primitives. Used in dev when the GLB hasn't been built
+ * yet; the user-facing render is always the IFC GLB in production.
+ */
 export function generateBridge(): BridgeData {
   const parts: Part[] = [];
   let id = 0;
@@ -130,28 +148,26 @@ export function generateBridge(): BridgeData {
   const SLAB_COUNT = 50;
   const SLAB_LEN = L / SLAB_COUNT;
 
-  const identity = new THREE.Quaternion();
-
   const addBox = (
     type: string,
     material: Material,
     position: [number, number, number],
     size: [number, number, number],
-    quaternion: THREE.Quaternion = identity,
+    rotation?: THREE.Quaternion,
   ) => {
+    const geom = new THREE.BoxGeometry(size[0], size[1], size[2]);
+    if (rotation) geom.applyQuaternion(rotation);
     boq += 1;
     parts.push({
       id: id++,
       boq,
       material,
       type,
+      geometry: geom,
       position: new THREE.Vector3(...position),
-      size: new THREE.Vector3(...size),
-      quaternion: quaternion.clone(),
     });
   };
 
-  // 1) Substructure ─ piers (4) + abutments (2)
   for (const px of [PYLON_X1, PYLON_X2]) {
     const x = px - L / 2;
     addBox("pier", "concrete", [x, (DECK_Y - 1) / 2, -7], [4, DECK_Y - 1, 4]);
@@ -165,23 +181,16 @@ export function generateBridge(): BridgeData {
       [6, DECK_Y - 1, W + 4],
     );
   }
-
-  // 2) Pylons (4) ─ two at each pylon station, on each side of deck
   for (const px of [PYLON_X1, PYLON_X2]) {
     const x = px - L / 2;
     addBox("pylon", "concrete", [x, DECK_Y + 14, -7], [3, 28, 3]);
     addBox("pylon", "concrete", [x, DECK_Y + 14, 7], [3, 28, 3]);
   }
-
-  // 3) Deck slabs (50)
   for (let i = 0; i < SLAB_COUNT; i++) {
     const x = -L / 2 + (i + 0.5) * SLAB_LEN;
     addBox("deck", "concrete", [x, DECK_Y, 0], [SLAB_LEN, 1, W]);
   }
-
-  // 4) Stringers (4 × 50 = 200) ─ under-deck longitudinal beams
-  const stringerZs = [-5, -1.7, 1.7, 5];
-  for (const z of stringerZs) {
+  for (const z of [-5, -1.7, 1.7, 5]) {
     for (let i = 0; i < SLAB_COUNT; i++) {
       const x = -L / 2 + (i + 0.5) * SLAB_LEN;
       addBox(
@@ -192,14 +201,10 @@ export function generateBridge(): BridgeData {
       );
     }
   }
-
-  // 5) Cross beams (50)
   for (let i = 0; i < SLAB_COUNT; i++) {
     const x = -L / 2 + (i + 0.5) * SLAB_LEN;
     addBox("crossbeam", "steel", [x, DECK_Y - 1.4, 0], [0.5, 0.5, W]);
   }
-
-  // 6) Cables (80) ─ 20 per pylon (10 per side), fanning out along deck
   const cablesPerSide = 10;
   for (const px of [PYLON_X1, PYLON_X2]) {
     const pylonX = px - L / 2;
@@ -231,8 +236,6 @@ export function generateBridge(): BridgeData {
       }
     }
   }
-
-  // 7) Rails (100 = 50 each side)
   for (const z of [-7, 7]) {
     for (let i = 0; i < SLAB_COUNT; i++) {
       const x = -L / 2 + (i + 0.5) * SLAB_LEN;
@@ -244,41 +247,29 @@ export function generateBridge(): BridgeData {
       );
     }
   }
-
-  // 8) Rebar — fill the remaining slots up to exactly 1000.
-  // Distributed inside the deck volume and the piers/pylons.
   while (id < 1000) {
-    const r = id - 490; // first rebar index
+    const r = id - 490;
     const slab = r % SLAB_COUNT;
     const col = Math.floor(r / SLAB_COUNT) % 6;
     const layer = Math.floor(r / (SLAB_COUNT * 6));
     const x = -L / 2 + (slab + 0.5) * SLAB_LEN;
     const z = -6 + col * 2.4;
     const y = DECK_Y + (layer === 0 ? 0.3 : -0.3);
-    addBox(
-      "rebar",
-      "rebar",
-      [x, y, z],
-      [SLAB_LEN * 0.85, 0.08, 0.08],
-    );
+    addBox("rebar", "rebar", [x, y, z], [SLAB_LEN * 0.85, 0.08, 0.08]);
   }
 
-  // Bounding box for camera framing.
   const bounds = new THREE.Box3();
   parts.forEach((p) => {
-    const half = p.size.clone().multiplyScalar(0.5);
-    bounds.expandByPoint(p.position.clone().sub(half));
-    bounds.expandByPoint(p.position.clone().add(half));
+    const localBox = new THREE.Box3().setFromBufferAttribute(
+      p.geometry.getAttribute("position") as THREE.BufferAttribute,
+    );
+    bounds.expandByPoint(p.position.clone().add(localBox.min));
+    bounds.expandByPoint(p.position.clone().add(localBox.max));
   });
 
   return { parts, bounds, source: "synthetic" };
 }
 
-/**
- * BOQ explosion layout: parts sorted by their BOQ number, laid out in
- * a grid below the assembled bridge so the user reads it like an
- * estimator's schedule.
- */
 export function computeBoqLayout(parts: Part[]): Map<number, THREE.Vector3> {
   const out = new Map<number, THREE.Vector3>();
   const sorted = [...parts].sort((a, b) => a.boq - b.boq);
@@ -300,21 +291,18 @@ export function computeBoqLayout(parts: Part[]): Map<number, THREE.Vector3> {
   return out;
 }
 
-/**
- * Material explosion layout: parts cluster by material, each material
- * gets its own zone laid out along X with its own grid.
- */
 export function computeMaterialLayout(
   parts: Part[],
 ): Map<number, THREE.Vector3> {
   const out = new Map<number, THREE.Vector3>();
-  const zones: Record<Material, { x: number; cols: number; spacing: number }> = {
-    concrete: { x: -120, cols: 8, spacing: 5.5 },
-    steel: { x: -60, cols: 12, spacing: 4 },
-    plate: { x: 5, cols: 15, spacing: 4 },
-    cable: { x: 70, cols: 9, spacing: 4 },
-    rebar: { x: 135, cols: 25, spacing: 2.4 },
-  };
+  const zones: Record<Material, { x: number; cols: number; spacing: number }> =
+    {
+      concrete: { x: -120, cols: 8, spacing: 5.5 },
+      steel: { x: -60, cols: 12, spacing: 4 },
+      plate: { x: 5, cols: 15, spacing: 4 },
+      cable: { x: 70, cols: 9, spacing: 4 },
+      rebar: { x: 135, cols: 25, spacing: 2.4 },
+    };
 
   const byMat = new Map<Material, Part[]>();
   parts.forEach((p) => {
