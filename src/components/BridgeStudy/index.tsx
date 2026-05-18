@@ -38,8 +38,11 @@ export default function BridgeStudy() {
     };
   }, []);
 
-  // Drive scene.setProgress from a scrubbed ScrollTrigger once the
-  // loader has lifted and Lenis is active.
+  // Drive scene.setProgress from a pinned, scrubbed ScrollTrigger
+  // once the loader has lifted and Lenis is active. The section
+  // pins when its top hits the viewport top, absorbs ~160% of
+  // viewport-height worth of scroll for the choreography, then
+  // releases so the user can scroll past.
   useEffect(() => {
     if (!ready || !sectionRef.current) return;
     const section = sectionRef.current;
@@ -50,20 +53,16 @@ export default function BridgeStudy() {
     const ctx = gsap.context(() => {
       if (reduce) {
         sceneRef.current?.setProgress(1);
+        // Still reveal the text without motion.
+        gsap.set(section.querySelectorAll("[data-reveal]"), {
+          opacity: 1,
+          y: 0,
+        });
         return;
       }
 
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.4,
-        onUpdate: (self) => {
-          sceneRef.current?.setProgress(self.progress);
-        },
-      });
-
-      // Text reveal on the left panel.
+      // Text reveal on the left panel — fires when the section is
+      // first approaching the viewport, before the pin engages.
       gsap.from(section.querySelectorAll<HTMLElement>("[data-reveal]"), {
         opacity: 0,
         y: 28,
@@ -75,6 +74,41 @@ export default function BridgeStudy() {
           start: "top 75%",
           toggleActions: "play none none none",
         },
+      });
+
+      const mm = gsap.matchMedia();
+
+      // Desktop: pin + scrub. Section locks at viewport top for the
+      // duration of the explosion, then releases.
+      mm.add("(min-width: 1024px)", () => {
+        const trigger = ScrollTrigger.create({
+          trigger: section,
+          start: "top top",
+          end: "+=160%",
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          scrub: 0.4,
+          onUpdate: (self) => {
+            sceneRef.current?.setProgress(self.progress);
+          },
+        });
+        return () => trigger.kill();
+      });
+
+      // Mobile: no pin. The canvas is in flow under the text, the
+      // scroll-driven explosion still runs as the user passes by.
+      mm.add("(max-width: 1023.99px)", () => {
+        const trigger = ScrollTrigger.create({
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.4,
+          onUpdate: (self) => {
+            sceneRef.current?.setProgress(self.progress);
+          },
+        });
+        return () => trigger.kill();
       });
 
       ScrollTrigger.refresh();
@@ -102,7 +136,7 @@ export default function BridgeStudy() {
         <div className={styles.text}>
           <div className={styles.textInner}>
             <span data-reveal className={styles.eyebrow}>
-              <span className={styles.eyebrowMark} /> 05 · Model study
+              <span className={styles.eyebrowMark} /> 03 · Model study
             </span>
             <h2
               id="bridge-study-title"

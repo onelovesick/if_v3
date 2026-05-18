@@ -11,9 +11,9 @@ export default function Home() {
     <main>
       <Hero />
       <PositionBrief />
+      <BridgeStudy />
       <Layers />
       <HowWeWork />
-      <BridgeStudy />
       <Practice />
       <Close />
     </main>

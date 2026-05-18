@@ -1,18 +1,18 @@
 /* ═══════════════════════════════════════════════════════
-   BRIDGE STUDY (S5)
+   BRIDGE STUDY (S3 — after PositionBrief)
    Full-bleed 50/50 dark section. Left = narrative + sort
-   toggles. Right = pinned Three.js canvas. Section is 220vh
-   tall so a single scrubbed ScrollTrigger has runway to
-   drive the camera tilt + per-part explosion from assembled
-   to BOQ/material grid layouts.
+   toggles. Right = Three.js canvas. The section itself is
+   a single viewport tall; ScrollTrigger pins it at the
+   viewport top and absorbs ~160% of viewport-height worth
+   of scroll input, driving the camera tilt + per-part
+   explosion. When the timeline completes, the pin releases
+   and the page resumes normal scrolling.
    ═══════════════════════════════════════════════════════ */
 
 .section {
   position: relative;
   width: 100%;
-  /* Extra runway beyond the viewport so the sticky canvas
-     can be scrolled through. 100vh = "pinned" duration. */
-  height: 220vh;
+  height: 100vh;
   background: var(--dark);
   color: var(--dark-text);
   overflow: hidden;
@@ -22,15 +22,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   height: 100%;
-  align-items: start;
 }
 
 /* ─── LEFT: narrative + toggles ─── */
 
 .text {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -161,12 +158,11 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ─── RIGHT: pinned canvas column ─── */
+/* ─── RIGHT: canvas column ─── */
 
 .canvasCol {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  position: relative;
+  height: 100%;
   width: 100%;
 }
 
@@ -219,27 +215,24 @@
 
 /* ─── Mobile: stack, no pin ───
    On small viewports the scrollytelling stops being legible,
-   so we drop the sticky layout. The canvas still renders
-   (parts assembled, camera held at iso) and the toggles
-   still re-arrange via the scene's mode tween. */
+   so we drop the pin (handled in JS via matchMedia) and let
+   text + canvas stack. The canvas still picks up scroll
+   progress via a non-pinned ScrollTrigger as it passes by. */
 @media (max-width: 1023px) {
   .section {
     height: auto;
   }
   .grid {
     grid-template-columns: 1fr;
+    height: auto;
   }
   .text {
-    position: relative;
-    top: auto;
     height: auto;
     padding: clamp(64px, 12vh, 120px) clamp(24px, 5vw, 56px);
     border-right: 0;
     border-bottom: 1px solid var(--dark-rule);
   }
   .canvasCol {
-    position: relative;
-    top: auto;
     height: 80vh;
     min-height: 520px;
   }
@@ -247,17 +240,7 @@
 
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
-  .section {
-    height: auto;
-    min-height: 100vh;
-  }
   .canvasCol {
-    position: relative;
-    height: 80vh;
     min-height: 520px;
-  }
-  .text {
-    position: relative;
-    height: auto;
   }
 }
