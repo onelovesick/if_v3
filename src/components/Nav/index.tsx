@@ -1,20 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./Nav.module.css";
 
-const LEFT_LINKS = [
+const PRIMARY_LINKS = [
   { label: "Practice", href: "#position" },
   { label: "Capabilities", href: "#layers" },
+  { label: "Model", href: "#model" },
   { label: "Work", href: "#howwework" },
   { label: "Writing", href: "#close" },
 ];
 
-const RIGHT_LINKS = [
+const SECONDARY_LINKS = [
   { label: "About", href: "#practice" },
   { label: "Team", href: "#practice" },
-  { label: "Contact", href: "#contact" },
+  { label: "Press", href: "#close" },
+  { label: "FAQs", href: "#close" },
 ];
 
 type Mode = "transparent" | "is-light" | "is-dark";
@@ -22,24 +24,12 @@ type Mode = "transparent" | "is-light" | "is-dark";
 export default function Nav() {
   const { ready } = useMotionReady();
   const [mode, setMode] = useState<Mode>("transparent");
-  const [hidden, setHidden] = useState(false);
-  const lastYRef = useRef(0);
-  // True while a pinned section (e.g. BridgeStudy) holds the page in
-  // place. The nav is forced hidden during that window so it can't
-  // pop back in over the locked canvas when the user wheels up.
-  const pinSuppressRef = useRef(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Listen for pin-activity events dispatched by pinned sections.
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent<{ active: boolean }>).detail;
-      pinSuppressRef.current = !!detail?.active;
-      if (pinSuppressRef.current) setHidden(true);
-    };
-    window.addEventListener("infraforma:pin", handler);
-    return () => window.removeEventListener("infraforma:pin", handler);
-  }, []);
-
+  // Detect which section the nav is currently over so its colours
+  // contrast with the underlying tone. No more scroll-direction
+  // hide: the bar persists across the whole page.
   useEffect(() => {
     const sections = Array.from(
       document.querySelectorAll<HTMLElement>("[data-section]"),
@@ -72,79 +62,159 @@ export default function Nav() {
       setMode(next);
     };
 
-    const onScroll = () => {
-      const y = window.scrollY;
-      const delta = y - lastYRef.current;
-      const atTop = y < 60;
-
-      // While a pinned section owns the viewport, keep the nav hidden
-      // regardless of wheel direction. Mode + last-y still update so
-      // we resume cleanly when the pin releases.
-      if (pinSuppressRef.current) {
-        setHidden(true);
-        lastYRef.current = y;
-        computeMode();
-        return;
-      }
-
-      // Always show at the top of the page. Scrolling down hides the
-      // nav by translating it off-screen; scrolling up brings it back.
-      if (atTop) {
-        setHidden(false);
-      } else if (delta > 5) {
-        setHidden(true);
-      } else if (delta < -5) {
-        setHidden(false);
-      }
-
-      lastYRef.current = y;
-      computeMode();
-    };
-
     computeMode();
-    lastYRef.current = window.scrollY;
+    const onScroll = () => computeMode();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Lock page scroll while the panel is open.
+  useEffect(() => {
+    if (menuOpen) {
+      document.documentElement.style.overflow = "hidden";
+      closeButtonRef.current?.focus();
+    } else {
+      document.documentElement.style.overflow = "";
+    }
+    return () => {
+      document.documentElement.style.overflow = "";
+    };
+  }, [menuOpen]);
+
+  // ESC closes.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
   return (
-    <header
-      className={`${styles.nav} ${ready ? styles.visible : ""} ${
-        mode === "is-light"
-          ? styles.light
-          : mode === "is-dark"
-            ? styles.dark
-            : ""
-      } ${hidden ? styles.hidden : ""}`}
-    >
-      <nav
-        className={`${styles.links} ${styles.leftLinks}`}
-        aria-label="What we do"
+    <>
+      <header
+        className={`${styles.nav} ${ready ? styles.visible : ""} ${
+          mode === "is-light"
+            ? styles.light
+            : mode === "is-dark"
+              ? styles.dark
+              : styles.transparent
+        }`}
       >
-        {LEFT_LINKS.map((l) => (
-          <a key={l.label} href={l.href}>
-            {l.label}
+        <a href="#top" className={styles.brand} aria-label="Infraforma — home">
+          <span className={styles.brandMark} aria-hidden="true" />
+          <span className={styles.brandName}>Infraforma</span>
+        </a>
+
+        <div className={styles.pills}>
+          <button
+            type="button"
+            className={styles.pill}
+            onClick={() => setMenuOpen(true)}
+            aria-expanded={menuOpen}
+            aria-controls="nav-menu-panel"
+          >
+            <span>Menu</span>
+            <span className={styles.pillIcon} aria-hidden="true">
+              <span className={styles.menuBar} />
+              <span className={styles.menuBar} />
+            </span>
+          </button>
+          <a href="#contact" className={styles.pill}>
+            <span>Contact</span>
+            <span className={styles.pillIcon} aria-hidden="true">
+              &rarr;
+            </span>
           </a>
-        ))}
-      </nav>
+        </div>
+      </header>
 
-      <a href="#top" className={styles.brand} aria-label="Infraforma — home">
-        <span className={styles.brandMark} aria-hidden="true" />
-        <span className={styles.brandName}>Infraforma</span>
-      </a>
-
-      <nav
-        className={`${styles.links} ${styles.rightLinks}`}
-        aria-label="Connect"
+      {/* Backdrop + side panel ─────────────────────────────────── */}
+      <div
+        className={`${styles.overlay} ${menuOpen ? styles.overlayOpen : ""}`}
+        aria-hidden={!menuOpen}
+        onClick={closeMenu}
+      />
+      <aside
+        id="nav-menu-panel"
+        className={`${styles.panel} ${menuOpen ? styles.panelOpen : ""}`}
+        aria-hidden={!menuOpen}
+        aria-label="Site menu"
       >
-        {RIGHT_LINKS.map((l) => (
-          <a key={l.label} href={l.href}>
-            {l.label}
+        <div className={styles.panelHeader}>
+          <a
+            href="#top"
+            className={styles.panelBrand}
+            onClick={closeMenu}
+            tabIndex={menuOpen ? 0 : -1}
+          >
+            <span className={styles.brandMark} aria-hidden="true" />
+            <span className={styles.brandName}>Infraforma</span>
           </a>
-        ))}
-      </nav>
-    </header>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            className={styles.closeBtn}
+            onClick={closeMenu}
+            aria-label="Close menu"
+            tabIndex={menuOpen ? 0 : -1}
+          >
+            <span className={styles.closeMark}>&times;</span>
+          </button>
+        </div>
+
+        <nav className={styles.panelLinks} aria-label="Primary">
+          {PRIMARY_LINKS.map((l, i) => (
+            <a
+              key={l.label}
+              href={l.href}
+              onClick={closeMenu}
+              tabIndex={menuOpen ? 0 : -1}
+              style={{ transitionDelay: `${0.08 + i * 0.04}s` }}
+            >
+              {l.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className={styles.panelFooter}>
+          <ul className={styles.panelSecondary}>
+            {SECONDARY_LINKS.map((l) => (
+              <li key={l.label}>
+                <a
+                  href={l.href}
+                  onClick={closeMenu}
+                  tabIndex={menuOpen ? 0 : -1}
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div className={styles.panelMeta}>
+            <a
+              href="https://www.linkedin.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={menuOpen ? 0 : -1}
+            >
+              LinkedIn
+            </a>
+            <span className={styles.panelLang}>
+              <button type="button" disabled>
+                FR
+              </button>
+              <span aria-hidden="true">|</span>
+              <button type="button" aria-pressed="true">
+                EN
+              </button>
+            </span>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 }

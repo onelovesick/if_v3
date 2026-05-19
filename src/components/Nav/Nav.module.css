@@ -1,56 +1,49 @@
+/* ─── Persistent top bar ───
+   Brand on the left, two hairline pill buttons on the right.
+   Always visible; colours adapt to the section beneath via the
+   light / dark / transparent modifier classes. */
+
 .nav {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: start;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--gutter);
   padding: 22px var(--gutter);
-  border-bottom: 1px solid transparent;
   background: transparent;
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 50;
-  transition:
-    background 600ms var(--ease),
-    border-color 600ms var(--ease),
-    color 600ms var(--ease),
-    transform 440ms var(--ease),
-    opacity 320ms var(--ease);
   opacity: 0;
+  transition: opacity 320ms var(--ease);
   color: var(--dark-text);
-  will-change: transform;
+  will-change: opacity;
 }
 
 .visible {
   opacity: 1;
 }
 
+/* Mode modifiers — adapt brand + pill colours so they contrast
+   with whatever section is currently under the bar. */
+.transparent {
+  color: var(--dark-text);
+}
+
 .light {
-  background: var(--bg);
-  border-bottom-color: var(--rule);
   color: var(--ink);
 }
 
 .dark {
-  background: var(--dark);
-  border-bottom-color: var(--dark-rule);
   color: var(--dark-text);
 }
 
-/* Hidden: nav slides up off-screen while the user is scrolling down.
-   Slides back down on scroll-up or when the user is back at the top. */
-.hidden {
-  transform: translateY(-100%);
-}
+/* ─── Brand (left) ─── */
 
-/* ─── Stacked brand: open circle mark above wordmark ─── */
 .brand {
-  justify-self: center;
   display: inline-flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: inherit;
-  padding-top: 4px;
 }
 
 .brandMark {
@@ -69,67 +62,301 @@
 
 .brandName {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.20em;
   font-weight: 500;
   text-transform: uppercase;
   color: currentColor;
 }
 
-/* ─── Side link clusters ─── */
-.links {
-  display: flex;
-  gap: 32px;
+/* ─── Pill cluster (right) ─── */
+
+.pills {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.pill {
+  display: inline-flex;
   align-items: center;
-  padding-top: 14px;
-}
-
-.leftLinks {
-  justify-self: start;
-}
-
-.rightLinks {
-  justify-self: end;
-}
-
-.links a {
+  gap: 14px;
+  padding: 11px 16px 11px 20px;
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
+  font-size: 12px;
   font-weight: 500;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: currentColor;
-  opacity: 0.6;
-  transition: opacity 240ms var(--ease);
-  position: relative;
-  padding: 4px 0;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+  transition:
+    background 240ms var(--ease),
+    color 240ms var(--ease);
 }
 
-.links a::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--blue);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 360ms var(--ease);
+.pill:hover,
+.pill:focus-visible {
+  background: currentColor;
 }
 
-.links a:hover,
-.links a:focus-visible {
+/* When the pill fills, the label needs to invert against the new
+   fill colour. Mix-blend-mode handles both light and dark modes
+   without a second class. */
+.pill:hover > span,
+.pill:focus-visible > span {
+  mix-blend-mode: difference;
+  color: #ffffff;
+}
+
+.pillIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-left: 1px solid currentColor;
+  padding-left: 12px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Hamburger inside the Menu pill: two short bars stacked. */
+.menuBar {
+  display: block;
+  width: 14px;
+  height: 1.5px;
+  background: currentColor;
+  margin: 2px 0;
+}
+
+/* ─── Backdrop ─── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 14, 22, 0.45);
+  backdrop-filter: blur(6px);
+  z-index: 80;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms var(--ease);
+}
+
+.overlayOpen {
   opacity: 1;
+  pointer-events: auto;
 }
 
-.links a:hover::after,
-.links a:focus-visible::after {
-  transform: scaleX(1);
+/* ─── Side panel ─── */
+
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: min(520px, 44vw);
+  background: var(--bg, #f5f7fa);
+  color: var(--ink, #1c1f23);
+  z-index: 90;
+  transform: translateX(100%);
+  transition: transform 560ms cubic-bezier(0.65, 0.05, 0.36, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -40px 0 60px rgba(0, 0, 0, 0.18);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-@media (max-width: 880px) {
-  .links {
-    display: none;
+.panelOpen {
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  .panel {
+    width: 100vw;
   }
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px clamp(28px, 4vw, 56px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.panelBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+}
+
+.panelBrand .brandMark {
+  border-color: var(--ink);
+}
+
+.panelBrand .brandName {
+  color: var(--ink);
+}
+
+.closeBtn {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--ink);
+  transition: transform 320ms var(--ease);
+}
+
+.closeBtn:hover,
+.closeBtn:focus-visible {
+  transform: rotate(90deg);
+}
+
+.closeMark {
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+/* ─── Primary links ─── */
+
+.panelLinks {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(20px, 3vh, 36px) clamp(28px, 4vw, 56px);
+  gap: clamp(12px, 1.6vh, 22px);
+  flex: 1 1 auto;
+  border-bottom: 1px solid var(--rule);
+}
+
+.panelLinks a {
+  font-family: var(--display);
+  font-size: clamp(2.25rem, 4.2vw, 3.75rem);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  text-decoration: none;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 480ms var(--ease),
+    transform 480ms var(--ease),
+    color 220ms var(--ease);
+}
+
+.panelOpen .panelLinks a {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.panelLinks a:hover,
+.panelLinks a:focus-visible {
+  color: var(--blue);
+}
+
+/* ─── Footer (secondary nav + LinkedIn + language) ─── */
+
+.panelFooter {
+  padding: clamp(24px, 3vh, 36px) clamp(28px, 4vw, 56px) clamp(28px, 4vh, 44px);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px 32px;
+  align-items: end;
+}
+
+.panelSecondary {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.panelSecondary a {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  text-decoration: none;
+  transition: color 220ms var(--ease);
+}
+
+.panelSecondary a:hover,
+.panelSecondary a:focus-visible {
+  color: var(--ink);
+}
+
+.panelMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+  text-align: right;
+}
+
+.panelMeta > a {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 220ms var(--ease);
+}
+
+.panelMeta > a:hover,
+.panelMeta > a:focus-visible {
+  color: var(--blue);
+}
+
+.panelLang {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.panelLang button {
+  font: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--ink-mute);
+  padding: 0;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  transition: color 200ms var(--ease);
+}
+
+.panelLang button:hover,
+.panelLang button:focus-visible {
+  color: var(--ink);
+}
+
+.panelLang button[aria-pressed="true"] {
+  color: var(--ink);
+}
+
+.panelLang button[disabled] {
+  cursor: not-allowed;
 }
