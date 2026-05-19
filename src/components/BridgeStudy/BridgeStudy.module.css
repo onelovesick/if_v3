@@ -213,6 +213,90 @@
   display: inline-block;
 }
 
+/* ─── ?cam debug HUD ───
+   Surfaced only when the page URL has ?cam — overlays the canvas
+   with live OrbitControls readouts so the user can compose the
+   intended starting iso pose and hand back exact numbers. */
+.camHud {
+  position: absolute;
+  top: clamp(22px, 2.6vw, 44px);
+  right: clamp(22px, 2.6vw, 44px);
+  z-index: 10;
+  padding: 14px 16px;
+  min-width: 280px;
+  background: rgba(8, 28, 46, 0.92);
+  border: 1px solid var(--dark-rule-strong);
+  color: var(--dark-text);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+}
+
+.camHudHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--dark-rule);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--blue-bright);
+}
+
+.camHudCopy {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dark-text);
+  background: transparent;
+  border: 1px solid var(--dark-rule-strong);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition:
+    color 200ms var(--ease),
+    background 200ms var(--ease);
+}
+
+.camHudCopy:hover {
+  background: var(--dark-text);
+  color: var(--dark);
+}
+
+.camHudList {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  column-gap: 12px;
+  row-gap: 4px;
+  margin: 0;
+}
+
+.camHudList dt {
+  color: var(--dark-text-mute);
+  text-transform: uppercase;
+}
+
+.camHudList dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  word-break: break-all;
+}
+
+.camHudHint {
+  margin: 12px 0 0;
+  padding-top: 10px;
+  border-top: 1px dashed var(--dark-rule);
+  color: var(--dark-text-faint);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
 /* ─── Mobile: stack, no pin ───
    On small viewports the scrollytelling stops being legible,
    so we drop the pin (handled in JS via matchMedia) and let

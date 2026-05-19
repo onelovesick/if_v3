@@ -4,7 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
 import { generateBridge, loadBridge, type BridgeData } from "./bridge";
-import { createScene, type Mode, type SceneController } from "./scene";
+import {
+  createScene,
+  type CameraInfo,
+  type Mode,
+  type SceneController,
+} from "./scene";
 import styles from "./BridgeStudy.module.css";
 
 const MODE_LABELS: Record<Mode, string> = {
@@ -16,6 +21,15 @@ interface Stats {
   parts: number;
   materials: number;
   source: "ifc" | "synthetic";
+}
+
+function isCamDebugRequested(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return new URLSearchParams(window.location.search).has("cam");
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -32,6 +46,10 @@ export default function BridgeStudy() {
   const sceneRef = useRef<SceneController | null>(null);
   const [mode, setMode] = useState<Mode>("boq");
   const [stats, setStats] = useState<Stats | null>(null);
+  // ?cam in the URL drops scripted camera + scroll pin and gives the
+  // user OrbitControls + a HUD so they can pose the iso start for me.
+  const [debugCam] = useState<boolean>(() => isCamDebugRequested());
+  const [camInfo, setCamInfo] = useState<CameraInfo | null>(null);
 
   // Fetch the IFC dataset, then boot the scene. Falls back to the
   // synthetic generator if the JSON isn't available so dev never
@@ -45,7 +63,9 @@ export default function BridgeStudy() {
       const bridge: BridgeData = fromIfc ?? generateBridge();
       if (cancelled || !canvasRef.current) return;
 
-      sceneRef.current = createScene(canvasRef.current, bridge);
+      sceneRef.current = createScene(canvasRef.current, bridge, {
+        cameraMode: debugCam ? "orbit" : "scripted",
+      });
 
       const distinctMaterials = new Set(bridge.parts.map((p) => p.material))
         .size;
@@ -72,8 +92,20 @@ export default function BridgeStudy() {
   // pins when its top hits the viewport top, absorbs ~160% of
   // viewport-height worth of scroll for the choreography, then
   // releases so the user can scroll past.
+  // Poll camera info while in debug mode and render it into the HUD.
+  useEffect(() => {
+    if (!debugCam) return;
+    const id = window.setInterval(() => {
+      if (sceneRef.current) setCamInfo(sceneRef.current.getCameraInfo());
+    }, 100);
+    return () => window.clearInterval(id);
+  }, [debugCam]);
+
   useEffect(() => {
     if (!ready || !sectionRef.current) return;
+    // In debug-cam mode, leave the page scroll-free and the camera
+    // user-controlled so they can compose the start pose.
+    if (debugCam) return;
     const section = sectionRef.current;
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -149,7 +181,7 @@ export default function BridgeStudy() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [ready]);
+  }, [ready, debugCam]);
 
   useEffect(() => {
     sceneRef.current?.setMode(mode);
@@ -236,10 +268,40 @@ export default function BridgeStudy() {
                 <span className={styles.frameDot} />
                 Bow River bridge · federated study
               </span>
-              <span className={styles.frameCoord}>
-                LOD 300 · IFC4X3
-              </span>
+              <span className={styles.frameCoord}>LOD 300 · IFC4X3</span>
             </div>
+            {debugCam && camInfo && (
+              <div className={styles.camHud}>
+                <div className={styles.camHudHeader}>
+                  <span>CAM · orbit</span>
+                  <button
+                    type="button"
+                    className={styles.camHudCopy}
+                    onClick={() => {
+                      const text = `position: ${JSON.stringify(camInfo.position)}\ntarget:   ${JSON.stringify(camInfo.target)}\nfov:      ${camInfo.fov}\ndistance: ${camInfo.distance}`;
+                      if (navigator.clipboard) {
+                        navigator.clipboard.writeText(text).catch(() => {});
+                      }
+                    }}
+                  >
+                    Copy
+                  </button>
+                </div>
+                <dl className={styles.camHudList}>
+                  <dt>pos</dt>
+                  <dd>{camInfo.position.join(", ")}</dd>
+                  <dt>tgt</dt>
+                  <dd>{camInfo.target.join(", ")}</dd>
+                  <dt>dist</dt>
+                  <dd>{camInfo.distance}</dd>
+                  <dt>fov</dt>
+                  <dd>{camInfo.fov}</dd>
+                </dl>
+                <p className={styles.camHudHint}>
+                  drag · rotate · scroll · zoom · right-drag · pan
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

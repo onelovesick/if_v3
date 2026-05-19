@@ -9,6 +9,7 @@
  */
 
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { gsap } from "@/lib/gsap";
 import {
   computeBoqLayout,
@@ -20,12 +21,25 @@ import {
 } from "./bridge";
 
 export type Mode = "boq" | "material";
+export type CameraMode = "scripted" | "orbit";
+
+export interface CameraInfo {
+  position: [number, number, number];
+  target: [number, number, number];
+  fov: number;
+  distance: number;
+}
+
+export interface SceneOptions {
+  cameraMode?: CameraMode;
+}
 
 export interface SceneController {
   setProgress: (p: number) => void;
   setMode: (mode: Mode) => void;
   resize: () => void;
   dispose: () => void;
+  getCameraInfo: () => CameraInfo;
 }
 
 const easeInOutQuart = (t: number): number =>
@@ -53,7 +67,9 @@ function computeCameraWaypoints(bridge: BridgeData) {
 export function createScene(
   canvas: HTMLCanvasElement,
   bridge: BridgeData,
+  options: SceneOptions = {},
 ): SceneController {
+  const cameraMode: CameraMode = options.cameraMode ?? "scripted";
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
@@ -125,6 +141,22 @@ export function createScene(
 
   const camTarget = new THREE.Vector3();
 
+  // Orbit-mode wiring: drop the user at the scripted iso pose, then
+  // let them drag/scroll/right-drag to compose the shot they want.
+  // tick() reads from controls.target instead of the scripted path.
+  let controls: OrbitControls | null = null;
+  if (cameraMode === "orbit") {
+    camera.position.copy(camIso);
+    camera.lookAt(targetIso);
+    controls = new OrbitControls(camera, canvas);
+    controls.target.copy(targetIso);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.minDistance = 1;
+    controls.maxDistance = 4000;
+    controls.update();
+  }
+
   function updateMatrices() {
     const t = easeInOutQuart(scrollP);
     const blend = modeBlend.val;
@@ -165,7 +197,11 @@ export function createScene(
   let rafId = 0;
   function tick() {
     updateMatrices();
-    updateCamera();
+    if (cameraMode === "scripted") {
+      updateCamera();
+    } else if (controls) {
+      controls.update();
+    }
     renderer.render(scene, camera);
     rafId = requestAnimationFrame(tick);
   }
@@ -201,11 +237,34 @@ export function createScene(
       cancelAnimationFrame(rafId);
       ro.disconnect();
       modeTween?.kill();
+      controls?.dispose();
       meshes.forEach((mesh) => {
         mesh.geometry.dispose();
       });
       materials.forEach((m) => m.dispose());
       renderer.dispose();
+    },
+    getCameraInfo: (): CameraInfo => {
+      const tgt = controls
+        ? controls.target
+        : cameraMode === "scripted"
+          ? camTarget
+          : targetIso;
+      const dist = camera.position.distanceTo(tgt);
+      return {
+        position: [
+          Number(camera.position.x.toFixed(2)),
+          Number(camera.position.y.toFixed(2)),
+          Number(camera.position.z.toFixed(2)),
+        ],
+        target: [
+          Number(tgt.x.toFixed(2)),
+          Number(tgt.y.toFixed(2)),
+          Number(tgt.z.toFixed(2)),
+        ],
+        fov: camera.fov,
+        distance: Number(dist.toFixed(2)),
+      };
     },
   };
 }
