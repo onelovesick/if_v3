@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { MotionProvider } from "@/components/MotionProvider";
-import Grain from "@/components/Grain";
 import Loader from "@/components/Loader";
 import Nav from "@/components/Nav";
 import "./globals.css";
@@ -21,7 +20,6 @@ export default function RootLayout({
       <body>
         <MotionProvider>
           <Loader />
-          <Grain />
           <Nav />
           {children}
         </MotionProvider>
