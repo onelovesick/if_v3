@@ -54,9 +54,13 @@
   --ink-mute: #8A9199;
   --ink-faint: #B5BCC4;
 
-  /* Dark sections — Deep Infrastructure Blue */
+  /* Dark sections — Deep Infrastructure Blue for the cinematic
+     layers; Obsidian for true near-black sections where colour-pop
+     accents (amber, signal blue) need to lead the eye. */
   --dark: #0B3C5D;
   --dark-2: #0E466E;
+  --obsidian: #0F1114;
+  --obsidian-2: #16191E;
   --dark-text: #F5F7FA;
   --dark-text-mute: rgba(245, 247, 250, 0.62);
   --dark-text-faint: rgba(245, 247, 250, 0.34);

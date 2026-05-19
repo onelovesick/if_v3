@@ -1,19 +1,17 @@
 /* ═══════════════════════════════════════════════════════
    BRIDGE STUDY (S3 — after PositionBrief)
-   Full-bleed 50/50 dark section. Left = narrative + sort
-   toggles. Right = Three.js canvas. The section itself is
-   a single viewport tall; ScrollTrigger pins it at the
-   viewport top and absorbs ~160% of viewport-height worth
-   of scroll input, driving the camera tilt + per-part
-   explosion. When the timeline completes, the pin releases
-   and the page resumes normal scrolling.
+   Full-bleed 50/50 obsidian-near-black section. Title pinned
+   top-left (in amber pop), body + controls anchored bottom-left,
+   3D canvas on the right with a drawing-stamp footer block.
+   ScrollTrigger pins the section at the viewport top for ~160%
+   of viewport-height of scroll input, then releases.
    ═══════════════════════════════════════════════════════ */
 
 .section {
   position: relative;
   width: 100%;
   height: 100vh;
-  background: var(--dark);
+  background: var(--obsidian);
   color: var(--dark-text);
   overflow: hidden;
 }
@@ -24,22 +22,27 @@
   height: 100%;
 }
 
-/* ─── LEFT: narrative + toggles ─── */
+/* ─── LEFT: title top, body+toggles+meta bottom ─── */
 
 .text {
   height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: clamp(48px, 6vh, 96px) clamp(28px, 4vw, 72px);
-  border-right: 1px solid var(--dark-rule);
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(40px, 5.5vh, 80px) clamp(28px, 4vw, 72px);
 }
 
-.textInner {
+.textTop {
   display: flex;
   flex-direction: column;
-  gap: clamp(20px, 2.6vh, 36px);
-  max-width: 36rem;
+  gap: clamp(16px, 1.8vh, 26px);
+}
+
+.textBottom {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.4vh, 32px);
+  max-width: 38rem;
 }
 
 .eyebrow {
@@ -57,28 +60,31 @@
 .eyebrowMark {
   width: 22px;
   height: 1px;
-  background: var(--blue);
+  background: var(--amber);
 }
 
 .title {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(2.25rem, 3.4vw, 3.75rem);
-  font-weight: 400;
-  line-height: 1.04;
+  font-size: clamp(2.4rem, 4.2vw, 4.5rem);
+  font-weight: 500;
+  line-height: 1.02;
   letter-spacing: -0.028em;
-  color: var(--dark-text);
+  /* The pop colour — Infrastructure Amber against obsidian reads
+     as "engineering accent" rather than corporate-template blue. */
+  color: var(--amber);
   text-wrap: balance;
+  max-width: 18ch;
 }
 
 .title em {
   font-style: normal;
-  color: var(--blue-bright);
+  color: var(--amber);
 }
 
 .body {
   margin: 0;
-  max-width: 36ch;
+  max-width: 38ch;
   font-family: var(--display);
   font-size: clamp(15px, 1.05vw, 17px);
   font-weight: 400;
@@ -86,7 +92,7 @@
   color: var(--dark-text-mute);
 }
 
-/* Mode toggle — segmented pill with hairline divider */
+/* Segmented mode toggle */
 .toggles {
   display: inline-flex;
   align-self: flex-start;
@@ -95,7 +101,7 @@
 }
 
 .toggleBtn {
-  padding: 12px 22px;
+  padding: 10px 18px;
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
@@ -120,24 +126,24 @@
 }
 
 .toggleBtn[aria-pressed="true"] {
-  color: var(--dark);
+  color: var(--obsidian);
   background: var(--dark-text);
 }
 
-/* Meta row — small mono stats above the toggles */
+/* Compact stat strip — sits below the toggle */
 .meta {
   display: grid;
   grid-template-columns: repeat(3, auto);
-  gap: clamp(28px, 3vw, 52px);
+  gap: clamp(24px, 2.8vw, 48px);
   margin: 0;
-  padding-top: clamp(16px, 1.8vh, 24px);
+  padding-top: clamp(14px, 1.6vh, 22px);
   border-top: 1px solid var(--dark-rule);
 }
 
 .meta div {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .meta dt {
@@ -151,14 +157,14 @@
 .meta dd {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(18px, 1.2vw, 22px);
+  font-size: clamp(16px, 1.05vw, 18px);
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--dark-text);
   font-variant-numeric: tabular-nums;
 }
 
-/* ─── RIGHT: canvas column ─── */
+/* ─── RIGHT: 3D canvas + drawing stamp ─── */
 
 .canvasCol {
   position: relative;
@@ -178,45 +184,64 @@
   height: 100%;
 }
 
-/* Hairline frame + corner labels reading like a CAD viewport */
+/* Drawing-stamp footer — sits at the bottom-left of the canvas
+   like an engineering drawing title block. Brand glyph on the
+   left, three-row metadata table on the right, all hairline. */
 .canvasFrame {
   position: absolute;
-  inset: clamp(22px, 2.6vw, 44px);
-  pointer-events: none;
-  border: 1px solid var(--dark-rule);
+  left: clamp(22px, 2.6vw, 44px);
+  bottom: clamp(22px, 2.6vw, 44px);
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: clamp(14px, 1.6vw, 22px) clamp(16px, 1.8vw, 26px);
-  color: var(--dark-text-mute);
+  align-items: stretch;
+  border: 1px solid var(--dark-rule-strong);
+  pointer-events: none;
+  background: rgba(15, 17, 20, 0.55);
+  backdrop-filter: blur(4px);
 }
 
-.frameLabel,
-.frameCoord {
+.stampGlyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(64px, 6vw, 88px);
+  border-right: 1px solid var(--dark-rule-strong);
+  color: var(--amber);
+}
+
+.stampGlyphInner {
+  width: 28px;
+  height: 28px;
+  border: 1.25px solid currentColor;
+  border-radius: 50%;
+}
+
+.stampTable {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: clamp(16px, 1.8vw, 28px);
+  row-gap: 4px;
+  padding: clamp(12px, 1.2vw, 18px) clamp(16px, 1.6vw, 24px);
   font-family: var(--mono);
   font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+  color: var(--dark-text-mute);
+  white-space: nowrap;
 }
 
-.frameLabel {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+.stampTable dt {
+  color: var(--dark-text-faint);
 }
 
-.frameDot {
-  width: 7px;
-  height: 7px;
-  background: var(--blue-bright);
-  display: inline-block;
+.stampTable dd {
+  margin: 0;
+  color: var(--dark-text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
 }
 
-/* ─── ?cam debug HUD ───
-   Surfaced only when the page URL has ?cam — overlays the canvas
-   with live OrbitControls readouts so the user can compose the
-   intended starting iso pose and hand back exact numbers. */
+/* ─── ?cam debug HUD ─── */
+
 .camHud {
   position: absolute;
   top: clamp(22px, 2.6vw, 44px);
@@ -265,7 +290,7 @@
 
 .camHudCopy:hover {
   background: var(--dark-text);
-  color: var(--dark);
+  color: var(--obsidian);
 }
 
 .camHudList {
@@ -297,11 +322,7 @@
   text-transform: uppercase;
 }
 
-/* ─── Mobile: stack, no pin ───
-   On small viewports the scrollytelling stops being legible,
-   so we drop the pin (handled in JS via matchMedia) and let
-   text + canvas stack. The canvas still picks up scroll
-   progress via a non-pinned ScrollTrigger as it passes by. */
+/* ─── Mobile: stack, no pin ─── */
 @media (max-width: 1023px) {
   .section {
     height: auto;
@@ -312,9 +333,8 @@
   }
   .text {
     height: auto;
-    padding: clamp(64px, 12vh, 120px) clamp(24px, 5vw, 56px);
-    border-right: 0;
-    border-bottom: 1px solid var(--dark-rule);
+    padding: clamp(56px, 10vh, 96px) clamp(24px, 5vw, 56px);
+    gap: clamp(40px, 8vh, 80px);
   }
   .canvasCol {
     height: 80vh;

@@ -208,27 +208,27 @@ export default function BridgeStudy() {
       aria-labelledby="bridge-study-title"
     >
       <div className={styles.grid}>
-        {/* LEFT — narrative + toggles */}
+        {/* LEFT — title top, body + controls bottom */}
         <div className={styles.text}>
-          <div className={styles.textInner}>
-            <span data-reveal className={styles.eyebrow}>
+          <div data-reveal className={styles.textTop}>
+            <span className={styles.eyebrow}>
               <span className={styles.eyebrowMark} /> 03 · Model study
             </span>
-            <h2
-              id="bridge-study-title"
-              data-reveal
-              className={styles.title}
-            >
-              One model. <em>A thousand questions answered.</em>
+            <h2 id="bridge-study-title" className={styles.title}>
+              The federated model that turns 1,000+ parts into a
+              <em> single source of truth.</em>
             </h2>
-            <p data-reveal className={styles.body}>
+          </div>
+
+          <div data-reveal className={styles.textBottom}>
+            <p className={styles.body}>
               Every part of the bridge carries the data behind it: who
               owns it, what it costs, when it ships, how it gets built.
               Tilt the model, and the assembly reorganises by the
               question you ask.
             </p>
 
-            <div data-reveal className={styles.toggles} role="group" aria-label="Sort by">
+            <div className={styles.toggles} role="group" aria-label="Sort by">
               {(Object.keys(MODE_LABELS) as Mode[]).map((m) => (
                 <button
                   key={m}
@@ -242,7 +242,7 @@ export default function BridgeStudy() {
               ))}
             </div>
 
-            <dl data-reveal className={styles.meta}>
+            <dl className={styles.meta}>
               <div>
                 <dt>Parts</dt>
                 <dd>{statParts.toLocaleString()}</dd>
@@ -259,16 +259,22 @@ export default function BridgeStudy() {
           </div>
         </div>
 
-        {/* RIGHT — pinned 3D canvas */}
+        {/* RIGHT — pinned 3D canvas + drawing stamp */}
         <div className={styles.canvasCol}>
           <div className={styles.canvasWrap}>
             <canvas ref={canvasRef} className={styles.canvas} />
             <div className={styles.canvasFrame} aria-hidden="true">
-              <span className={styles.frameLabel}>
-                <span className={styles.frameDot} />
-                Bow River bridge · federated study
-              </span>
-              <span className={styles.frameCoord}>LOD 300 · IFC4X3</span>
+              <div className={styles.stampGlyph}>
+                <span className={styles.stampGlyphInner} />
+              </div>
+              <dl className={styles.stampTable}>
+                <dt>Drawing</dt>
+                <dd>Bow River · Federated study</dd>
+                <dt>Format</dt>
+                <dd>IFC4X3 · LOD 300</dd>
+                <dt>Parts</dt>
+                <dd>{statParts.toLocaleString()}</dd>
+              </dl>
             </div>
             {debugCam && camInfo && (
               <div className={styles.camHud}>
