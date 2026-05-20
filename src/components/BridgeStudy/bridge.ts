@@ -15,11 +15,20 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export const BRIDGE_GLB_URL = "/models/bridge.glb";
 
-export type Material = "concrete" | "steel" | "plate" | "cable" | "rebar";
+export type Material =
+  | "concrete"
+  | "steel"
+  | "plate"
+  | "cable"
+  | "rebar"
+  | "stone";
 
 export interface Part {
   id: number;
   boq: number;
+  /** Real BOQ item code from IDD_IR/IDD_BOQ_ITEM, e.g. "3.4.4". */
+  boqCode: string;
+  boqDescription?: string;
   material: Material;
   type: string;
   /** True triangulated mesh, vertices centred on the part's centroid. */
@@ -36,6 +45,7 @@ export const MATERIALS: Material[] = [
   "plate",
   "cable",
   "rebar",
+  "stone",
 ];
 
 export const MATERIAL_LABELS: Record<Material, string> = {
@@ -44,6 +54,7 @@ export const MATERIAL_LABELS: Record<Material, string> = {
   plate: "Steel plate",
   cable: "Stay cables",
   rebar: "Rebar",
+  stone: "Stone / fill",
 };
 
 export const MATERIAL_COLORS: Record<Material, number> = {
@@ -52,6 +63,7 @@ export const MATERIAL_COLORS: Record<Material, number> = {
   plate: 0x6b7480,
   cable: 0xdde3ea,
   rebar: 0xd9a356,
+  stone: 0x8a7967,
 };
 
 export interface BridgeData {
@@ -62,10 +74,15 @@ export interface BridgeData {
 
 interface NodeExtras {
   boq?: number;
+  boqCode?: string;
+  boqDescription?: string;
   material?: Material;
   type?: string;
   source?: string;
   guid?: string;
+  discipline?: string;
+  subLocation?: string;
+  uniclass?: string;
 }
 
 const gltfLoader = new GLTFLoader();
@@ -117,6 +134,8 @@ export async function loadBridge(): Promise<BridgeData | null> {
       parts.push({
         id,
         boq,
+        boqCode: extras.boqCode ?? "NA",
+        boqDescription: extras.boqDescription,
         material,
         type: extras.type ?? "IfcBuiltElement",
         geometry,
@@ -173,6 +192,7 @@ export function generateBridge(): BridgeData {
     parts.push({
       id: id++,
       boq,
+      boqCode: `synth.${type}`,
       material,
       type,
       geometry: geom,
@@ -282,24 +302,75 @@ export function generateBridge(): BridgeData {
   return { parts, bounds, source: "synthetic" };
 }
 
+/**
+ * Natural-numeric BOQ code compare so "3.5.1" sorts before "31.1.1".
+ * Matches the Python extractor's _boq_sort_key so the GLB order and
+ * the exploded layout order agree.
+ */
+function compareBoqCodes(a: string, b: string): number {
+  if (a === "NA" && b !== "NA") return 1;
+  if (b === "NA" && a !== "NA") return -1;
+  const partsA = a.split(".").map((s) => parseInt(s, 10) || 0);
+  const partsB = b.split(".").map((s) => parseInt(s, 10) || 0);
+  const len = Math.max(partsA.length, partsB.length);
+  for (let i = 0; i < len; i++) {
+    const da = partsA[i] ?? 0;
+    const db = partsB[i] ?? 0;
+    if (da !== db) return da - db;
+  }
+  return 0;
+}
+
+/**
+ * BOQ explosion layout. Parts are grouped by their real
+ * IDD_BOQ_ITEM code so identical items cluster together; the
+ * clusters are stacked along Z with a visible gap between groups and
+ * the whole stack is centred on origin. Reads like a sorted bill of
+ * quantities laid flat under the assembled bridge.
+ */
 export function computeBoqLayout(parts: Part[]): Map<number, THREE.Vector3> {
   const out = new Map<number, THREE.Vector3>();
-  const sorted = [...parts].sort((a, b) => a.boq - b.boq);
-  const cols = 25;
-  const spacing = 7;
-  const rows = Math.ceil(sorted.length / cols);
-  sorted.forEach((p, i) => {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    out.set(
-      p.id,
-      new THREE.Vector3(
-        (col - (cols - 1) / 2) * spacing,
-        0,
-        (row - (rows - 1) / 2) * spacing,
-      ),
-    );
+
+  // Group by BOQ code, sort the codes naturally.
+  const groups = new Map<string, Part[]>();
+  for (const p of parts) {
+    const code = p.boqCode || "NA";
+    if (!groups.has(code)) groups.set(code, []);
+    groups.get(code)!.push(p);
+  }
+  const codes = [...groups.keys()].sort(compareBoqCodes);
+
+  const ITEM_SPACING = 3.2; // per-instance pitch within a cluster
+  const GROUP_GAP_Z = 6; // empty band between adjacent clusters
+  const MAX_COLS = 28; // cap so big groups don't overflow horizontally
+
+  // First pass: compute each group's row count + total Z occupied
+  // so we can centre the whole layout on Z = 0.
+  let totalZ = 0;
+  const groupDims: { cols: number; rows: number }[] = [];
+  for (const code of codes) {
+    const items = groups.get(code)!;
+    const cols = Math.min(MAX_COLS, Math.max(1, items.length));
+    const rows = Math.ceil(items.length / cols);
+    groupDims.push({ cols, rows });
+    totalZ += rows * ITEM_SPACING + GROUP_GAP_Z;
+  }
+  totalZ -= GROUP_GAP_Z; // no trailing gap after the last group
+
+  let zCursor = -totalZ / 2;
+  codes.forEach((code, gi) => {
+    const items = groups.get(code)!;
+    const { cols, rows } = groupDims[gi];
+    items.forEach((p, i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const x = (col - (cols - 1) / 2) * ITEM_SPACING;
+      const z = zCursor + row * ITEM_SPACING;
+      out.set(p.id, new THREE.Vector3(x, 0, z));
+    });
+    zCursor += rows * ITEM_SPACING + GROUP_GAP_Z;
   });
+
   return out;
 }
 
@@ -307,37 +378,48 @@ export function computeMaterialLayout(
   parts: Part[],
 ): Map<number, THREE.Vector3> {
   const out = new Map<number, THREE.Vector3>();
-  const zones: Record<Material, { x: number; cols: number; spacing: number }> =
-    {
-      concrete: { x: -120, cols: 8, spacing: 5.5 },
-      steel: { x: -60, cols: 12, spacing: 4 },
-      plate: { x: 5, cols: 15, spacing: 4 },
-      cable: { x: 70, cols: 9, spacing: 4 },
-      rebar: { x: 135, cols: 25, spacing: 2.4 },
-    };
 
+  // Group parts by their resolved material; only emit zones for
+  // materials that actually have parts so the layout doesn't leave
+  // huge empty bands for unused buckets.
   const byMat = new Map<Material, Part[]>();
-  parts.forEach((p) => {
+  for (const p of parts) {
     if (!byMat.has(p.material)) byMat.set(p.material, []);
     byMat.get(p.material)!.push(p);
-  });
+  }
 
-  byMat.forEach((items, mat) => {
-    const zone = zones[mat];
-    const rows = Math.ceil(items.length / zone.cols);
-    items.forEach((p, i) => {
-      const col = i % zone.cols;
-      const row = Math.floor(i / zone.cols);
-      out.set(
-        p.id,
-        new THREE.Vector3(
-          zone.x + (col - (zone.cols - 1) / 2) * zone.spacing,
-          0,
-          (row - (rows - 1) / 2) * zone.spacing,
-        ),
-      );
-    });
+  // Sort materials by the canonical MATERIALS order, then pack each
+  // present material into its own horizontal slab and place them
+  // side-by-side along X with a gap.
+  const present = MATERIALS.filter((m) => byMat.has(m));
+  const ITEM_SPACING = 3;
+  const GROUP_GAP_X = 12;
+  const MAX_COLS_PER_MAT = 24;
+
+  // Compute each material's grid + total X width so we can centre.
+  const dims = present.map((mat) => {
+    const count = byMat.get(mat)!.length;
+    const cols = Math.min(MAX_COLS_PER_MAT, Math.max(1, count));
+    const rows = Math.ceil(count / cols);
+    const width = (cols - 1) * ITEM_SPACING;
+    return { mat, cols, rows, width };
   });
+  const totalWidth =
+    dims.reduce((s, d) => s + d.width, 0) + GROUP_GAP_X * (dims.length - 1);
+
+  let xCursor = -totalWidth / 2;
+  for (const { mat, cols, rows, width } of dims) {
+    const items = byMat.get(mat)!;
+    const cx = xCursor + width / 2;
+    items.forEach((p, i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const x = cx + (col - (cols - 1) / 2) * ITEM_SPACING;
+      const z = (row - (rows - 1) / 2) * ITEM_SPACING;
+      out.set(p.id, new THREE.Vector3(x, 0, z));
+    });
+    xCursor += width + GROUP_GAP_X;
+  }
 
   return out;
 }

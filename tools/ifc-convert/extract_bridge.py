@@ -27,6 +27,7 @@ from pathlib import Path
 
 import ifcopenshell
 import ifcopenshell.geom
+import ifcopenshell.util.element as ifc_elem
 import numpy as np
 import pygltflib
 
@@ -41,7 +42,25 @@ MAT_STEEL = "steel"
 MAT_PLATE = "plate"
 MAT_CABLE = "cable"
 MAT_REBAR = "rebar"
-DEFAULT_MATERIAL = MAT_PLATE
+MAT_STONE = "stone"
+DEFAULT_MATERIAL = MAT_CONCRETE
+
+
+# Map the real IDD_MATERIAL strings the IFCs ship onto our visual
+# material buckets. CONCRETE_REINFORCED is a synonym for
+# REINFORCED_CONCRETE; both stay in the concrete bucket so the
+# explosion view doesn't fragment the slab/abutment set.
+IDD_MATERIAL_MAP: dict[str, str] = {
+    "CONCRETE": MAT_CONCRETE,
+    "REINFORCED_CONCRETE": MAT_CONCRETE,
+    "CONCRETE_REINFORCED": MAT_CONCRETE,
+    "STEEL": MAT_STEEL,
+    "NATURAL_SOIL": MAT_STONE,
+    "STONE": MAT_STONE,
+    "CRUSHED_STONE": MAT_STONE,
+    "CRUSHED_ROCK": MAT_STONE,
+    "CRUSHED_ROCKS": MAT_STONE,
+}
 
 
 def _material_from_source(source: str) -> str:
@@ -57,7 +76,25 @@ def _material_from_source(source: str) -> str:
     return DEFAULT_MATERIAL
 
 
-def _material_from_element(element, source: str) -> str:
+def _read_idd(element) -> dict:
+    """Pull the IDD_IR pset that ships on every Bow River element.
+    Returns a dict (empty if the pset is missing) with the keys we
+    care about: IDD_BOQ_ITEM, IDD_BOQ_DESCRIPTION, IDD_MATERIAL,
+    IDD_DISCIPLINE, IDD_SUB_LOCATION, IDD_UNICLASS_DESCRIPTION,
+    IDD_MASTERFORMAT_CODE."""
+    try:
+        psets = ifc_elem.get_psets(element)
+    except Exception:
+        return {}
+    return psets.get("IDD_IR", {}) or {}
+
+
+def _material_from_element(element, source: str, idd: dict) -> str:
+    # Real IDD_MATERIAL wins.
+    raw = (idd.get("IDD_MATERIAL") or "").upper().strip()
+    if raw in IDD_MATERIAL_MAP:
+        return IDD_MATERIAL_MAP[raw]
+    # IFC type signals.
     ifc_type = element.is_a()
     if "Reinforc" in ifc_type:
         return MAT_REBAR
@@ -65,6 +102,7 @@ def _material_from_element(element, source: str) -> str:
         return MAT_CABLE
     if ifc_type == "IfcPlate":
         return MAT_PLATE
+    # Filename heuristic last.
     return _material_from_source(source)
 
 
@@ -129,7 +167,8 @@ def extract() -> None:
             centroid = verts_three.mean(axis=0)
             verts_centered = (verts_three - centroid).astype(np.float32)
 
-            material = _material_from_element(element, ifc_path.stem)
+            idd = _read_idd(element)
+            material = _material_from_element(element, ifc_path.stem, idd)
             ifc_type = element.is_a()
             type_counter[ifc_type] += 1
             material_counter[material] += 1
@@ -143,6 +182,11 @@ def extract() -> None:
                     "type": ifc_type,
                     "guid": element.GlobalId,
                     "source": ifc_path.stem,
+                    "boqCode": str(idd.get("IDD_BOQ_ITEM") or "NA"),
+                    "boqDescription": str(idd.get("IDD_BOQ_DESCRIPTION") or ""),
+                    "discipline": str(idd.get("IDD_DISCIPLINE") or ""),
+                    "subLocation": str(idd.get("IDD_SUB_LOCATION") or ""),
+                    "uniclass": str(idd.get("IDD_UNICLASS_DESCRIPTION") or ""),
                 }
             )
             if not it.next():
@@ -178,25 +222,27 @@ def extract() -> None:
         )
         p["verts"] = (p["verts"] * scale).astype(np.float32)
 
-    # ─── BOQ sort (structural-bottom-to-top, by source, by height) ──
-    type_order = {
-        "IfcFooting": 0,
-        "IfcPile": 1,
-        "IfcPier": 2,
-        "IfcColumn": 3,
-        "IfcWall": 4,
-        "IfcSlab": 5,
-        "IfcBeam": 6,
-        "IfcMember": 7,
-        "IfcPlate": 8,
-        "IfcCovering": 9,
-        "IfcRailing": 10,
-        "IfcReinforcingBar": 11,
-        "IfcReinforcingMesh": 12,
-    }
+    # ─── BOQ sort ──────────────────────────────────────────────────
+    # Primary key is the real IDD_BOQ_ITEM code (e.g. "3.1.1") parsed
+    # as a tuple of ints so "3.5.1" sorts before "31.1.1". Inside a
+    # BOQ group, fall back to centroid Y then X so identical items
+    # land in a natural left-to-right reading order.
+
+    def _boq_sort_key(code: str) -> tuple:
+        if code == "NA" or not code:
+            return (10_000,)
+        parts_str = code.split(".")
+        out: list[int] = []
+        for s in parts_str:
+            try:
+                out.append(int(s))
+            except ValueError:
+                out.append(0)
+        return tuple(out)
+
     parts.sort(
         key=lambda p: (
-            type_order.get(p["type"], 99),
+            _boq_sort_key(p["boqCode"]),
             p["source"],
             float(p["centroid"][1]),
             float(p["centroid"][0]),
@@ -287,8 +333,13 @@ def extract() -> None:
             ],
             extras={
                 "boq": boq,
+                "boqCode": p["boqCode"],
+                "boqDescription": p["boqDescription"],
                 "material": p["material"],
                 "type": p["type"],
+                "discipline": p["discipline"],
+                "subLocation": p["subLocation"],
+                "uniclass": p["uniclass"],
                 "guid": p["guid"],
                 "source": p["source"],
             },
