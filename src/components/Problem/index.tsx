@@ -120,7 +120,9 @@ export default function Problem() {
   }, [ready]);
 
   // Crosshair / X-Y tracker. Lives outside GSAP so it stays
-  // responsive to the pointer even before the loader lifts.
+  // responsive to the pointer even before the loader lifts. Only
+  // activates when the pointer is past the 60% divide (the right
+  // zone) — the left text area stays cursor-clean.
   useEffect(() => {
     const section = sectionRef.current;
     const overlay = crossRef.current;
@@ -130,15 +132,28 @@ export default function Problem() {
     if (typeof window === "undefined") return;
     if (!window.matchMedia("(hover: hover)").matches) return;
 
+    // Match the CSS .threeQuarterLine left: 60%.
+    const DIVIDE = 0.6;
+
     let rect = section.getBoundingClientRect();
     const refreshRect = () => {
       rect = section.getBoundingClientRect();
     };
     refreshRect();
 
+    const setActive = (on: boolean) => {
+      overlay.style.setProperty("--crossActive", on ? "1" : "0");
+    };
+
     const onMove = (e: MouseEvent) => {
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
+      if (x < rect.width * DIVIDE) {
+        // In the left text zone — keep crosshair hidden.
+        setActive(false);
+        return;
+      }
+      setActive(true);
       overlay.style.setProperty("--cx", `${x.toFixed(1)}px`);
       overlay.style.setProperty("--cy", `${y.toFixed(1)}px`);
       coordX.textContent = `X: ${pad(x)}`;
@@ -146,10 +161,9 @@ export default function Problem() {
     };
     const onEnter = () => {
       refreshRect();
-      overlay.style.setProperty("--crossActive", "1");
     };
     const onLeave = () => {
-      overlay.style.setProperty("--crossActive", "0");
+      setActive(false);
     };
 
     section.addEventListener("mousemove", onMove);

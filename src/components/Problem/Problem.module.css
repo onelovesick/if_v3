@@ -18,12 +18,15 @@
   overflow: hidden;
 }
 
-/* ─── 3/4 vertical grid hairline ─── */
+/* ─── Vertical grid hairline ───
+   Sits at the divide between the text zone (left) and the X/Y
+   tracker zone (right). Position is shared with the crosshair
+   gate in JS (60% threshold). */
 .threeQuarterLine {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 75%;
+  left: 60%;
   width: 1px;
   background: rgba(255, 255, 255, 0.08);
   pointer-events: none;
@@ -139,12 +142,14 @@
   display: inline-block;
 }
 
-/* Content panel — left 70% only, right reserved for grid + crosshair */
+/* Content panel sits in the left zone up to ~5% before the vertical
+   divide. Inner text fills the body — no narrow ch caps that would
+   smush the type into a column. */
 .body {
   display: flex;
   flex-direction: column;
   gap: clamp(48px, 7vh, 92px);
-  max-width: 70%;
+  max-width: 55%;
   position: relative;
   z-index: 3;
 }
@@ -158,7 +163,6 @@
   line-height: 1.18;
   letter-spacing: -0.012em;
   color: rgba(255, 255, 255, 0.34);
-  max-width: 34ch;
 }
 
 /* ─── TONE 2 — same big size, words fill to white on scroll ─── */
@@ -166,7 +170,6 @@
   margin: 0;
   padding: 0;
   border: 0;
-  max-width: 36ch;
 }
 
 .statementText {
@@ -233,9 +236,8 @@
   .body {
     max-width: 100%;
   }
-  .lead,
-  .statement {
-    max-width: 100%;
+  .threeQuarterLine {
+    display: none;
   }
 }
 
