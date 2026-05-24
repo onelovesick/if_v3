@@ -8,12 +8,15 @@ import styles from "./Solutions.module.css";
 /**
  * S4 — Solutions.
  *
- * Cream Enerblock-style "Solutions" section. A header band with a
- * small "Solutions" eyebrow and a big tight title on the left, a
- * spec-plate flourish on the right; then a stack of numbered rows,
- * each row a 3-column grid (index number / portrait image / text
- * column with label + 2-line title + body + bordered Learn-more
- * pill). Titles reveal line-by-line under a sweep on scroll-in.
+ * Warm-paper section that shares its ground (#F5F7FA, ink #1C1F23)
+ * with PositionBrief so the two light sections read as one editorial
+ * voice. Header band on top (eyebrow + section H2 at the same
+ * display scale used across the page). Below, four sticky cards
+ * stack like a deck: each card pins at a progressively larger top
+ * offset so the previous cards peek out above. Cards 01-03 are the
+ * practice layers; card 04 is the engagement CTA. Per-card titles
+ * sweep-reveal line by line and use the same display scale as the
+ * section H2 for uniformity.
  */
 
 interface Solution {
@@ -65,6 +68,15 @@ const SOLUTIONS: Solution[] = [
   },
 ];
 
+const CTA = {
+  number: "04",
+  label: "Engage",
+  titleLines: ["Bring us in early.", "The earlier, the cleaner the handover."],
+  body: "We work best when the information strategy is set before the first drawing is issued. Tell us where the program is, and we will tell you where the leverage points are.",
+  buttonLabel: "Begin a brief",
+  buttonHref: "#close",
+};
+
 export default function Solutions() {
   const sectionRef = useRef<HTMLElement>(null);
   const { ready } = useMotionReady();
@@ -103,14 +115,14 @@ export default function Solutions() {
         },
       });
 
-      // Per-row title sweep: each row triggers its own staggered
+      // Per-card title sweep — each card triggers its own staggered
       // line reveal so the effect plays as the user scrolls into
-      // each card, not all at once at the top of the section.
-      const rows = section.querySelectorAll<HTMLElement>(
-        `.${CSS.escape(styles.row)}`,
+      // each card in the stack, not all at once.
+      const cards = section.querySelectorAll<HTMLElement>(
+        `.${CSS.escape(styles.card)}`,
       );
-      rows.forEach((row) => {
-        const sweeps = row.querySelectorAll<HTMLElement>(
+      cards.forEach((card) => {
+        const sweeps = card.querySelectorAll<HTMLElement>(
           `.${CSS.escape(styles.titleLineSweep)}`,
         );
         if (sweeps.length) {
@@ -123,8 +135,8 @@ export default function Solutions() {
               ease: "power3.inOut",
               stagger: 0.12,
               scrollTrigger: {
-                trigger: row,
-                start: "top 80%",
+                trigger: card,
+                start: "top 75%",
                 toggleActions: "play none none none",
               },
             },
@@ -150,66 +162,103 @@ export default function Solutions() {
       <div className={styles.shell}>
         {/* ─── Header band ─── */}
         <header className={styles.header}>
-          <div className={styles.headerLeft}>
-            <span data-reveal className={styles.eyebrow}>
-              Solutions
-            </span>
-            <h2
-              id="solutions-title"
-              data-reveal
-              className={styles.headTitle}
-            >
-              Three layers,
-              <br />
-              one practice.
-            </h2>
-          </div>
-
-          {/* Spec plate flourish */}
-          <div data-reveal className={styles.specPlate} aria-hidden="true">
-            <div className={styles.specPlateMark}>
-              <span className={styles.specPlateMarkCircle} />
-              <span className={styles.specPlateMarkWord}>Infraforma</span>
-            </div>
-            <dl className={styles.specPlateTable}>
-              <div className={styles.specPlateRow}>
-                <dt>Standard</dt>
-                <dd>ISO 19650 · LOD 300</dd>
-              </div>
-              <div className={styles.specPlateRow}>
-                <dt>Drawing</dt>
-                <dd>IF.SOL.01</dd>
-              </div>
-              <div className={styles.specPlateRow}>
-                <dt>Rev.</dt>
-                <dd>03</dd>
-              </div>
-            </dl>
-          </div>
+          <span data-reveal className={styles.eyebrow}>
+            Solutions
+          </span>
+          <h2
+            id="solutions-title"
+            data-reveal
+            className={styles.headTitle}
+          >
+            Three layers, one practice.
+          </h2>
         </header>
 
-        {/* ─── Numbered solution rows ─── */}
-        <div className={styles.rows}>
-          {SOLUTIONS.map((s) => (
-            <article key={s.number} className={styles.row}>
-              <div className={styles.rowNumber}>
-                <span>{s.number}</span>
-                <span className={styles.rowNumberSep} aria-hidden="true">
+        {/* ─── Sticky stack ─── */}
+        <div className={styles.stack}>
+          {SOLUTIONS.map((s, i) => (
+            <article
+              key={s.number}
+              className={styles.card}
+              style={{ "--card-index": i } as React.CSSProperties}
+            >
+              <div className={styles.cardInner}>
+                <div className={styles.cardNumber}>
+                  <span>{s.number}</span>
+                  <span
+                    className={styles.cardNumberSep}
+                    aria-hidden="true"
+                  >
+                    /
+                  </span>
+                </div>
+
+                <figure className={styles.cardImage}>
+                  <img src={s.image} alt={s.alt} loading="lazy" />
+                </figure>
+
+                <div className={styles.cardContent}>
+                  <span data-reveal className={styles.cardLabel}>
+                    {s.label}
+                  </span>
+                  <h3 className={styles.cardTitle}>
+                    {s.titleLines.map((line, li) => (
+                      <span key={li} className={styles.titleLine}>
+                        <span className={styles.titleLineText}>{line}</span>
+                        <span
+                          className={styles.titleLineSweep}
+                          aria-hidden="true"
+                        />
+                      </span>
+                    ))}
+                  </h3>
+                  <p data-reveal className={styles.cardBody}>
+                    {s.body}
+                  </p>
+                  <a data-reveal className={styles.cardLink} href={s.href}>
+                    <span>Learn more</span>
+                    <span
+                      className={styles.cardLinkArrow}
+                      aria-hidden="true"
+                    >
+                      &rarr;
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
+
+          {/* ─── Card 04 — CTA ─── */}
+          <article
+            className={`${styles.card} ${styles.ctaCard}`}
+            style={
+              { "--card-index": SOLUTIONS.length } as React.CSSProperties
+            }
+          >
+            <div className={styles.cardInner}>
+              <div className={styles.cardNumber}>
+                <span>{CTA.number}</span>
+                <span
+                  className={styles.cardNumberSep}
+                  aria-hidden="true"
+                >
                   /
                 </span>
               </div>
 
-              <figure className={styles.rowImage}>
-                <img src={s.image} alt={s.alt} loading="lazy" />
+              <figure className={styles.ctaAccent} aria-hidden="true">
+                <span className={styles.ctaAccentMark}>Infraforma</span>
+                <span className={styles.ctaAccentDot} />
               </figure>
 
-              <div className={styles.rowContent}>
-                <span data-reveal className={styles.rowLabel}>
-                  {s.label}
+              <div className={styles.cardContent}>
+                <span data-reveal className={styles.cardLabel}>
+                  {CTA.label}
                 </span>
-                <h3 className={styles.rowTitle}>
-                  {s.titleLines.map((line, i) => (
-                    <span key={i} className={styles.titleLine}>
+                <h3 className={styles.cardTitle}>
+                  {CTA.titleLines.map((line, li) => (
+                    <span key={li} className={styles.titleLine}>
                       <span className={styles.titleLineText}>{line}</span>
                       <span
                         className={styles.titleLineSweep}
@@ -218,18 +267,25 @@ export default function Solutions() {
                     </span>
                   ))}
                 </h3>
-                <p data-reveal className={styles.rowBody}>
-                  {s.body}
+                <p data-reveal className={styles.cardBody}>
+                  {CTA.body}
                 </p>
-                <a data-reveal className={styles.rowCta} href={s.href}>
-                  <span className={styles.rowCtaLabel}>Learn more</span>
-                  <span className={styles.rowCtaArrow} aria-hidden="true">
+                <a
+                  data-reveal
+                  className={styles.ctaButton}
+                  href={CTA.buttonHref}
+                >
+                  <span>{CTA.buttonLabel}</span>
+                  <span
+                    className={styles.ctaButtonArrow}
+                    aria-hidden="true"
+                  >
                     &rarr;
                   </span>
                 </a>
               </div>
-            </article>
-          ))}
+            </div>
+          </article>
         </div>
       </div>
     </section>
