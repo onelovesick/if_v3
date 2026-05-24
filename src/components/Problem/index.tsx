@@ -1,92 +1,31 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./Problem.module.css";
 
 /**
- * S3 — The problem we work on. Restyled to the Enerblock "Purpose"
- * treatment per the reference brief:
- *   - Full-bleed dark band, eyebrow top-left, square marker top-right
- *   - Big, weight-500, line-height 0.9, slightly negative tracking
- *     statement headline at ~80% width
- *   - Per-line sweep cursor reveal on scroll-in
- *   - 16:9 image bleeds full width directly beneath the headline
- * Existing content (sub, stats, coda, foot) continues below in a
- * monochrome white treatment so the headline stays the lead.
+ * S3 — The Problem.
+ *
+ * Two-tone statement on a full-bleed Enerblock-style dark band.
+ *   TONE 1 (.lead)      quiet body in muted white, sets up the
+ *                       problem and ends on a colon.
+ *   TONE 2 (.statement) large pure-white pull-quote with the
+ *                       McKinsey megaproject figures, revealed
+ *                       line-by-line under a dark sweep panel.
+ * A 16:9 image bleeds full width directly underneath.
  */
 
-interface Stat {
-  rev: string;
-  prefix?: string;
-  value: string;
-  suffix?: string;
-  description: ReactNode;
-  source: string;
-}
-
-// Hardcoded line splits so the per-line sweep has a known unit to
-// animate. The headline still wraps naturally below 1024px; lines
-// just grow in height and the sweep covers the wrapped block.
-const HEADLINE_LINES = [
-  "Information is created once,",
-  "then lost again and again,",
-  "and rework is the invoice.",
-];
-
-const STATS: Stat[] = [
-  {
-    rev: "Stat 01",
-    value: "5.5",
-    suffix: "hrs",
-    description: (
-      <>
-        Lost <em>every week, per person</em>, searching for project
-        information that already exists somewhere.
-      </>
-    ),
-    source: "FMI · Construction Disconnected, 2018",
-  },
-  {
-    rev: "Stat 02",
-    prefix: "$",
-    value: "88.7",
-    suffix: "B",
-    description: (
-      <>
-        In <em>rework</em> caused by bad, missing or inaccessible data,
-        in a single year, globally.
-      </>
-    ),
-    source: "Autodesk + FMI · Harnessing the Data Advantage, 2021",
-  },
-  {
-    rev: "Stat 03",
-    value: "14",
-    suffix: "%",
-    description: (
-      <>
-        Of <em>all rework</em> across the industry traces directly back
-        to a data failure, not a design one.
-      </>
-    ),
-    source: "Autodesk + FMI · Harnessing the Data Advantage, 2021",
-  },
-  {
-    rev: "Stat 04",
-    prefix: "$",
-    value: "7.1",
-    suffix: "M",
-    description: (
-      <>
-        Avoidable rework for <em>every $1B delivered</em>. The share of
-        the bill written for your own programme.
-      </>
-    ),
-    source: "Autodesk + FMI · Harnessing the Data Advantage, 2021",
-  },
+// Hardcoded line splits for the per-line sweep. Lines stay
+// balanced at desktop widths; on smaller viewports each line
+// wraps inside its own .statementLine wrapper and the sweep just
+// covers the wrapped block.
+const STATEMENT_LINES = [
+  "McKinsey found that only 5% of megaprojects",
+  "over $1 billion finished on budget and on schedule,",
+  "with completed projects averaging 37% cost overruns",
+  "and 53% schedule overruns.",
 ];
 
 export default function Problem() {
@@ -107,16 +46,30 @@ export default function Problem() {
           y: 0,
         });
         gsap.set(
-          section.querySelectorAll(`.${CSS.escape(styles.titleLineSweep)}`),
+          section.querySelectorAll(`.${CSS.escape(styles.statementLineSweep)}`),
           { xPercent: 101 },
         );
         return;
       }
 
-      // Per-line headline sweep. Each line's panel slides off to the
-      // right, uncovering the white text behind it, staggered.
+      // Quiet stuff fades up in stagger.
+      gsap.from(section.querySelectorAll<HTMLElement>("[data-reveal]"), {
+        opacity: 0,
+        y: 22,
+        duration: 0.9,
+        ease: "expo.out",
+        stagger: 0.08,
+        scrollTrigger: {
+          trigger: section,
+          start: "top 75%",
+          toggleActions: "play none none none",
+        },
+      });
+
+      // The 2nd-tone statement reveals line by line under a dark
+      // sweep panel that slides off to the right, staggered.
       const sweeps = section.querySelectorAll<HTMLElement>(
-        `.${CSS.escape(styles.titleLineSweep)}`,
+        `.${CSS.escape(styles.statementLineSweep)}`,
       );
       if (sweeps.length) {
         gsap.fromTo(
@@ -129,27 +82,12 @@ export default function Problem() {
             stagger: 0.11,
             scrollTrigger: {
               trigger: section,
-              start: "top 75%",
+              start: "top 65%",
               toggleActions: "play none none none",
             },
           },
         );
       }
-
-      // Everything else: subtle fade-up stagger so the eye lands on
-      // the headline first, then the supporting content.
-      gsap.from(section.querySelectorAll<HTMLElement>("[data-reveal]"), {
-        opacity: 0,
-        y: 24,
-        duration: 0.9,
-        ease: "expo.out",
-        stagger: 0.07,
-        scrollTrigger: {
-          trigger: section,
-          start: "top 70%",
-          toggleActions: "play none none none",
-        },
-      });
 
       ScrollTrigger.refresh();
     }, sectionRef);
@@ -168,9 +106,9 @@ export default function Problem() {
     >
       <div className={styles.band}>
         <div className={styles.bandHeader}>
-          <span data-reveal className={styles.eyebrow}>
+          <h2 id="problem-title" data-reveal className={styles.eyebrow}>
             The Problem
-          </span>
+          </h2>
           <span
             data-reveal
             className={styles.marker}
@@ -178,14 +116,33 @@ export default function Problem() {
           />
         </div>
 
-        <h2 id="problem-title" className={styles.title}>
-          {HEADLINE_LINES.map((line, i) => (
-            <span key={i} className={styles.titleLine}>
-              <span className={styles.titleLineText}>{line}</span>
-              <span className={styles.titleLineSweep} aria-hidden="true" />
-            </span>
-          ))}
-        </h2>
+        <div className={styles.body}>
+          {/* TONE 1 — lead */}
+          <p data-reveal className={styles.lead}>
+            The damage is not always visible at first. It shows up as
+            waiting time, repeated work, unresolved changes, unclear
+            ownership, and decisions made without the full picture. Over
+            time, those gaps become schedule pressure, cost exposure,
+            claims, and weak handover. Industry studies show the scale
+            of the problem:
+          </p>
+
+          {/* TONE 2 — statement */}
+          <blockquote className={styles.statement}>
+            {STATEMENT_LINES.map((line, i) => (
+              <span key={i} className={styles.statementLine}>
+                <span className={styles.statementLineText}>{line}</span>
+                <span
+                  className={styles.statementLineSweep}
+                  aria-hidden="true"
+                />
+              </span>
+            ))}
+            <cite data-reveal className={styles.statementCite}>
+              McKinsey &amp; Company · Megaproject Performance
+            </cite>
+          </blockquote>
+        </div>
       </div>
 
       <figure className={styles.imageBand}>
@@ -195,55 +152,6 @@ export default function Problem() {
           loading="lazy"
         />
       </figure>
-
-      <div className={styles.inner}>
-        <p data-reveal className={styles.sub}>
-          Every discipline handoff, every tool boundary, every
-          project-to-operations transition leaks the information you{" "}
-          <strong>already produced and already own.</strong> The cost
-          rarely shows up as a line item. It shows up as remodelled
-          geometry, re-validated data, and weeks no schedule can recover.
-        </p>
-
-        <div data-reveal className={styles.stats}>
-          {STATS.map((s) => (
-            <div key={s.rev} className={styles.stat}>
-              <span className={styles.statRev}>{s.rev}</span>
-              <span className={styles.statFigure}>
-                {s.prefix ? (
-                  <span className={styles.statFigurePre}>{s.prefix}</span>
-                ) : null}
-                <span>{s.value}</span>
-                {s.suffix ? (
-                  <span className={styles.statFigureSuf}>{s.suffix}</span>
-                ) : null}
-              </span>
-              <p className={styles.statDesc}>{s.description}</p>
-              <span className={styles.statSrc}>{s.source}</span>
-            </div>
-          ))}
-        </div>
-
-        <div data-reveal className={styles.coda}>
-          <span className={styles.codaRule} aria-hidden="true" />
-          <p className={styles.codaStrike}>
-            &ldquo;Rework is just the cost of complex projects.&rdquo;
-          </p>
-          <p className={styles.codaResolve}>
-            Lost information is a <em>process failure</em>: created, not
-            inherited. Which means it can be designed out.
-          </p>
-        </div>
-
-        <div data-reveal className={styles.foot}>
-          <span>
-            Sources: Autodesk &amp; FMI, &ldquo;Harnessing the Data
-            Advantage in Construction&rdquo; (2021); FMI, &ldquo;Construction
-            Disconnected&rdquo; (2018).
-          </span>
-          <span>INFRAFORMA / DELIVERY INTEGRITY</span>
-        </div>
-      </div>
     </section>
   );
 }
