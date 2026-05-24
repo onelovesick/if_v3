@@ -9,12 +9,11 @@ import styles from "./Problem.module.css";
  * S3 — Industry · Disconnected.
  *
  * Two-tone statement on a full-bleed Enerblock-style dark band.
- * Both tones are big display type, same size; the lead sits in a
- * muted off-white tone, the McKinsey pull-quote starts even more
- * muted and fills word-by-word to pure white as the user scrolls
- * past. The right side carries a 3/4 vertical grid hairline and an
- * X/Y crosshair tracker that follows the pointer (desktop only).
- * A 16:9 image parallaxes beneath the band.
+ * The lead sits in a muted off-white tone; the McKinsey pull-quote
+ * starts even more muted and fills word-by-word to pure white as
+ * the user scrolls past. The right side carries a vertical grid
+ * hairline and an X/Y crosshair tracker that follows the pointer
+ * (desktop only, gated to the right zone).
  */
 
 // Short hero lead at headline scale — only this single sentence
@@ -32,8 +31,6 @@ export default function Problem() {
   const crossRef = useRef<HTMLDivElement>(null);
   const coordXRef = useRef<HTMLSpanElement>(null);
   const coordYRef = useRef<HTMLSpanElement>(null);
-  const imageBandRef = useRef<HTMLDivElement>(null);
-  const imageInnerRef = useRef<HTMLDivElement>(null);
   const { ready } = useMotionReady();
 
   const words = useMemo(
@@ -100,24 +97,6 @@ export default function Problem() {
             });
           },
         });
-      }
-
-      // Parallax image.
-      if (imageInnerRef.current && imageBandRef.current) {
-        gsap.fromTo(
-          imageInnerRef.current,
-          { yPercent: -8 },
-          {
-            yPercent: 8,
-            ease: "none",
-            scrollTrigger: {
-              trigger: imageBandRef.current,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: true,
-            },
-          },
-        );
       }
 
       ScrollTrigger.refresh();
@@ -253,17 +232,6 @@ export default function Problem() {
           </blockquote>
         </div>
       </div>
-
-      {/* Parallax 16:9 image */}
-      <figure ref={imageBandRef} className={styles.imageBand}>
-        <div ref={imageInnerRef} className={styles.imageInner}>
-          <img
-            src="/section2.jpg"
-            alt="Infrastructure project context"
-            loading="lazy"
-          />
-        </div>
-      </figure>
     </section>
   );
 }

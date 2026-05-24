@@ -1,0 +1,302 @@
+/* ═══════════════════════════════════════════════════════
+   SOLUTIONS (S4) — Enerblock-style cream-band card stack
+   Cream warm background, ink #0C0B11, amber accent on the
+   spec plate. Header band on top (eyebrow + tight big
+   title + spec plate flourish on the right); below, a
+   stack of numbered rows, each row a 3-col grid
+   (number / portrait image / text+CTA). Hairline borders
+   throughout, square corners, generous vertical rhythm.
+   ═══════════════════════════════════════════════════════ */
+
+.section {
+  background: #F0EFEB;
+  color: #0C0B11;
+  font-family: var(--display);
+  padding: clamp(64px, 9vw, 140px) 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 80px);
+}
+
+/* ─── Header band ─── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(32px, 5vw, 80px);
+  padding-bottom: clamp(64px, 9vh, 120px);
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(32px, 5vw, 56px);
+}
+
+.eyebrow {
+  font-family: var(--display);
+  font-size: clamp(13px, 0.9vw, 16px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0C0B11;
+}
+
+.headTitle {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  color: #0C0B11;
+  text-wrap: balance;
+}
+
+/* ─── Spec plate (top-right flourish) ─── */
+.specPlate {
+  border: 1px solid #0C0B11;
+  display: flex;
+  flex-direction: column;
+  min-width: 280px;
+}
+
+.specPlateMark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(14px, 1.4vw, 20px);
+  border-bottom: 1px solid #0C0B11;
+}
+
+.specPlateMarkCircle {
+  width: 26px;
+  height: 26px;
+  border: 1.25px solid var(--amber);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.specPlateMarkWord {
+  font-family: var(--mono);
+  font-size: clamp(10px, 0.75vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #0C0B11;
+}
+
+.specPlateTable {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.specPlateRow {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  border-top: 1px solid #0C0B11;
+}
+
+.specPlateRow:first-child {
+  border-top: 0;
+}
+
+.specPlateRow dt,
+.specPlateRow dd {
+  margin: 0;
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: clamp(10px, 0.75vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.specPlateRow dt {
+  border-right: 1px solid #0C0B11;
+  color: rgba(12, 11, 17, 0.55);
+}
+
+/* ─── Numbered rows ─── */
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(60px, 1fr) minmax(220px, 4fr) 7fr;
+  column-gap: clamp(20px, 3vw, 56px);
+  row-gap: clamp(20px, 2.5vh, 32px);
+  align-items: start;
+  padding: clamp(48px, 6vw, 96px) 0;
+  border-top: 1px solid #0C0B11;
+}
+
+.rowNumber {
+  display: flex;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: clamp(14px, 1.2vw, 19px);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #0C0B11;
+  font-variant-numeric: tabular-nums;
+}
+
+.rowNumberSep {
+  opacity: 0.55;
+}
+
+.rowImage {
+  margin: 0;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: rgba(12, 11, 17, 0.05);
+}
+
+.rowImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.rowContent {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.2vw, 32px);
+  padding-top: clamp(4px, 0.5vw, 10px);
+}
+
+.rowLabel {
+  font-family: var(--display);
+  font-size: clamp(18px, 1.6vw, 26px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: #0C0B11;
+}
+
+.rowTitle {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.75rem, 3vw, 2.65rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #0C0B11;
+}
+
+/* Per-line sweep reveal: each line wraps overflow-hidden with a
+   cream-coloured panel that GSAP slides off to the right. Same
+   pattern as Problem's statement reveal. */
+.titleLine {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.04em;
+}
+
+.titleLineText {
+  position: relative;
+  display: block;
+  z-index: 1;
+}
+
+.titleLineSweep {
+  position: absolute;
+  inset: -0.1em -0.05em;
+  background: #F0EFEB;
+  z-index: 2;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.rowBody {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(15px, 1.2vw, 19px);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.013em;
+  color: #0C0B11;
+  max-width: 50ch;
+}
+
+/* CTA pill — square corners, hairline border, two cells
+   (label + arrow), invert on hover. */
+.rowCta {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: stretch;
+  border: 1px solid #0C0B11;
+  text-decoration: none;
+  color: #0C0B11;
+  font-family: var(--display);
+  font-size: clamp(14px, 1vw, 16px);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  background: transparent;
+  transition:
+    background 240ms var(--ease),
+    color 240ms var(--ease);
+}
+
+.rowCtaLabel {
+  padding: 14px 22px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.rowCtaArrow {
+  border-left: 1px solid #0C0B11;
+  padding: 14px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1em;
+  transition:
+    border-color 240ms var(--ease),
+    transform 240ms var(--ease);
+}
+
+.rowCta:hover,
+.rowCta:focus-visible {
+  background: #0C0B11;
+  color: #F0EFEB;
+}
+
+.rowCta:hover .rowCtaArrow,
+.rowCta:focus-visible .rowCtaArrow {
+  border-left-color: #F0EFEB;
+  transform: translateX(3px);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1023px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .specPlate {
+    display: none;
+  }
+  .row {
+    grid-template-columns: 1fr;
+    row-gap: clamp(20px, 3vh, 32px);
+  }
+  .rowImage {
+    aspect-ratio: 16 / 10;
+  }
+}
