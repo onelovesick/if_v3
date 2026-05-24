@@ -1,13 +1,19 @@
 /* ═══════════════════════════════════════════════════════
-   SOLUTIONS (S4) — exact Enerblock reconstruction
-   12-col grid, 1.4vw gutter + 1.4vw page padding. Cream
-   ground #F0EFEB, ink #0C0B11, grey hairline dividers
-   #9F9DA0, coral spec plate accent #FF5949. Header is split
-   into two span-6 halves: left = eyebrow + big title, right =
-   crosshair overlay + spec plate. Below the header, each row
-   is a 12-col grid: number (span 3) / image 4:5 (span 3) /
-   text (span 6). Row padding is zero — height is driven by
-   the image. Square corners, hairline borders, no shadows.
+   SOLUTIONS (S4) — Enerblock reconstruction
+   Cream ground #F0EFEB, ink #0C0B11, grey hairline dividers
+   #9F9DA0, coral #FF5949 spec plate accent. The page-wide
+   --gutter token is used everywhere so this section aligns
+   edge-for-edge with PositionBrief above and the dark Layers
+   band below.
+
+   Top hairline runs full-width as a continuation of the line
+   that closes the dark Problem section above it. A vertical
+   hairline splits the header into a 6/6 grid: left = eyebrow
+   + big title; right = crosshair stage + coral spec plate.
+   A small black square pin sits on the vertical divider near
+   the top. Below, each row is a 12-col grid with vertical
+   hairlines between number, image and text columns; the image
+   column has internal padding so the photo reads as framed.
    ═══════════════════════════════════════════════════════ */
 
 .section {
@@ -15,17 +21,16 @@
   background: #F0EFEB;
   color: #0C0B11;
   font-family: var(--display);
-  padding-top: clamp(96px, 12vw, 168px);
+  border-top: 1px solid #9F9DA0;
+  padding-top: clamp(40px, 4vw, 64px);
   padding-bottom: clamp(48px, 6vw, 96px);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* ─── Wrapper + 12-col grid ───
-   Uses the page-wide --gutter token so Solutions, PositionBrief
-   and Layers all share the same horizontal edge. The bottom of
-   the cream section then meets the dark Layers band on the same
-   left/right line. */
+   Uses the page-wide --gutter so Solutions, PositionBrief and
+   Layers all share the same horizontal edge. */
 .wrp {
   width: 100%;
   padding-inline: var(--gutter);
@@ -38,25 +43,25 @@
 }
 
 /* ─── Header band ─── */
-.headerBlock {
-  padding-bottom: clamp(56px, 9vw, 140px);
-}
-
 .headerLeft {
   grid-column: 1 / span 6;
   display: flex;
   flex-direction: column;
-  gap: clamp(40px, 6vw, 80px);
-  padding-top: clamp(24px, 4vw, 56px);
+  gap: clamp(56px, 8vw, 112px);
+  padding-block: clamp(24px, 3vw, 48px);
 }
 
+/* Eyebrow bumped up to a label-scale (matches row label) so the
+   word SOLUTIONS sits with weight on the page instead of reading
+   as a tiny caption. */
 .eyebrow {
   font-family: var(--display);
-  font-size: 0.9rem;
+  font-size: clamp(1.1rem, 1.7vw, 1.6rem);
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   color: #0C0B11;
+  line-height: 1;
 }
 
 /* Matches PositionBrief's headline scale and weight so the two
@@ -72,17 +77,37 @@
   text-wrap: balance;
 }
 
-/* ─── Header right half — crosshair stage + spec plate ─── */
+/* ─── Header right — vertical divider + crosshair stage + spec
+       plate. Border-left draws the vertical hairline; padding-left
+       gives the inner content breathing room from the line. */
 .headerRight {
   position: relative;
   grid-column: 7 / span 6;
+  border-left: 1px solid #9F9DA0;
+  padding: clamp(24px, 3vw, 48px) 0 clamp(24px, 3vw, 48px)
+    clamp(20px, 2vw, 36px);
   min-height: clamp(280px, 28vw, 420px);
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
 }
 
-/* Crosshair overlay fills the right half. Cursor-tracked. */
+/* Small black square pin sitting on the vertical divider near
+   the top of the header. Decorative section marker, matches the
+   one used in Problem. */
+.headerPin {
+  position: absolute;
+  top: clamp(24px, 3vw, 48px);
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background: #0C0B11;
+  transform: translateX(-5px);
+  z-index: 3;
+}
+
+/* Crosshair overlay fills the right half. Cursor-tracked,
+   confined to .headerRight via JS rect. */
 .crossOverlay {
   --cx: -100px;
   --cy: -100px;
@@ -152,7 +177,7 @@
   transform: translate(calc(-100% - 16px), 16px);
 }
 
-/* ─── Spec plate (top-right of header right half) ─── */
+/* ─── Spec plate ─── */
 .specPlate {
   position: relative;
   z-index: 2;
@@ -222,17 +247,13 @@
 }
 
 /* ─── Solution rows ───
-   Each row is a 12-col grid placed inside .wrp. Visual order
-   (and authored order): number span 3 / image span 3 / text
-   span 6. Row padding 0; image (4:5) drives the height. */
+   Each row is a 12-col grid. Padding-block lives on the
+   per-column cells (not the row) so the border-left vertical
+   dividers extend the full padded height and meet the row's
+   top hairline cleanly. */
 
 .row {
   border-top: 1px solid #9F9DA0;
-  padding-block: clamp(48px, 6vw, 96px);
-}
-
-.rowGrid {
-  align-items: stretch;
 }
 
 .rowNumber {
@@ -247,14 +268,27 @@
   text-transform: uppercase;
   color: #0C0B11;
   font-variant-numeric: tabular-nums;
+  padding: clamp(48px, 6vw, 96px) 0 clamp(48px, 6vw, 96px) 0;
+  align-items: flex-start;
 }
 
 .rowNumberSep {
   opacity: 0.55;
 }
 
+/* Image column — has internal padding so the photo reads as
+   framed inside its 12-col-grid cell, with hairline dividers on
+   either side. The figure inside maintains the 4:5 aspect. */
 .rowImage {
   grid-column: 4 / span 3;
+  border-left: 1px solid #9F9DA0;
+  padding: clamp(48px, 6vw, 96px) clamp(20px, 2vw, 36px)
+    clamp(48px, 6vw, 96px) clamp(20px, 2vw, 36px);
+  display: flex;
+  align-items: flex-start;
+}
+
+.rowImageFrame {
   margin: 0;
   width: 100%;
   aspect-ratio: 4 / 5;
@@ -262,7 +296,7 @@
   background: rgba(12, 11, 17, 0.05);
 }
 
-.rowImage img {
+.rowImageFrame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -271,6 +305,9 @@
 
 .rowContent {
   grid-column: 7 / span 6;
+  border-left: 1px solid #9F9DA0;
+  padding: clamp(48px, 6vw, 96px) 0 clamp(48px, 6vw, 96px)
+    clamp(20px, 2vw, 36px);
   display: flex;
   flex-direction: column;
 }
@@ -283,7 +320,7 @@
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: #0C0B11;
-  margin-bottom: clamp(16px, 1.6vw, 24px);
+  margin-bottom: clamp(20px, 2vw, 32px);
 }
 
 /* Row title at the same scale as the section H2 above and the
@@ -300,8 +337,7 @@
   text-wrap: balance;
 }
 
-/* Per-line sweep reveal — each line is wrapped overflow:hidden
-   with a cream panel that GSAP slides off to the right. */
+/* Per-line sweep reveal */
 .titleLine {
   position: relative;
   display: block;
@@ -324,9 +360,6 @@
   will-change: transform;
 }
 
-/* Body sits lower in the column, pushed below the title with
-   margin-top auto-ish. We use a flex spacer pattern: the body
-   takes auto top spacing, button anchors at the bottom. */
 .rowBody {
   margin: clamp(32px, 4vw, 64px) 0 0;
   font-family: var(--display);
@@ -338,8 +371,6 @@
   max-width: 46ch;
 }
 
-/* Button — two cells, hairline border, square corners. Sits at
-   the bottom of the column. */
 .rowCta {
   align-self: flex-start;
   margin-top: auto;
@@ -399,29 +430,43 @@
 @media (max-width: 1023px) {
   .headerLeft {
     grid-column: 1 / -1;
+    border-bottom: 1px solid #9F9DA0;
+    padding-bottom: clamp(32px, 4vw, 56px);
   }
   .headerRight {
     display: none;
   }
+  .headerPin {
+    display: none;
+  }
   .rowNumber {
     grid-column: 1 / span 2;
+    padding-bottom: 0;
   }
   .rowImage {
     grid-column: 3 / span 10;
+    border-left: 1px solid #9F9DA0;
+    padding-block: clamp(28px, 4vw, 56px);
+  }
+  .rowImageFrame {
     aspect-ratio: 16 / 10;
   }
   .rowContent {
     grid-column: 1 / -1;
-    padding-top: clamp(20px, 3vw, 32px);
+    border-left: 0;
+    padding: clamp(24px, 4vw, 48px) 0 clamp(48px, 6vw, 96px);
   }
 }
 
 @media (max-width: 640px) {
   .rowNumber {
     grid-column: 1 / -1;
+    padding-bottom: 0;
   }
   .rowImage {
     grid-column: 1 / -1;
+    border-left: 0;
+    padding-inline: 0;
   }
 }
 

@@ -207,7 +207,7 @@ export default function Solutions() {
       aria-labelledby="solutions-title"
     >
       {/* ─── Header band ─── */}
-      <div className={`${styles.wrp} ${styles.headerBlock}`}>
+      <div className={styles.wrp}>
         <div className={styles.grid}>
           <div className={styles.headerLeft}>
             <span data-reveal className={styles.eyebrow}>
@@ -223,6 +223,10 @@ export default function Solutions() {
           </div>
 
           <div ref={crossHostRef} className={styles.headerRight}>
+            <span
+              className={styles.headerPin}
+              aria-hidden="true"
+            />
             {/* Crosshair overlay (fills the right half) */}
             <div
               ref={crossRef}
@@ -294,9 +298,11 @@ export default function Solutions() {
                 </span>
               </div>
 
-              <figure className={styles.rowImage}>
-                <img src={s.image} alt={s.alt} loading="lazy" />
-              </figure>
+              <div className={styles.rowImage}>
+                <figure className={styles.rowImageFrame}>
+                  <img src={s.image} alt={s.alt} loading="lazy" />
+                </figure>
+              </div>
 
               <div className={styles.rowContent}>
                 <span data-reveal className={styles.rowLabel}>
