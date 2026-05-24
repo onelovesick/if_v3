@@ -1,0 +1,112 @@
+/* ═══════════════════════════════════════════════════════
+   PROBLEM (S3)
+   Editorial dark section. One centred column, no grid.
+   The hierarchy is: small mono eyebrow, a wide display
+   headline that lands the problem in one breath, three
+   short body paragraphs, and an italic coda above a
+   hairline that primes the next section (Layers).
+   ═══════════════════════════════════════════════════════ */
+
+.section {
+  position: relative;
+  width: 100%;
+  background: var(--obsidian);
+  color: var(--dark-text);
+  padding: clamp(120px, 18vh, 220px) clamp(28px, 5vw, 80px);
+  overflow: hidden;
+}
+
+.shell {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(40px, 6vh, 72px);
+}
+
+/* ─── Eyebrow ─── */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dark-text-mute);
+}
+
+.eyebrowMark {
+  width: 22px;
+  height: 1px;
+  background: var(--amber);
+}
+
+/* ─── Headline ─── */
+.title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(2.25rem, 4.4vw, 4.75rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.028em;
+  color: var(--dark-text);
+  text-wrap: balance;
+  max-width: 22ch;
+}
+
+.title em {
+  font-style: italic;
+  color: var(--amber);
+}
+
+/* ─── Body paragraphs ─── */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.4vh, 28px);
+  max-width: 58ch;
+  font-family: var(--display);
+  font-size: clamp(17px, 1.2vw, 20px);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--dark-text-mute);
+}
+
+.body p {
+  margin: 0;
+}
+
+/* ─── Coda ─── */
+.codaWrap {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 3vh, 32px);
+  padding-top: clamp(8px, 1.5vh, 16px);
+}
+
+.codaRule {
+  display: block;
+  width: clamp(64px, 8vw, 120px);
+  height: 1px;
+  background: var(--dark-rule-strong);
+}
+
+.coda {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(20px, 1.7vw, 28px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.36;
+  letter-spacing: -0.012em;
+  color: var(--dark-text);
+  max-width: 44ch;
+  text-wrap: balance;
+}
+
+.coda em {
+  font-style: italic;
+  color: var(--amber);
+}

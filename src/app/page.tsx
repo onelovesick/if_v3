@@ -1,8 +1,8 @@
 import Hero from "@/components/Hero";
 import PositionBrief from "@/components/PositionBrief";
+import Problem from "@/components/Problem";
 import Layers from "@/components/Layers";
 import HowWeWork from "@/components/HowWeWork";
-import BridgeStudy from "@/components/BridgeStudy";
 import Practice from "@/components/Practice";
 import Close from "@/components/Close";
 
@@ -11,7 +11,7 @@ export default function Home() {
     <main>
       <Hero />
       <PositionBrief />
-      <BridgeStudy />
+      <Problem />
       <Layers />
       <HowWeWork />
       <Practice />
