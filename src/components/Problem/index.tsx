@@ -1,37 +1,45 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./Problem.module.css";
 
 /**
- * S3 — The Problem.
+ * S3 — Industry · Disconnected.
  *
  * Two-tone statement on a full-bleed Enerblock-style dark band.
- *   TONE 1 (.lead)      quiet body in muted white, sets up the
- *                       problem and ends on a colon.
- *   TONE 2 (.statement) large pure-white pull-quote with the
- *                       McKinsey megaproject figures, revealed
- *                       line-by-line under a dark sweep panel.
- * A 16:9 image bleeds full width directly underneath.
+ * Both tones are big display type, same size; the lead sits in a
+ * muted off-white tone, the McKinsey pull-quote starts even more
+ * muted and fills word-by-word to pure white as the user scrolls
+ * past. The right side carries a 3/4 vertical grid hairline and an
+ * X/Y crosshair tracker that follows the pointer (desktop only).
+ * A 16:9 image parallaxes beneath the band.
  */
 
-// Hardcoded line splits for the per-line sweep. Lines stay
-// balanced at desktop widths; on smaller viewports each line
-// wraps inside its own .statementLine wrapper and the sweep just
-// covers the wrapped block.
-const STATEMENT_LINES = [
-  "McKinsey found that only 5% of megaprojects",
-  "over $1 billion finished on budget and on schedule,",
-  "with completed projects averaging 37% cost overruns",
-  "and 53% schedule overruns.",
-];
+const LEAD_TEXT =
+  "The damage is not always visible at first. It shows up as waiting time, repeated work, unresolved changes, unclear ownership, and decisions made without the full picture. Over time, those gaps become schedule pressure, cost exposure, claims, and weak handover. Industry studies show the scale of the problem:";
+
+const STATEMENT_TEXT =
+  "McKinsey found that only 5% of megaprojects over $1 billion finished on budget and on schedule, with completed projects averaging 37% cost overruns and 53% schedule overruns.";
+
+const pad = (n: number) => String(Math.max(0, Math.round(n))).padStart(4, "0");
 
 export default function Problem() {
   const sectionRef = useRef<HTMLElement>(null);
+  const crossRef = useRef<HTMLDivElement>(null);
+  const coordXRef = useRef<HTMLSpanElement>(null);
+  const coordYRef = useRef<HTMLSpanElement>(null);
+  const imageBandRef = useRef<HTMLDivElement>(null);
+  const imageInnerRef = useRef<HTMLDivElement>(null);
   const { ready } = useMotionReady();
 
+  const words = useMemo(
+    () => STATEMENT_TEXT.split(/\s+/).filter(Boolean),
+    [],
+  );
+
+  // GSAP-driven effects: reveal + scroll-fill + parallax.
   useEffect(() => {
     if (!ready || !sectionRef.current) return;
     const section = sectionRef.current;
@@ -45,45 +53,61 @@ export default function Problem() {
           opacity: 1,
           y: 0,
         });
-        gsap.set(
-          section.querySelectorAll(`.${CSS.escape(styles.statementLineSweep)}`),
-          { xPercent: 101 },
-        );
         return;
       }
 
-      // Quiet stuff fades up in stagger.
+      // Eyebrow, marker, lead, cite fade up on first view.
       gsap.from(section.querySelectorAll<HTMLElement>("[data-reveal]"), {
         opacity: 0,
         y: 22,
         duration: 0.9,
         ease: "expo.out",
-        stagger: 0.08,
+        stagger: 0.06,
         scrollTrigger: {
           trigger: section,
-          start: "top 75%",
+          start: "top 80%",
           toggleActions: "play none none none",
         },
       });
 
-      // The 2nd-tone statement reveals line by line under a dark
-      // sweep panel that slides off to the right, staggered.
-      const sweeps = section.querySelectorAll<HTMLElement>(
-        `.${CSS.escape(styles.statementLineSweep)}`,
+      // McKinsey statement: fill word-by-word as the user scrolls past.
+      const statementEl = section.querySelector(
+        `.${CSS.escape(styles.statementText)}`,
       );
-      if (sweeps.length) {
+      const wordEls = section.querySelectorAll<HTMLElement>(
+        `.${CSS.escape(styles.statementWord)}`,
+      );
+      if (statementEl && wordEls.length) {
+        ScrollTrigger.create({
+          trigger: statementEl,
+          start: "top 78%",
+          end: "bottom 28%",
+          scrub: 0.4,
+          onUpdate: (self) => {
+            // Slight overshoot so the last few words land before the
+            // end of the trigger range.
+            const filled = Math.floor(self.progress * (wordEls.length + 3));
+            wordEls.forEach((w, i) => {
+              if (i < filled) w.classList.add(styles.statementWordFilled);
+              else w.classList.remove(styles.statementWordFilled);
+            });
+          },
+        });
+      }
+
+      // Parallax image.
+      if (imageInnerRef.current && imageBandRef.current) {
         gsap.fromTo(
-          sweeps,
-          { xPercent: 0 },
+          imageInnerRef.current,
+          { yPercent: -8 },
           {
-            xPercent: 101,
-            duration: 0.9,
-            ease: "power3.inOut",
-            stagger: 0.11,
+            yPercent: 8,
+            ease: "none",
             scrollTrigger: {
-              trigger: section,
-              start: "top 65%",
-              toggleActions: "play none none none",
+              trigger: imageBandRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
             },
           },
         );
@@ -95,6 +119,54 @@ export default function Problem() {
     return () => ctx.revert();
   }, [ready]);
 
+  // Crosshair / X-Y tracker. Lives outside GSAP so it stays
+  // responsive to the pointer even before the loader lifts.
+  useEffect(() => {
+    const section = sectionRef.current;
+    const overlay = crossRef.current;
+    const coordX = coordXRef.current;
+    const coordY = coordYRef.current;
+    if (!section || !overlay || !coordX || !coordY) return;
+    if (typeof window === "undefined") return;
+    if (!window.matchMedia("(hover: hover)").matches) return;
+
+    let rect = section.getBoundingClientRect();
+    const refreshRect = () => {
+      rect = section.getBoundingClientRect();
+    };
+    refreshRect();
+
+    const onMove = (e: MouseEvent) => {
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      overlay.style.setProperty("--cx", `${x.toFixed(1)}px`);
+      overlay.style.setProperty("--cy", `${y.toFixed(1)}px`);
+      coordX.textContent = `X: ${pad(x)}`;
+      coordY.textContent = `Y: ${pad(y)}`;
+    };
+    const onEnter = () => {
+      refreshRect();
+      overlay.style.setProperty("--crossActive", "1");
+    };
+    const onLeave = () => {
+      overlay.style.setProperty("--crossActive", "0");
+    };
+
+    section.addEventListener("mousemove", onMove);
+    section.addEventListener("mouseenter", onEnter);
+    section.addEventListener("mouseleave", onLeave);
+    window.addEventListener("scroll", refreshRect, { passive: true });
+    window.addEventListener("resize", refreshRect);
+
+    return () => {
+      section.removeEventListener("mousemove", onMove);
+      section.removeEventListener("mouseenter", onEnter);
+      section.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("scroll", refreshRect);
+      window.removeEventListener("resize", refreshRect);
+    };
+  }, []);
+
   return (
     <section
       ref={sectionRef}
@@ -104,10 +176,32 @@ export default function Problem() {
       className={styles.section}
       aria-labelledby="problem-title"
     >
+      {/* X/Y crosshair tracker (desktop hover only) */}
+      <div ref={crossRef} className={styles.crossOverlay} aria-hidden="true">
+        <span className={`${styles.crossLine} ${styles.crossLineV}`} />
+        <span className={`${styles.crossLine} ${styles.crossLineH}`} />
+        <span className={styles.crossPoint} />
+        <span
+          ref={coordXRef}
+          className={`${styles.coordItem} ${styles.coordX}`}
+        >
+          X: 0000
+        </span>
+        <span
+          ref={coordYRef}
+          className={`${styles.coordItem} ${styles.coordY}`}
+        >
+          Y: 0000
+        </span>
+      </div>
+
+      {/* 3/4 vertical grid line */}
+      <span className={styles.threeQuarterLine} aria-hidden="true" />
+
       <div className={styles.band}>
         <div className={styles.bandHeader}>
           <h2 id="problem-title" data-reveal className={styles.eyebrow}>
-            The Problem
+            Industry · Disconnected
           </h2>
           <span
             data-reveal
@@ -117,27 +211,21 @@ export default function Problem() {
         </div>
 
         <div className={styles.body}>
-          {/* TONE 1 — lead */}
+          {/* TONE 1 — muted lead */}
           <p data-reveal className={styles.lead}>
-            The damage is not always visible at first. It shows up as
-            waiting time, repeated work, unresolved changes, unclear
-            ownership, and decisions made without the full picture. Over
-            time, those gaps become schedule pressure, cost exposure,
-            claims, and weak handover. Industry studies show the scale
-            of the problem:
+            {LEAD_TEXT}
           </p>
 
-          {/* TONE 2 — statement */}
+          {/* TONE 2 — McKinsey pull-quote, fills word-by-word */}
           <blockquote className={styles.statement}>
-            {STATEMENT_LINES.map((line, i) => (
-              <span key={i} className={styles.statementLine}>
-                <span className={styles.statementLineText}>{line}</span>
-                <span
-                  className={styles.statementLineSweep}
-                  aria-hidden="true"
-                />
-              </span>
-            ))}
+            <p className={styles.statementText}>
+              {words.map((word, i) => (
+                <span key={i} className={styles.statementWord}>
+                  {word}
+                  {i < words.length - 1 ? " " : ""}
+                </span>
+              ))}
+            </p>
             <cite data-reveal className={styles.statementCite}>
               McKinsey &amp; Company · Megaproject Performance
             </cite>
@@ -145,12 +233,15 @@ export default function Problem() {
         </div>
       </div>
 
-      <figure className={styles.imageBand}>
-        <img
-          src="/section2.jpg"
-          alt="Infrastructure project context"
-          loading="lazy"
-        />
+      {/* Parallax 16:9 image */}
+      <figure ref={imageBandRef} className={styles.imageBand}>
+        <div ref={imageInnerRef} className={styles.imageInner}>
+          <img
+            src="/section2.jpg"
+            alt="Infrastructure project context"
+            loading="lazy"
+          />
+        </div>
       </figure>
     </section>
   );

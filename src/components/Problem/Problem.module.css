@@ -1,13 +1,13 @@
 /* ═══════════════════════════════════════════════════════
    PROBLEM (S3) — two-tone statement on Enerblock band
    Full-bleed dark band (#0C0B11). Eyebrow top-left, square
-   marker top-right. Below: two tones of statement:
-     · TONE 1 — quiet lead paragraph in muted white, sets
-       up the problem and ends with a colon.
-     · TONE 2 — large pull-quote in pure white, weight 500,
-       tight leading; the McKinsey megaproject stat. Reveals
-       line-by-line under a dark sweep panel on scroll-in.
-   A 16:9 image bleeds full width directly beneath.
+   marker top-right. Content lives in the left ~70%; right
+   side has a 3/4 vertical hairline and the X/Y crosshair
+   tracker. Both tones are big display type:
+     · TONE 1 (.lead) — muted-tone, static.
+     · TONE 2 (.statement) — starts muted, fills to pure
+       white word-by-word as the user scrolls past.
+   A 16:9 image parallaxes beneath.
    ═══════════════════════════════════════════════════════ */
 
 .section {
@@ -18,9 +18,98 @@
   overflow: hidden;
 }
 
-/* ─── Dark band ─── */
+/* ─── 3/4 vertical grid hairline ─── */
+.threeQuarterLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 75%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── Crosshair / X-Y tracker ───
+   Lines span the full section through the cursor position.
+   Mid-grey readouts sit just past the lines, horizontal,
+   updated live from JS via --cx and --cy. */
+.crossOverlay {
+  --cx: -100px;
+  --cy: -100px;
+  --crossActive: 0;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  opacity: var(--crossActive);
+  transition: opacity 200ms ease;
+}
+
+.crossLine {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  will-change: top, left;
+}
+
+.crossLineV {
+  top: 0;
+  bottom: 0;
+  left: var(--cx);
+  width: 1px;
+  transform: translateX(-0.5px);
+}
+
+.crossLineH {
+  left: 0;
+  right: 0;
+  top: var(--cy);
+  height: 1px;
+  transform: translateY(-0.5px);
+}
+
+.crossPoint {
+  position: absolute;
+  left: var(--cx);
+  top: var(--cy);
+  width: 6px;
+  height: 6px;
+  background: #FFFFFF;
+  transform: translate(-3px, -3px);
+}
+
+/* Coordinate labels — mid-grey, grotesk, ~17px, horizontal. */
+.coordItem {
+  position: absolute;
+  font-family: var(--display);
+  font-size: clamp(14px, 1.05vw, 17px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: rgb(115, 112, 116);
+  white-space: nowrap;
+}
+
+.coordX {
+  top: var(--cy);
+  left: var(--cx);
+  /* Just right of vertical line, baseline above horizontal */
+  transform: translate(16px, calc(-100% - 8px));
+}
+
+.coordY {
+  top: var(--cy);
+  left: var(--cx);
+  /* Just below horizontal line, right-aligned to left of vertical */
+  transform: translate(calc(-100% - 16px), 16px);
+}
+
+/* ─── Dark band content ─── */
 .band {
   position: relative;
+  z-index: 2;
   padding: clamp(80px, 12vh, 200px) clamp(20px, 4vw, 88px)
     clamp(80px, 12vh, 180px);
 }
@@ -32,9 +121,7 @@
   margin-bottom: clamp(96px, 16vh, 220px);
 }
 
-/* Eyebrow doubles as the section h2 — visually small, semantically
-   the section heading. Default h2 margins are zeroed via the
-   reset; nothing else here. */
+/* Eyebrow doubles as the section h2 */
 .eyebrow {
   margin: 0;
   font-family: var(--display);
@@ -52,67 +139,53 @@
   display: inline-block;
 }
 
-/* Holds the two tones, stacked. The 80% cap matches the reference
-   so the statement breathes into the right margin. */
+/* Content panel — left 70% only, right reserved for grid + crosshair */
 .body {
   display: flex;
   flex-direction: column;
   gap: clamp(48px, 7vh, 92px);
-  max-width: 80%;
+  max-width: 70%;
+  position: relative;
+  z-index: 3;
 }
 
-/* ─── TONE 1 — quiet lead paragraph ─── */
+/* ─── TONE 1 — quiet big lead ─── */
 .lead {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(18px, 1.35vw, 22px);
-  font-weight: 400;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.6);
-  max-width: 58ch;
+  font-size: clamp(1.5rem, 2.6vw, 2.75rem);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.012em;
+  color: rgba(255, 255, 255, 0.34);
+  max-width: 34ch;
 }
 
-/* ─── TONE 2 — big white pull-quote ─── */
+/* ─── TONE 2 — same big size, words fill to white on scroll ─── */
 .statement {
   margin: 0;
   padding: 0;
   border: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  max-width: 64ch;
+  max-width: 36ch;
 }
 
-/* Per-line wrapper: overflow:hidden traps the sweep so it slides
-   cleanly off-screen without nudging the rest of the layout. */
-.statementLine {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  padding-bottom: 0.06em;
-}
-
-.statementLineText {
-  position: relative;
-  display: block;
-  z-index: 1;
+.statementText {
+  margin: 0;
   font-family: var(--display);
   font-size: clamp(1.5rem, 2.6vw, 2.75rem);
   font-weight: 500;
-  line-height: 1.1;
+  line-height: 1.18;
   letter-spacing: -0.012em;
-  color: #FFFFFF;
   font-variant-numeric: tabular-nums;
 }
 
-/* Same colour as the band so the trailing edge reveals clean. */
-.statementLineSweep {
-  position: absolute;
-  inset: -0.1em -0.05em;
-  background: #0C0B11;
-  z-index: 2;
-  pointer-events: none;
-  will-change: transform;
+.statementWord {
+  color: rgba(255, 255, 255, 0.18);
+  transition: color 380ms cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+.statementWordFilled {
+  color: #FFFFFF;
 }
 
 .statementCite {
@@ -127,15 +200,28 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
-/* ─── Full-bleed 16:9 image ─── */
+/* ─── Parallax image ───
+   imageInner is taller than the band (140%) and centred via
+   top:-20%, so the GSAP scrub can translate yPercent ±8 without
+   exposing the edges. */
 .imageBand {
+  position: relative;
   margin: 0;
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
 }
 
-.imageBand img {
+.imageInner {
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 100%;
+  height: 140%;
+  will-change: transform;
+}
+
+.imageInner img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -147,11 +233,30 @@
   .body {
     max-width: 100%;
   }
+  .lead,
+  .statement {
+    max-width: 100%;
+  }
+}
+
+/* No hover on touch devices — drop the crosshair entirely so it
+   doesn't sit stuck wherever the last tap landed. */
+@media (hover: none) {
+  .crossOverlay {
+    display: none;
+  }
+  .threeQuarterLine {
+    display: none;
+  }
 }
 
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
-  .statementLineSweep {
+  .crossOverlay {
     display: none;
+  }
+  .statementWord {
+    color: #FFFFFF;
+    transition: none;
   }
 }
