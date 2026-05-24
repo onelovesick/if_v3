@@ -1,159 +1,304 @@
 /* ═══════════════════════════════════════════════════════
-   SOLUTIONS (S4) — scroll-stacking ladder
-   Warm-paper section that matches PositionBrief's ground
-   (#F5F7FA, ink #1C1F23). Header band on top (eyebrow +
-   section H2). Below, 4 sticky cards stack like a deck:
-   each card sticks at a progressively larger top offset so
-   the previous cards peek out above. Cards 1-3 are
-   services (number / portrait image / label + big title +
-   body + Learn-more link). Card 4 is the engagement CTA.
+   SOLUTIONS (S4) — exact Enerblock reconstruction
+   12-col grid, 1.4vw gutter + 1.4vw page padding. Cream
+   ground #F0EFEB, ink #0C0B11, grey hairline dividers
+   #9F9DA0, coral spec plate accent #FF5949. Header is split
+   into two span-6 halves: left = eyebrow + big title, right =
+   crosshair overlay + spec plate. Below the header, each row
+   is a 12-col grid: number (span 3) / image 4:5 (span 3) /
+   text (span 6). Row padding is zero — height is driven by
+   the image. Square corners, hairline borders, no shadows.
    ═══════════════════════════════════════════════════════ */
 
 .section {
   position: relative;
-  background: #F5F7FA;
-  color: #1C1F23;
+  background: #F0EFEB;
+  color: #0C0B11;
   font-family: var(--display);
-  padding: clamp(72px, 10vw, 140px) 0 0;
+  padding-top: clamp(64px, 9vw, 140px);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.shell {
-  max-width: 1480px;
-  margin: 0 auto;
-  padding: 0 clamp(20px, 4vw, 80px);
+/* ─── Wrapper + 12-col grid ─── */
+.wrp {
+  width: 100%;
+  padding-inline: 1.4vw;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.4vw;
 }
 
 /* ─── Header band ─── */
-.header {
+.headerBlock {
+  padding-bottom: clamp(56px, 9vw, 140px);
+}
+
+.headerLeft {
+  grid-column: 1 / span 6;
   display: flex;
   flex-direction: column;
-  gap: clamp(32px, 4vw, 56px);
-  padding-bottom: clamp(56px, 8vw, 120px);
+  gap: clamp(40px, 6vw, 80px);
+  padding-top: clamp(24px, 4vw, 56px);
 }
 
 .eyebrow {
-  font-family: var(--mono);
-  font-size: clamp(11px, 0.78vw, 13px);
-  font-weight: 500;
-  letter-spacing: 0.18em;
+  font-family: var(--display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #1C1F23;
+  color: #0C0B11;
 }
 
-/* Section H2 — same scale as PositionBrief's "We connect data
-   to people." so the page reads one consistent display size
-   for every section headline. */
 .headTitle {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(2.5rem, 4.6vw, 5.25rem);
-  font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.025em;
-  color: #1C1F23;
+  font-size: clamp(2rem, 3.65vw, 3.5rem);
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  color: #0C0B11;
   text-wrap: balance;
 }
 
-/* ─── Stack ladder ───
-   Each card is position:sticky with a per-index top offset so
-   sticking creates a small peek above the next card. */
-.stack {
+/* ─── Header right half — crosshair stage + spec plate ─── */
+.headerRight {
+  position: relative;
+  grid-column: 7 / span 6;
+  min-height: clamp(280px, 28vw, 420px);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+/* Crosshair overlay fills the right half. Cursor-tracked. */
+.crossOverlay {
+  --cx: -100px;
+  --cy: -100px;
+  --crossActive: 0;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--crossActive);
+  transition: opacity 200ms ease;
+  z-index: 1;
+}
+
+.crossLine {
+  position: absolute;
+  background: rgba(12, 11, 17, 0.4);
+  pointer-events: none;
+  will-change: top, left;
+}
+
+.crossLineV {
+  top: 0;
+  bottom: 0;
+  left: var(--cx);
+  width: 1px;
+  transform: translateX(-0.5px);
+}
+
+.crossLineH {
+  left: 0;
+  right: 0;
+  top: var(--cy);
+  height: 1px;
+  transform: translateY(-0.5px);
+}
+
+.crossPoint {
+  position: absolute;
+  left: var(--cx);
+  top: var(--cy);
+  width: 6px;
+  height: 6px;
+  background: #0C0B11;
+  transform: translate(-3px, -3px);
+}
+
+.coordItem {
+  position: absolute;
+  font-family: var(--display);
+  font-size: clamp(14px, 1.05vw, 17px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: #737074;
+  white-space: nowrap;
+}
+
+.coordX {
+  top: var(--cy);
+  left: var(--cx);
+  transform: translate(16px, calc(-100% - 8px));
+}
+
+.coordY {
+  top: var(--cy);
+  left: var(--cx);
+  transform: translate(calc(-100% - 16px), 16px);
+}
+
+/* ─── Spec plate (top-right of header right half) ─── */
+.specPlate {
+  position: relative;
+  z-index: 2;
+  border: 1px solid #0C0B11;
   display: flex;
   flex-direction: column;
+  min-width: 280px;
+  background: #F0EFEB;
 }
 
-.card {
-  position: sticky;
-  top: calc(72px + var(--card-index, 0) * 56px);
-  background: #F5F7FA;
-  border-top: 1px solid #D6DDE3;
-  min-height: 100vh;
+.specPlateMark {
   display: flex;
-  align-items: flex-start;
-  padding: clamp(40px, 5vw, 72px) 0 clamp(56px, 7vw, 96px);
+  align-items: center;
+  gap: 12px;
+  padding: clamp(14px, 1.4vw, 20px);
+  border-bottom: 1px solid #0C0B11;
 }
 
-.cardInner {
-  width: 100%;
+.specPlateMarkCircle {
+  width: 26px;
+  height: 26px;
+  border: 1.25px solid #FF5949;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.specPlateMarkWord {
+  font-family: var(--mono);
+  font-size: clamp(10px, 0.75vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #0C0B11;
+}
+
+.specPlateTable {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.specPlateRow {
   display: grid;
-  grid-template-columns: minmax(56px, 0.5fr) minmax(260px, 4fr) 6fr;
-  column-gap: clamp(20px, 3vw, 56px);
-  row-gap: clamp(20px, 2.5vh, 32px);
-  align-items: start;
+  grid-template-columns: 100px 1fr;
+  border-top: 1px solid #0C0B11;
 }
 
-.cardNumber {
+.specPlateRow:first-child {
+  border-top: 0;
+}
+
+.specPlateRow dt,
+.specPlateRow dd {
+  margin: 0;
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: clamp(10px, 0.75vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #FF5949;
+}
+
+.specPlateRow dt {
+  border-right: 1px solid #0C0B11;
+  color: rgba(12, 11, 17, 0.55);
+}
+
+/* ─── Solution rows ───
+   Each row is a 12-col grid placed inside .wrp. Visual order
+   (and authored order): number span 3 / image span 3 / text
+   span 6. Row padding 0; image (4:5) drives the height. */
+
+.row {
+  border-top: 1px solid #9F9DA0;
+}
+
+.rowGrid {
+  align-items: stretch;
+}
+
+.rowNumber {
+  grid-column: 1 / span 3;
   display: flex;
   gap: 6px;
   font-family: var(--mono);
-  font-size: clamp(13px, 0.95vw, 16px);
-  font-weight: 500;
-  letter-spacing: 0.08em;
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: #1C1F23;
+  color: #0C0B11;
   font-variant-numeric: tabular-nums;
-  padding-top: 6px;
+  padding-top: clamp(16px, 1.6vw, 24px);
 }
 
-.cardNumberSep {
+.rowNumberSep {
   opacity: 0.55;
 }
 
-.cardImage {
+.rowImage {
+  grid-column: 4 / span 3;
   margin: 0;
   width: 100%;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: rgba(28, 31, 35, 0.05);
+  background: rgba(12, 11, 17, 0.05);
 }
 
-.cardImage img {
+.rowImage img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.cardContent {
+.rowContent {
+  grid-column: 7 / span 6;
   display: flex;
   flex-direction: column;
-  gap: clamp(20px, 2.2vw, 36px);
-  padding-top: clamp(4px, 0.5vw, 10px);
+  padding-top: clamp(16px, 1.6vw, 24px);
+  padding-bottom: clamp(20px, 2vw, 32px);
+  min-height: 100%;
 }
 
-.cardLabel {
-  font-family: var(--mono);
-  font-size: clamp(11px, 0.78vw, 13px);
-  font-weight: 500;
-  letter-spacing: 0.18em;
+.rowLabel {
+  font-family: var(--display);
+  font-size: clamp(1.1rem, 1.7vw, 1.6rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
-  color: #1C1F23;
+  color: #0C0B11;
+  margin-bottom: clamp(16px, 1.6vw, 24px);
 }
 
-/* Card title — SAME scale as the section H2 above for the
-   uniformity the user asked for. */
-.cardTitle {
+.rowTitle {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(2.5rem, 4.6vw, 5.25rem);
-  font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.025em;
-  color: #1C1F23;
-  text-wrap: balance;
+  font-size: clamp(1.6rem, 2.8vw, 2.65rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #0C0B11;
 }
 
-/* Per-line sweep reveal — each line wrapped overflow:hidden
-   with a paper-coloured panel that GSAP slides off to the right
-   on scroll-in. Matches the pattern used in Problem and
-   PositionBrief. */
+/* Per-line sweep reveal — each line is wrapped overflow:hidden
+   with a cream panel that GSAP slides off to the right. */
 .titleLine {
   position: relative;
   display: block;
   overflow: hidden;
-  padding-bottom: 0.02em;
+  padding-bottom: 0.04em;
 }
 
 .titleLineText {
@@ -165,182 +310,127 @@
 .titleLineSweep {
   position: absolute;
   inset: -0.1em -0.05em;
-  background: #F5F7FA;
+  background: #F0EFEB;
   z-index: 2;
   pointer-events: none;
   will-change: transform;
 }
 
-.cardBody {
-  margin: 0;
+/* Body sits lower in the column, pushed below the title with
+   margin-top auto-ish. We use a flex spacer pattern: the body
+   takes auto top spacing, button anchors at the bottom. */
+.rowBody {
+  margin: clamp(32px, 4vw, 64px) 0 0;
   font-family: var(--display);
-  font-size: clamp(16px, 1.15vw, 19px);
-  font-weight: 400;
-  line-height: 1.45;
-  color: #1C1F23;
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.013em;
+  color: #0C0B11;
   max-width: 46ch;
 }
 
-/* Learn-more — text link with arrow, no pill. Quieter than
-   PositionBrief's bordered CTA so the per-card link doesn't
-   compete with the main CTA in card 04. */
-.cardLink {
+/* Button — two cells, hairline border, square corners. Sits at
+   the bottom of the column. */
+.rowCta {
   align-self: flex-start;
+  margin-top: auto;
+  padding-top: clamp(32px, 3vw, 56px);
   display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 4px 0;
-  border-bottom: 1px solid #1C1F23;
-  color: #1C1F23;
-  font-family: var(--display);
-  font-size: clamp(14px, 0.95vw, 16px);
-  font-weight: 500;
-  letter-spacing: -0.005em;
+  align-items: stretch;
   text-decoration: none;
-  transition: gap 240ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
-}
-
-.cardLink:hover,
-.cardLink:focus-visible {
-  gap: 18px;
-}
-
-.cardLinkArrow {
-  display: inline-block;
-  font-size: 1em;
+  color: #0C0B11;
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   line-height: 1;
+  background: transparent;
 }
 
-/* ─── Card 04 — CTA ───
-   Same grid scaffold so the page rhythm holds, but the image
-   slot becomes an accent block and the right column carries a
-   bordered button instead of a text link. */
-.ctaCard {
-  background: #F5F7FA;
+.rowCtaInner {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid #0C0B11;
+  transition:
+    background 240ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1)),
+    color 240ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
-.ctaAccent {
-  margin: 0;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  background: #1C1F23;
-  position: relative;
-  overflow: hidden;
-}
-
-.ctaAccentMark {
-  position: absolute;
-  top: clamp(20px, 2vw, 32px);
-  left: clamp(20px, 2vw, 32px);
-  font-family: var(--mono);
-  font-size: clamp(10px, 0.72vw, 12px);
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(245, 247, 250, 0.65);
-}
-
-.ctaAccentDot {
-  position: absolute;
-  bottom: clamp(24px, 2.4vw, 40px);
-  right: clamp(24px, 2.4vw, 40px);
-  width: 14px;
-  height: 14px;
-  background: var(--blue, #0050ff);
-  box-shadow: 0 0 24px rgba(0, 80, 255, 0.45);
-}
-
-.ctaButton {
-  margin-top: 8px;
-  position: relative;
+.rowCtaLabel {
+  padding: 14px 22px;
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 36px;
-  align-self: flex-start;
-  padding: 20px 28px;
-  background: transparent;
-  color: #1C1F23;
-  font-family: var(--display);
-  font-size: clamp(15px, 1.05vw, 17px);
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  text-decoration: none;
-  border: 1px solid #1C1F23;
-  overflow: hidden;
-  transition: color 380ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
-.ctaButton::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: #1C1F23;
-  transform: translateY(101%);
-  transition: transform 460ms var(--ease-snap, cubic-bezier(0.65, 0.05, 0.36, 1));
-  z-index: 0;
-}
-
-.ctaButton > * {
-  position: relative;
-  z-index: 1;
-}
-
-.ctaButtonArrow {
+.rowCtaArrow {
+  border-left: 1px solid #0C0B11;
+  padding: 14px 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  font-size: 14px;
-  line-height: 1;
+  font-size: 1.1em;
   transition:
-    transform 320ms var(--ease-snap, cubic-bezier(0.65, 0.05, 0.36, 1)),
-    border-color 380ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
+    border-color 240ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1)),
+    transform 240ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
-.ctaButton:hover::before,
-.ctaButton:focus-visible::before {
-  transform: translateY(0);
+.rowCta:hover .rowCtaInner,
+.rowCta:focus-visible .rowCtaInner {
+  background: #0C0B11;
+  color: #F0EFEB;
 }
 
-.ctaButton:hover,
-.ctaButton:focus-visible {
-  color: #F5F7FA;
-}
-
-.ctaButton:hover .ctaButtonArrow,
-.ctaButton:focus-visible .ctaButtonArrow {
-  transform: translateX(6px);
+.rowCta:hover .rowCtaArrow,
+.rowCta:focus-visible .rowCtaArrow {
+  border-left-color: #F0EFEB;
+  transform: translateX(3px);
 }
 
 /* ─── Responsive ─── */
 @media (max-width: 1023px) {
-  .card {
-    /* Drop the ladder on smaller screens — cards just stack
-       normally with a normal top gap. The peek effect needs
-       more horizontal real estate to read. */
-    position: relative;
-    top: auto;
-    min-height: 0;
+  .headerLeft {
+    grid-column: 1 / -1;
   }
-  .cardInner {
-    grid-template-columns: 1fr;
-    row-gap: clamp(20px, 3vh, 32px);
+  .headerRight {
+    display: none;
   }
-  .cardImage,
-  .ctaAccent {
+  .rowNumber {
+    grid-column: 1 / span 2;
+  }
+  .rowImage {
+    grid-column: 3 / span 10;
     aspect-ratio: 16 / 10;
+  }
+  .rowContent {
+    grid-column: 1 / -1;
+    padding-top: clamp(20px, 3vw, 32px);
+  }
+}
+
+@media (max-width: 640px) {
+  .rowNumber {
+    grid-column: 1 / -1;
+  }
+  .rowImage {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ─── No-hover devices — drop the crosshair ─── */
+@media (hover: none) {
+  .crossOverlay {
+    display: none;
   }
 }
 
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
-  .ctaButton,
-  .ctaButtonArrow,
-  .cardLink {
+  .crossOverlay {
+    display: none;
+  }
+  .rowCtaInner,
+  .rowCtaArrow {
     transition: none;
   }
 }

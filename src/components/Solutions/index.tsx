@@ -8,15 +8,15 @@ import styles from "./Solutions.module.css";
 /**
  * S4 — Solutions.
  *
- * Warm-paper section that shares its ground (#F5F7FA, ink #1C1F23)
- * with PositionBrief so the two light sections read as one editorial
- * voice. Header band on top (eyebrow + section H2 at the same
- * display scale used across the page). Below, four sticky cards
- * stack like a deck: each card pins at a progressively larger top
- * offset so the previous cards peek out above. Cards 01-03 are the
- * practice layers; card 04 is the engagement CTA. Per-card titles
- * sweep-reveal line by line and use the same display scale as the
- * section H2 for uniformity.
+ * Exact Enerblock reconstruction per spec. 12-col grid (1.4vw
+ * gutter + 1.4vw page padding) on cream ground #F0EFEB with ink
+ * #0C0B11 and grey hairline dividers #9F9DA0. The header splits
+ * into two span-6 halves: left = eyebrow + big title, right =
+ * crosshair overlay + coral spec plate. Below, each solution row
+ * is a 12-col grid with number(span 3) / image 4:5(span 3) /
+ * text(span 6); row padding is zero so the image height drives
+ * the row. Titles reveal line-by-line on scroll. The crosshair
+ * tracks the pointer inside the header right half only.
  */
 
 interface Solution {
@@ -68,19 +68,17 @@ const SOLUTIONS: Solution[] = [
   },
 ];
 
-const CTA = {
-  number: "04",
-  label: "Engage",
-  titleLines: ["Bring us in early.", "The earlier, the cleaner the handover."],
-  body: "We work best when the information strategy is set before the first drawing is issued. Tell us where the program is, and we will tell you where the leverage points are.",
-  buttonLabel: "Begin a brief",
-  buttonHref: "#close",
-};
+const pad = (n: number) => String(Math.max(0, Math.round(n))).padStart(4, "0");
 
 export default function Solutions() {
   const sectionRef = useRef<HTMLElement>(null);
+  const crossHostRef = useRef<HTMLDivElement>(null);
+  const crossRef = useRef<HTMLDivElement>(null);
+  const coordXRef = useRef<HTMLSpanElement>(null);
+  const coordYRef = useRef<HTMLSpanElement>(null);
   const { ready } = useMotionReady();
 
+  // GSAP reveals — header stagger + per-row line sweep.
   useEffect(() => {
     if (!ready || !sectionRef.current) return;
     const section = sectionRef.current;
@@ -101,7 +99,6 @@ export default function Solutions() {
         return;
       }
 
-      // Header reveals stagger up on first view.
       gsap.from(section.querySelectorAll<HTMLElement>("[data-reveal]"), {
         opacity: 0,
         y: 22,
@@ -115,14 +112,11 @@ export default function Solutions() {
         },
       });
 
-      // Per-card title sweep — each card triggers its own staggered
-      // line reveal so the effect plays as the user scrolls into
-      // each card in the stack, not all at once.
-      const cards = section.querySelectorAll<HTMLElement>(
-        `.${CSS.escape(styles.card)}`,
+      const rows = section.querySelectorAll<HTMLElement>(
+        `.${CSS.escape(styles.row)}`,
       );
-      cards.forEach((card) => {
-        const sweeps = card.querySelectorAll<HTMLElement>(
+      rows.forEach((row) => {
+        const sweeps = row.querySelectorAll<HTMLElement>(
           `.${CSS.escape(styles.titleLineSweep)}`,
         );
         if (sweeps.length) {
@@ -135,8 +129,8 @@ export default function Solutions() {
               ease: "power3.inOut",
               stagger: 0.12,
               scrollTrigger: {
-                trigger: card,
-                start: "top 75%",
+                trigger: row,
+                start: "top 80%",
                 toggleActions: "play none none none",
               },
             },
@@ -150,6 +144,59 @@ export default function Solutions() {
     return () => ctx.revert();
   }, [ready]);
 
+  // Crosshair tracker — only inside the header right half.
+  // Lives outside GSAP so it stays responsive even before the
+  // loader lifts. Disabled on touch / no-hover devices.
+  useEffect(() => {
+    const host = crossHostRef.current;
+    const overlay = crossRef.current;
+    const coordX = coordXRef.current;
+    const coordY = coordYRef.current;
+    if (!host || !overlay || !coordX || !coordY) return;
+    if (typeof window === "undefined") return;
+    if (!window.matchMedia("(hover: hover)").matches) return;
+
+    let rect = host.getBoundingClientRect();
+    const refreshRect = () => {
+      rect = host.getBoundingClientRect();
+    };
+    refreshRect();
+
+    const setActive = (on: boolean) => {
+      overlay.style.setProperty("--crossActive", on ? "1" : "0");
+    };
+
+    const onMove = (e: MouseEvent) => {
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      overlay.style.setProperty("--cx", `${x.toFixed(1)}px`);
+      overlay.style.setProperty("--cy", `${y.toFixed(1)}px`);
+      coordX.textContent = `X: ${pad(x)}`;
+      coordY.textContent = `Y: ${pad(y)}`;
+    };
+    const onEnter = () => {
+      refreshRect();
+      setActive(true);
+    };
+    const onLeave = () => {
+      setActive(false);
+    };
+
+    host.addEventListener("mousemove", onMove);
+    host.addEventListener("mouseenter", onEnter);
+    host.addEventListener("mouseleave", onLeave);
+    window.addEventListener("scroll", refreshRect, { passive: true });
+    window.addEventListener("resize", refreshRect);
+
+    return () => {
+      host.removeEventListener("mousemove", onMove);
+      host.removeEventListener("mouseenter", onEnter);
+      host.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("scroll", refreshRect);
+      window.removeEventListener("resize", refreshRect);
+    };
+  }, []);
+
   return (
     <section
       ref={sectionRef}
@@ -159,105 +206,104 @@ export default function Solutions() {
       className={styles.section}
       aria-labelledby="solutions-title"
     >
-      <div className={styles.shell}>
-        {/* ─── Header band ─── */}
-        <header className={styles.header}>
-          <span data-reveal className={styles.eyebrow}>
-            Solutions
-          </span>
-          <h2
-            id="solutions-title"
-            data-reveal
-            className={styles.headTitle}
-          >
-            Three layers, one practice.
-          </h2>
-        </header>
-
-        {/* ─── Sticky stack ─── */}
-        <div className={styles.stack}>
-          {SOLUTIONS.map((s, i) => (
-            <article
-              key={s.number}
-              className={styles.card}
-              style={{ "--card-index": i } as React.CSSProperties}
+      {/* ─── Header band ─── */}
+      <div className={`${styles.wrp} ${styles.headerBlock}`}>
+        <div className={styles.grid}>
+          <div className={styles.headerLeft}>
+            <span data-reveal className={styles.eyebrow}>
+              Solutions
+            </span>
+            <h2
+              id="solutions-title"
+              data-reveal
+              className={styles.headTitle}
             >
-              <div className={styles.cardInner}>
-                <div className={styles.cardNumber}>
-                  <span>{s.number}</span>
-                  <span
-                    className={styles.cardNumberSep}
-                    aria-hidden="true"
-                  >
-                    /
-                  </span>
-                </div>
+              Three layers, one practice.
+            </h2>
+          </div>
 
-                <figure className={styles.cardImage}>
-                  <img src={s.image} alt={s.alt} loading="lazy" />
-                </figure>
+          <div ref={crossHostRef} className={styles.headerRight}>
+            {/* Crosshair overlay (fills the right half) */}
+            <div
+              ref={crossRef}
+              className={styles.crossOverlay}
+              aria-hidden="true"
+            >
+              <span
+                className={`${styles.crossLine} ${styles.crossLineV}`}
+              />
+              <span
+                className={`${styles.crossLine} ${styles.crossLineH}`}
+              />
+              <span className={styles.crossPoint} />
+              <span
+                ref={coordXRef}
+                className={`${styles.coordItem} ${styles.coordX}`}
+              >
+                X: 0000
+              </span>
+              <span
+                ref={coordYRef}
+                className={`${styles.coordItem} ${styles.coordY}`}
+              >
+                Y: 0000
+              </span>
+            </div>
 
-                <div className={styles.cardContent}>
-                  <span data-reveal className={styles.cardLabel}>
-                    {s.label}
-                  </span>
-                  <h3 className={styles.cardTitle}>
-                    {s.titleLines.map((line, li) => (
-                      <span key={li} className={styles.titleLine}>
-                        <span className={styles.titleLineText}>{line}</span>
-                        <span
-                          className={styles.titleLineSweep}
-                          aria-hidden="true"
-                        />
-                      </span>
-                    ))}
-                  </h3>
-                  <p data-reveal className={styles.cardBody}>
-                    {s.body}
-                  </p>
-                  <a data-reveal className={styles.cardLink} href={s.href}>
-                    <span>Learn more</span>
-                    <span
-                      className={styles.cardLinkArrow}
-                      aria-hidden="true"
-                    >
-                      &rarr;
-                    </span>
-                  </a>
-                </div>
+            {/* Spec plate */}
+            <div
+              data-reveal
+              className={styles.specPlate}
+              aria-hidden="true"
+            >
+              <div className={styles.specPlateMark}>
+                <span className={styles.specPlateMarkCircle} />
+                <span className={styles.specPlateMarkWord}>Infraforma</span>
               </div>
-            </article>
-          ))}
+              <dl className={styles.specPlateTable}>
+                <div className={styles.specPlateRow}>
+                  <dt>Standard</dt>
+                  <dd>ISO 19650 · LOD 300</dd>
+                </div>
+                <div className={styles.specPlateRow}>
+                  <dt>Drawing</dt>
+                  <dd>IF.SOL.01</dd>
+                </div>
+                <div className={styles.specPlateRow}>
+                  <dt>Rev.</dt>
+                  <dd>03</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          {/* ─── Card 04 — CTA ─── */}
-          <article
-            className={`${styles.card} ${styles.ctaCard}`}
-            style={
-              { "--card-index": SOLUTIONS.length } as React.CSSProperties
-            }
-          >
-            <div className={styles.cardInner}>
-              <div className={styles.cardNumber}>
-                <span>{CTA.number}</span>
+      {/* ─── Solution rows ─── */}
+      {SOLUTIONS.map((s) => (
+        <article key={s.number} className={styles.row}>
+          <div className={styles.wrp}>
+            <div className={`${styles.grid} ${styles.rowGrid}`}>
+              <div className={styles.rowNumber}>
+                <span>{s.number}</span>
                 <span
-                  className={styles.cardNumberSep}
+                  className={styles.rowNumberSep}
                   aria-hidden="true"
                 >
                   /
                 </span>
               </div>
 
-              <figure className={styles.ctaAccent} aria-hidden="true">
-                <span className={styles.ctaAccentMark}>Infraforma</span>
-                <span className={styles.ctaAccentDot} />
+              <figure className={styles.rowImage}>
+                <img src={s.image} alt={s.alt} loading="lazy" />
               </figure>
 
-              <div className={styles.cardContent}>
-                <span data-reveal className={styles.cardLabel}>
-                  {CTA.label}
+              <div className={styles.rowContent}>
+                <span data-reveal className={styles.rowLabel}>
+                  {s.label}
                 </span>
-                <h3 className={styles.cardTitle}>
-                  {CTA.titleLines.map((line, li) => (
+                <h3 className={styles.rowTitle}>
+                  {s.titleLines.map((line, li) => (
                     <span key={li} className={styles.titleLine}>
                       <span className={styles.titleLineText}>{line}</span>
                       <span
@@ -267,27 +313,25 @@ export default function Solutions() {
                     </span>
                   ))}
                 </h3>
-                <p data-reveal className={styles.cardBody}>
-                  {CTA.body}
+                <p data-reveal className={styles.rowBody}>
+                  {s.body}
                 </p>
-                <a
-                  data-reveal
-                  className={styles.ctaButton}
-                  href={CTA.buttonHref}
-                >
-                  <span>{CTA.buttonLabel}</span>
-                  <span
-                    className={styles.ctaButtonArrow}
-                    aria-hidden="true"
-                  >
-                    &rarr;
+                <a data-reveal className={styles.rowCta} href={s.href}>
+                  <span className={styles.rowCtaInner}>
+                    <span className={styles.rowCtaLabel}>Learn more</span>
+                    <span
+                      className={styles.rowCtaArrow}
+                      aria-hidden="true"
+                    >
+                      &rarr;
+                    </span>
                   </span>
                 </a>
               </div>
             </div>
-          </article>
-        </div>
-      </div>
+          </div>
+        </article>
+      ))}
     </section>
   );
 }
