@@ -73,9 +73,11 @@ export default function Problem() {
       });
 
       // McKinsey statement: fill word-by-word as the user scrolls
-      // past. Trigger range is tight (80% -> 35% of viewport) so the
-      // fill completes well before the section is half scrolled past,
-      // not lingering into the image band below.
+      // past. Trigger begins the moment the quote enters the
+      // viewport from the bottom and completes by the time its
+      // top reaches 55% from viewport top — so the quote is fully
+      // white before it sits at centre. scrub:true keeps the fill
+      // pinned to scroll position with no catch-up delay.
       const statementEl = section.querySelector(
         `.${CSS.escape(styles.statementText)}`,
       );
@@ -85,13 +87,13 @@ export default function Problem() {
       if (statementEl && wordEls.length) {
         ScrollTrigger.create({
           trigger: statementEl,
-          start: "top 80%",
-          end: "top 35%",
-          scrub: 0.35,
+          start: "top bottom",
+          end: "top 55%",
+          scrub: true,
           onUpdate: (self) => {
-            // Slight overshoot so the last few words land slightly
-            // before the trigger's end position.
-            const filled = Math.floor(self.progress * (wordEls.length + 3));
+            // Overshoot so the last words land before the trigger
+            // end and the resolution feels decisive, not trickling.
+            const filled = Math.floor(self.progress * (wordEls.length + 4));
             wordEls.forEach((w, i) => {
               if (i < filled) w.classList.add(styles.statementWordFilled);
               else w.classList.remove(styles.statementWordFilled);
