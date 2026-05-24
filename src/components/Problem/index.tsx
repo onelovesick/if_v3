@@ -17,8 +17,10 @@ import styles from "./Problem.module.css";
  * A 16:9 image parallaxes beneath the band.
  */
 
-const LEAD_TEXT =
-  "The damage is not always visible at first. It shows up as waiting time, repeated work, unresolved changes, unclear ownership, and decisions made without the full picture. Over time, those gaps become schedule pressure, cost exposure, claims, and weak handover. Industry studies show the scale of the problem:";
+// Short hero lead at headline scale — only this single sentence
+// from the original first paragraph. The descriptive setup that
+// followed has been dropped.
+const LEAD_TEXT = "The damage is not always visible at first.";
 
 const STATEMENT_TEXT =
   "McKinsey found that only 5% of megaprojects over $1 billion finished on budget and on schedule, with completed projects averaging 37% cost overruns and 53% schedule overruns.";
@@ -70,7 +72,10 @@ export default function Problem() {
         },
       });
 
-      // McKinsey statement: fill word-by-word as the user scrolls past.
+      // McKinsey statement: fill word-by-word as the user scrolls
+      // past. Trigger range is tight (80% -> 35% of viewport) so the
+      // fill completes well before the section is half scrolled past,
+      // not lingering into the image band below.
       const statementEl = section.querySelector(
         `.${CSS.escape(styles.statementText)}`,
       );
@@ -80,12 +85,12 @@ export default function Problem() {
       if (statementEl && wordEls.length) {
         ScrollTrigger.create({
           trigger: statementEl,
-          start: "top 78%",
-          end: "bottom 28%",
-          scrub: 0.4,
+          start: "top 80%",
+          end: "top 35%",
+          scrub: 0.35,
           onUpdate: (self) => {
-            // Slight overshoot so the last few words land before the
-            // end of the trigger range.
+            // Slight overshoot so the last few words land slightly
+            // before the trigger's end position.
             const filled = Math.floor(self.progress * (wordEls.length + 3));
             wordEls.forEach((w, i) => {
               if (i < filled) w.classList.add(styles.statementWordFilled);

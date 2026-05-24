@@ -64,8 +64,11 @@
   transform: translateX(-0.5px);
 }
 
+/* Horizontal line is clipped to the right zone — starts at the
+   vertical divide instead of left:0 so it never crosses into the
+   text area on the left. */
 .crossLineH {
-  left: 0;
+  left: 60%;
   right: 0;
   top: var(--cy);
   height: 1px;
@@ -122,6 +125,10 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: clamp(96px, 16vh, 220px);
+  /* Same width as .body so the marker pins to the top-right of
+     the LEFT zone (right edge of text area), not the section
+     edge. Eyebrow stays at the left padding. */
+  max-width: 55%;
 }
 
 /* Eyebrow doubles as the section h2 */
@@ -154,15 +161,20 @@
   z-index: 3;
 }
 
-/* ─── TONE 1 — quiet big lead ─── */
+/* ─── TONE 1 — hero lead at the Purpose-ref headline metrics ───
+   Short one-line statement, big and tight: weight 500,
+   clamp(2.25rem, 5.5vw, 5.5rem), line-height 0.9, letter-spacing
+   -0.01em. Stays in a static muted off-white so TONE 2 below can
+   take the eye when it fills to pure white on scroll. */
 .lead {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(1.5rem, 2.6vw, 2.75rem);
+  font-size: clamp(2.25rem, 5.5vw, 5.5rem);
   font-weight: 500;
-  line-height: 1.18;
-  letter-spacing: -0.012em;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
   color: rgba(255, 255, 255, 0.34);
+  text-wrap: balance;
 }
 
 /* ─── TONE 2 — same big size, words fill to white on scroll ─── */
