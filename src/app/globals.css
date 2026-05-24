@@ -72,12 +72,16 @@
   --rule-strong: #8A9199;
 
   /* Signal Blue (primary) + Digital Blue (bright accent) +
-     Deep Infrastructure Blue (deep) + Infrastructure Amber (pop) */
+     Deep Infrastructure Blue (deep) + Infrastructure Amber (pop)
+     + Redline (signal-warning accent for the Problem section). */
   --blue: #1E88E5;
   --blue-bright: #47B5FF;
   --blue-deep: #0B3C5D;
   --blue-glow: rgba(30, 136, 229, 0.4);
   --amber: #F4B740;
+  --redline: #FF4E1A;
+  --redline-dim: rgba(255, 78, 26, 0.14);
+  --redline-glow: rgba(255, 78, 26, 0.5);
 
   /* Layout */
   --gutter: clamp(20px, 3vw, 44px);
