@@ -8,15 +8,16 @@ import styles from "./Solutions.module.css";
 /**
  * S4 — Solutions.
  *
- * Exact Enerblock reconstruction per spec. 12-col grid (1.4vw
- * gutter + 1.4vw page padding) on cream ground #F0EFEB with ink
- * #0C0B11 and grey hairline dividers #9F9DA0. The header splits
- * into two span-6 halves: left = eyebrow + big title, right =
- * crosshair overlay + coral spec plate. Below, each solution row
- * is a 12-col grid with number(span 3) / image 4:5(span 3) /
- * text(span 6); row padding is zero so the image height drives
- * the row. Titles reveal line-by-line on scroll. The crosshair
- * tracks the pointer inside the header right half only.
+ * Cream ground #F0EFEB, ink #0C0B11, grey hairline dividers
+ * #9F9DA0. Page-wide --gutter so this section aligns edge-for-edge
+ * with PositionBrief above and the dark Layers band below. A
+ * section-level vertical hairline at left:60% visually continues
+ * the divider line in the Problem section above. Header: eyebrow
+ * + section H2 on the left of the divider, crosshair stage on the
+ * right. Below, each row is a 12-col grid with number(span 3) /
+ * image 4:5 framed(span 3) / text(span 6). Titles reveal
+ * line-by-line on scroll. The crosshair tracks the pointer
+ * inside the header right zone only.
  */
 
 interface Solution {
@@ -206,78 +207,57 @@ export default function Solutions() {
       className={styles.section}
       aria-labelledby="solutions-title"
     >
-      {/* ─── Header band ─── */}
-      <div className={styles.wrp}>
-        <div className={styles.grid}>
-          <div className={styles.headerLeft}>
-            <span data-reveal className={styles.eyebrow}>
-              Solutions
-            </span>
-            <h2
-              id="solutions-title"
-              data-reveal
-              className={styles.headTitle}
-            >
-              Three layers, one practice.
-            </h2>
-          </div>
+      {/* ─── Header stage ───
+          Wraps the header so the 60% divider can span exactly
+          its vertical extent. The divider + pin sit at left:60%
+          to continue Problem's 60% line straight down into this
+          section, independent of inner wrp gutters. */}
+      <div className={styles.headerStage}>
+        <span className={styles.headerDivider} aria-hidden="true" />
+        <span className={styles.headerPin} aria-hidden="true" />
 
-          <div ref={crossHostRef} className={styles.headerRight}>
-            <span
-              className={styles.headerPin}
-              aria-hidden="true"
-            />
-            {/* Crosshair overlay (fills the right half) */}
-            <div
-              ref={crossRef}
-              className={styles.crossOverlay}
-              aria-hidden="true"
-            >
-              <span
-                className={`${styles.crossLine} ${styles.crossLineV}`}
-              />
-              <span
-                className={`${styles.crossLine} ${styles.crossLineH}`}
-              />
-              <span className={styles.crossPoint} />
-              <span
-                ref={coordXRef}
-                className={`${styles.coordItem} ${styles.coordX}`}
-              >
-                X: 0000
+        <div className={styles.wrp}>
+          <div className={styles.grid}>
+            <div className={styles.headerLeft}>
+              <span data-reveal className={styles.eyebrow}>
+                Solutions
               </span>
-              <span
-                ref={coordYRef}
-                className={`${styles.coordItem} ${styles.coordY}`}
+              <h2
+                id="solutions-title"
+                data-reveal
+                className={styles.headTitle}
               >
-                Y: 0000
-              </span>
+                Three layers, one practice.
+              </h2>
             </div>
 
-            {/* Spec plate */}
-            <div
-              data-reveal
-              className={styles.specPlate}
-              aria-hidden="true"
-            >
-              <div className={styles.specPlateMark}>
-                <span className={styles.specPlateMarkCircle} />
-                <span className={styles.specPlateMarkWord}>Infraforma</span>
+            <div ref={crossHostRef} className={styles.headerRight}>
+              {/* Crosshair overlay — fills the right zone. */}
+              <div
+                ref={crossRef}
+                className={styles.crossOverlay}
+                aria-hidden="true"
+              >
+                <span
+                  className={`${styles.crossLine} ${styles.crossLineV}`}
+                />
+                <span
+                  className={`${styles.crossLine} ${styles.crossLineH}`}
+                />
+                <span className={styles.crossPoint} />
+                <span
+                  ref={coordXRef}
+                  className={`${styles.coordItem} ${styles.coordX}`}
+                >
+                  X: 0000
+                </span>
+                <span
+                  ref={coordYRef}
+                  className={`${styles.coordItem} ${styles.coordY}`}
+                >
+                  Y: 0000
+                </span>
               </div>
-              <dl className={styles.specPlateTable}>
-                <div className={styles.specPlateRow}>
-                  <dt>Standard</dt>
-                  <dd>ISO 19650 · LOD 300</dd>
-                </div>
-                <div className={styles.specPlateRow}>
-                  <dt>Drawing</dt>
-                  <dd>IF.SOL.01</dd>
-                </div>
-                <div className={styles.specPlateRow}>
-                  <dt>Rev.</dt>
-                  <dd>03</dd>
-                </div>
-              </dl>
             </div>
           </div>
         </div>
