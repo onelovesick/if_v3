@@ -1,311 +1,248 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./Problem.module.css";
 
 /**
- * S3 — The industry problem, as a revision-schedule ledger.
- *
- * Editorial dark section with a blueprint-grid wash and a redline
- * signal accent. Headline lands the problem in one breath. Four
- * "revision" rows count up the canonical cost-of-rework figures from
- * FMI / Autodesk research, each with its source. A strikethrough
- * "myth -> resolve" turn closes the section, primed for Layers (S4)
- * which explains how we design that failure out.
+ * S3 — The problem we work on. Restyled to the Enerblock "Purpose"
+ * treatment per the reference brief:
+ *   - Full-bleed dark band, eyebrow top-left, square marker top-right
+ *   - Big, weight-500, line-height 0.9, slightly negative tracking
+ *     statement headline at ~80% width
+ *   - Per-line sweep cursor reveal on scroll-in
+ *   - 16:9 image bleeds full width directly beneath the headline
+ * Existing content (sub, stats, coda, foot) continues below in a
+ * monochrome white treatment so the headline stays the lead.
  */
 
-interface Row {
+interface Stat {
   rev: string;
   prefix?: string;
-  target: number;
-  decimals: number;
-  suffix: string;
+  value: string;
+  suffix?: string;
   description: ReactNode;
   source: string;
 }
 
-const ROWS: Row[] = [
+// Hardcoded line splits so the per-line sweep has a known unit to
+// animate. The headline still wraps naturally below 1024px; lines
+// just grow in height and the sweep covers the wrapped block.
+const HEADLINE_LINES = [
+  "Information is created once,",
+  "then lost again and again,",
+  "and rework is the invoice.",
+];
+
+const STATS: Stat[] = [
   {
-    rev: "REV 01",
-    target: 5.5,
-    decimals: 1,
+    rev: "Stat 01",
+    value: "5.5",
     suffix: "hrs",
     description: (
       <>
-        Lost <em>every week, per person</em>, just searching for project
+        Lost <em>every week, per person</em>, searching for project
         information that already exists somewhere.
       </>
     ),
-    source: "Src: FMI · Construction Disconnected, 2018",
+    source: "FMI · Construction Disconnected, 2018",
   },
   {
-    rev: "REV 02",
+    rev: "Stat 02",
     prefix: "$",
-    target: 88.7,
-    decimals: 1,
+    value: "88.7",
     suffix: "B",
     description: (
       <>
-        In <em>rework</em> caused by bad, missing or inaccessible data, in
-        a single year, globally.
+        In <em>rework</em> caused by bad, missing or inaccessible data,
+        in a single year, globally.
       </>
     ),
-    source: "Src: Autodesk + FMI · Harnessing the Data Advantage, 2021",
+    source: "Autodesk + FMI · Harnessing the Data Advantage, 2021",
   },
   {
-    rev: "REV 03",
-    target: 14,
-    decimals: 0,
+    rev: "Stat 03",
+    value: "14",
     suffix: "%",
     description: (
       <>
-        Of <em>all rework</em> across the industry traces directly back to a
-        data failure, not a design one.
+        Of <em>all rework</em> across the industry traces directly back
+        to a data failure, not a design one.
       </>
     ),
-    source: "Src: Autodesk + FMI · Harnessing the Data Advantage, 2021",
+    source: "Autodesk + FMI · Harnessing the Data Advantage, 2021",
   },
   {
-    rev: "REV 04",
+    rev: "Stat 04",
     prefix: "$",
-    target: 7.1,
-    decimals: 1,
+    value: "7.1",
     suffix: "M",
     description: (
       <>
-        Avoidable rework for <em>every $1B delivered</em>. The share of the
-        bill written for your own programme.
+        Avoidable rework for <em>every $1B delivered</em>. The share of
+        the bill written for your own programme.
       </>
     ),
-    source: "Src: Autodesk + FMI · Harnessing the Data Advantage, 2021",
+    source: "Autodesk + FMI · Harnessing the Data Advantage, 2021",
   },
 ];
 
-function easeOutCubic(t: number) {
-  return 1 - Math.pow(1 - t, 3);
-}
-
-/** Counts up to `target` once when first visible. */
-function CountFigure({
-  prefix,
-  target,
-  decimals,
-  suffix,
-}: {
-  prefix?: string;
-  target: number;
-  decimals: number;
-  suffix: string;
-}) {
-  const numRef = useRef<HTMLSpanElement>(null);
-  const elRef = useRef<HTMLSpanElement>(null);
-  const startedRef = useRef(false);
+export default function Problem() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { ready } = useMotionReady();
 
   useEffect(() => {
-    const el = elRef.current;
-    const numEl = numRef.current;
-    if (!el || !numEl) return;
+    if (!ready || !sectionRef.current) return;
+    const section = sectionRef.current;
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    const run = () => {
-      if (startedRef.current) return;
-      startedRef.current = true;
+    const ctx = gsap.context(() => {
       if (reduce) {
-        numEl.textContent = target.toFixed(decimals);
+        gsap.set(section.querySelectorAll("[data-reveal]"), {
+          opacity: 1,
+          y: 0,
+        });
+        gsap.set(
+          section.querySelectorAll(`.${CSS.escape(styles.titleLineSweep)}`),
+          { xPercent: 101 },
+        );
         return;
       }
-      const duration = 1500;
-      let start: number | null = null;
-      const step = (ts: number) => {
-        if (start === null) start = ts;
-        const p = Math.min((ts - start) / duration, 1);
-        const eased = easeOutCubic(p);
-        numEl.textContent = (target * eased).toFixed(decimals);
-        if (p < 1) requestAnimationFrame(step);
-        else numEl.textContent = target.toFixed(decimals);
-      };
-      requestAnimationFrame(step);
-    };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            run();
-            observer.disconnect();
-          }
-        }
-      },
-      { threshold: 0.5 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [target, decimals]);
+      // Per-line headline sweep. Each line's panel slides off to the
+      // right, uncovering the white text behind it, staggered.
+      const sweeps = section.querySelectorAll<HTMLElement>(
+        `.${CSS.escape(styles.titleLineSweep)}`,
+      );
+      if (sweeps.length) {
+        gsap.fromTo(
+          sweeps,
+          { xPercent: 0 },
+          {
+            xPercent: 101,
+            duration: 0.9,
+            ease: "power3.inOut",
+            stagger: 0.11,
+            scrollTrigger: {
+              trigger: section,
+              start: "top 75%",
+              toggleActions: "play none none none",
+            },
+          },
+        );
+      }
 
-  return (
-    <span ref={elRef} className={styles.figure}>
-      {prefix ? <span className={styles.figurePre}>{prefix}</span> : null}
-      <span ref={numRef}>0</span>
-      <span className={styles.figureSuf}>{suffix}</span>
-    </span>
-  );
-}
+      // Everything else: subtle fade-up stagger so the eye lands on
+      // the headline first, then the supporting content.
+      gsap.from(section.querySelectorAll<HTMLElement>("[data-reveal]"), {
+        opacity: 0,
+        y: 24,
+        duration: 0.9,
+        ease: "expo.out",
+        stagger: 0.07,
+        scrollTrigger: {
+          trigger: section,
+          start: "top 70%",
+          toggleActions: "play none none none",
+        },
+      });
 
-/** Adds .revealIn when the element first enters view. */
-function useReveal<T extends HTMLElement>() {
-  const ref = useRef<T>(null);
-  const [shown, setShown] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            setShown(true);
-            observer.disconnect();
-          }
-        }
-      },
-      { threshold: 0.15 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-  return { ref, shown };
-}
+      ScrollTrigger.refresh();
+    }, sectionRef);
 
-function StrikeResolve() {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const [armed, setArmed] = useState(false);
+    return () => ctx.revert();
+  }, [ready]);
 
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            setArmed(true);
-            observer.disconnect();
-          }
-        }
-      },
-      { threshold: 0.6 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div ref={wrapRef} className={styles.turnBody}>
-      <div className={`${styles.strike} ${armed ? styles.strikeOn : ""}`}>
-        <span className={styles.struck}>
-          &ldquo;Rework is just the cost of complex projects.&rdquo;
-        </span>
-      </div>
-      <span className={`${styles.resolve} ${armed ? styles.resolveOn : ""}`}>
-        Lost information is a <em>process failure</em>: created, not
-        inherited. Which means it can be designed out.
-      </span>
-    </div>
-  );
-}
-
-function RevealBlock({
-  delay = 0,
-  className,
-  children,
-}: {
-  delay?: number;
-  className?: string;
-  children: ReactNode;
-}) {
-  const { ref, shown } = useReveal<HTMLDivElement>();
-  return (
-    <div
-      ref={ref}
-      className={`${className ?? ""} ${styles.reveal} ${shown ? styles.revealIn : ""}`.trim()}
-      style={delay ? { transitionDelay: `${delay}s` } : undefined}
-    >
-      {children}
-    </div>
-  );
-}
-
-export default function Problem() {
   return (
     <section
+      ref={sectionRef}
       id="problem"
       data-section
       data-tone="dark"
       className={styles.section}
       aria-labelledby="problem-title"
     >
-      <div className={styles.wrap}>
-        <RevealBlock>
-          <span className={styles.tag}>
-            <span className={styles.tagDot} aria-hidden="true" />
-            §01 · The Problem
+      <div className={styles.band}>
+        <div className={styles.bandHeader}>
+          <span data-reveal className={styles.eyebrow}>
+            The Problem
           </span>
-        </RevealBlock>
+          <span
+            data-reveal
+            className={styles.marker}
+            aria-hidden="true"
+          />
+        </div>
 
-        <RevealBlock delay={0.06}>
-          <h2 id="problem-title" className={styles.head}>
-            Information is created once, then lost again and again, and{" "}
-            <em>rework is the invoice.</em>
-          </h2>
-        </RevealBlock>
+        <h2 id="problem-title" className={styles.title}>
+          {HEADLINE_LINES.map((line, i) => (
+            <span key={i} className={styles.titleLine}>
+              <span className={styles.titleLineText}>{line}</span>
+              <span className={styles.titleLineSweep} aria-hidden="true" />
+            </span>
+          ))}
+        </h2>
+      </div>
 
-        <RevealBlock delay={0.12}>
-          <p className={styles.sub}>
-            Every discipline handoff, every tool boundary, every
-            project-to-operations transition leaks the information you{" "}
-            <strong>already produced and already own.</strong> The cost
-            rarely shows up as a line item. It shows up as remodelled
-            geometry, re-validated data, and weeks no schedule can
-            recover.
-          </p>
-        </RevealBlock>
+      <figure className={styles.imageBand}>
+        <img
+          src="/section2.jpg"
+          alt="Infrastructure project context"
+          loading="lazy"
+        />
+      </figure>
 
-        <div className={styles.schedule}>
-          {ROWS.map((row, i) => (
-            <RevealBlock
-              key={row.rev}
-              delay={0.04 * (i % 4)}
-              className={styles.row}
-            >
-              <div className={styles.rev}>{row.rev}</div>
-              <CountFigure
-                prefix={row.prefix}
-                target={row.target}
-                decimals={row.decimals}
-                suffix={row.suffix}
-              />
-              <div className={styles.meta}>
-                <div className={styles.desc}>{row.description}</div>
-                <div className={styles.src}>{row.source}</div>
-              </div>
-            </RevealBlock>
+      <div className={styles.inner}>
+        <p data-reveal className={styles.sub}>
+          Every discipline handoff, every tool boundary, every
+          project-to-operations transition leaks the information you{" "}
+          <strong>already produced and already own.</strong> The cost
+          rarely shows up as a line item. It shows up as remodelled
+          geometry, re-validated data, and weeks no schedule can recover.
+        </p>
+
+        <div data-reveal className={styles.stats}>
+          {STATS.map((s) => (
+            <div key={s.rev} className={styles.stat}>
+              <span className={styles.statRev}>{s.rev}</span>
+              <span className={styles.statFigure}>
+                {s.prefix ? (
+                  <span className={styles.statFigurePre}>{s.prefix}</span>
+                ) : null}
+                <span>{s.value}</span>
+                {s.suffix ? (
+                  <span className={styles.statFigureSuf}>{s.suffix}</span>
+                ) : null}
+              </span>
+              <p className={styles.statDesc}>{s.description}</p>
+              <span className={styles.statSrc}>{s.source}</span>
+            </div>
           ))}
         </div>
 
-        <div className={styles.turn}>
-          <div className={`${styles.rev} ${styles.turnRev}`}>REV 05</div>
-          <StrikeResolve />
+        <div data-reveal className={styles.coda}>
+          <span className={styles.codaRule} aria-hidden="true" />
+          <p className={styles.codaStrike}>
+            &ldquo;Rework is just the cost of complex projects.&rdquo;
+          </p>
+          <p className={styles.codaResolve}>
+            Lost information is a <em>process failure</em>: created, not
+            inherited. Which means it can be designed out.
+          </p>
         </div>
 
-        <RevealBlock className={styles.foot}>
+        <div data-reveal className={styles.foot}>
           <span>
-            Sources: Autodesk &amp; FMI, &ldquo;Harnessing the Data Advantage
-            in Construction&rdquo; (2021); FMI, &ldquo;Construction
+            Sources: Autodesk &amp; FMI, &ldquo;Harnessing the Data
+            Advantage in Construction&rdquo; (2021); FMI, &ldquo;Construction
             Disconnected&rdquo; (2018).
           </span>
           <span>INFRAFORMA / DELIVERY INTEGRITY</span>
-        </RevealBlock>
+        </div>
       </div>
     </section>
   );
