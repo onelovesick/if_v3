@@ -198,6 +198,7 @@
    labelled cell, not a thin sliver against the gutter. */
 .rowNumber {
   flex: 0 0 25%;
+  min-width: 760px;
   display: flex;
   gap: 6px;
   font-family: var(--mono);
