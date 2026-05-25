@@ -319,93 +319,73 @@
   padding-top: clamp(40px, 5vw, 80px);
 }
 
-/* CTA — exact Enerblock .button--ghost-black spec captured live.
-   inline-flex with min-width:15rem so the button sits at a
-   minimum 240px (auto-sizes wider if label is long). Two cells:
-   a text cell (flex:1 1 0%, 2/12/0 margin) and a 41px square
-   arrow cell divided by a left hairline. Text-roll hover: the
-   label is duplicated, visible copy exits the bottom while a
-   duplicate rolls in from the top. Background fill + text/arrow
-   invert on hover. */
+/* CTA — exact clone of PositionBrief's .cellCta. Identical
+   layout, padding, type, colours, easings and hover behaviour
+   so the Solutions buttons read as the same component as the
+   "Learn more" button under the Process card in section one. */
 .rowCta {
   margin-top: clamp(28px, 2.6vw, 44px);
   position: relative;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  min-width: 15rem;
-  height: 42px;
-  box-sizing: border-box;
-  font-family: var(--display);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  color: #0C0B11;
-  text-decoration: none;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 26px;
   background: transparent;
-  border: 1px solid #0C0B11;
-  border-radius: 0;
+  color: #1C1F23;
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  border: 1px solid #1C1F23;
   overflow: hidden;
-  cursor: pointer;
-  transition:
-    background 250ms ease,
-    color 250ms ease;
+  transition: color 380ms var(--ease);
 }
 
-/* Text cell — flex:1 1 0% so it absorbs the available width.
-   2px top / 12px sides / 0 bottom margin matches the spec. */
-.rowCtaText {
-  display: block;
-  flex: 1 1 0%;
-  position: relative;
-  margin: 2px 12px 0;
-  overflow: hidden;
-}
-
-.rowCtaTextSp {
-  display: block;
-  padding-bottom: 2px;
-  transition: transform 600ms cubic-bezier(0.76, 0, 0.24, 1);
-}
-
-/* Duplicate label sits one full cell-height above the original
-   so it can roll in from the top on hover. */
-.rowCtaTextSp2 {
+.rowCta::before {
+  content: "";
   position: absolute;
-  left: 0;
-  top: -100%;
+  inset: 0;
+  background: #1C1F23;
+  transform: translateY(101%);
+  transition: transform 460ms var(--ease-snap);
+  z-index: 0;
 }
 
-/* Arrow cell — 41px square, divided from the text by a left
-   hairline. */
+.rowCta > * {
+  position: relative;
+  z-index: 1;
+}
+
 .rowCtaArrow {
-  flex: 0 0 41px;
-  width: 41px;
-  height: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
-  border-left: 1px solid #0C0B11;
+  width: 30px;
+  height: 30px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
   transition:
-    background-color 300ms ease,
-    border-color 300ms ease;
+    transform 320ms var(--ease-snap),
+    border-color 380ms var(--ease);
+}
+
+.rowCta:hover::before,
+.rowCta:focus-visible::before {
+  transform: translateY(0);
 }
 
 .rowCta:hover,
 .rowCta:focus-visible {
-  background: #0C0B11;
   color: #F5F7FA;
 }
 
 .rowCta:hover .rowCtaArrow,
 .rowCta:focus-visible .rowCtaArrow {
-  border-left-color: #F5F7FA;
-}
-
-.rowCta:hover .rowCtaTextSp,
-.rowCta:focus-visible .rowCtaTextSp {
-  transform: translateY(100%);
+  transform: translateX(6px);
 }
 
 /* ─── Responsive ───
@@ -471,12 +451,8 @@
     display: none;
   }
   .rowCta,
-  .rowCtaArrow,
-  .rowCtaTextSp {
+  .rowCta::before,
+  .rowCtaArrow {
     transition: none;
-  }
-  .rowCta:hover .rowCtaTextSp,
-  .rowCta:focus-visible .rowCtaTextSp {
-    transform: none;
   }
 }
