@@ -198,7 +198,6 @@
    labelled cell, not a thin sliver against the gutter. */
 .rowNumber {
   flex: 0 0 25%;
-  min-width: 760px;
   display: flex;
   gap: 6px;
   font-family: var(--mono);
@@ -235,12 +234,14 @@
 /* width:100% + max-width caps the photo at 480px on wide
    viewports without ever exceeding the cell's content width,
    so the image stays inside its cell and never spills into the
-   right text column. */
+   right text column. Aspect 16/9 matches the source photos
+   (~1.9:1 cinematic landscape) so the image displays close to
+   its natural crop instead of being squeezed into a portrait. */
 .rowImageFrame {
   margin: 0;
   width: 100%;
   max-width: 480px;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   background: rgba(12, 11, 17, 0.05);
 }
