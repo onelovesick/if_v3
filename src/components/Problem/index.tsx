@@ -118,8 +118,8 @@ export default function Problem() {
     if (typeof window === "undefined") return;
     if (!window.matchMedia("(hover: hover)").matches) return;
 
-    // Match the CSS .threeQuarterLine left: 60%.
-    const DIVIDE = 0.6;
+    // Match the CSS .threeQuarterLine left: 51%.
+    const DIVIDE = 0.51;
 
     let rect = section.getBoundingClientRect();
     const refreshRect = () => {

@@ -20,13 +20,16 @@
 
 /* ─── Vertical grid hairline ───
    Sits at the divide between the text zone (left) and the X/Y
-   tracker zone (right). Position is shared with the crosshair
-   gate in JS (60% threshold). */
+   tracker zone (right). Position matches the left edge of
+   PositionBrief's right column (50% + half the grid gap) so the
+   line reads as continuous from PositionBrief through Problem
+   and into Solutions. Position is shared with the crosshair
+   gate in JS (51% threshold). */
 .threeQuarterLine {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 60%;
+  left: 51%;
   width: 1px;
   background: rgba(255, 255, 255, 0.08);
   pointer-events: none;
@@ -68,7 +71,7 @@
    vertical divide instead of left:0 so it never crosses into the
    text area on the left. */
 .crossLineH {
-  left: 60%;
+  left: 51%;
   right: 0;
   top: var(--cy);
   height: 1px;
@@ -128,7 +131,7 @@
   /* Same width as .body so the marker pins to the top-right of
      the LEFT zone (right edge of text area), not the section
      edge. Eyebrow stays at the left padding. */
-  max-width: 55%;
+  max-width: 47%;
 }
 
 /* Eyebrow doubles as the section h2 */
@@ -156,7 +159,7 @@
   display: flex;
   flex-direction: column;
   gap: clamp(48px, 7vh, 92px);
-  max-width: 55%;
+  max-width: 47%;
   position: relative;
   z-index: 3;
 }

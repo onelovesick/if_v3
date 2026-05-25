@@ -4,13 +4,14 @@
    grey hairline dividers
    #9F9DA0.
 
-   A single section-level vertical hairline sits at left:60%
-   and spans the whole section, continuing Problem's own 60%
-   line straight down through the header AND every row. Header
-   and rows both use a direct 60/40 flex split so the text
-   column on the right starts exactly at the divider's X.
+   A single section-level vertical hairline sits at left:51%
+   and spans the whole section, continuing the line that runs
+   from PositionBrief's right column left edge straight through
+   Problem's 51% divider and down into every row here. Header
+   and rows both split 51/49 so the text column on the right
+   starts exactly at the divider's X.
 
-   Within the left 60%, a narrow number column sits at the
+   Within the left 51%, a narrow number column sits at the
    gutter and the framed image fills the remaining space up to
    the divider, so the image reads as expanded with minimal
    dead space on the left.
@@ -27,15 +28,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* The single 60% divider — spans top to bottom of the section
+/* The single 51% divider — spans top to bottom of the section
    so the header and every row share one continuous vertical
-   line at exactly 60% of section width. Positioned at section
+   line at exactly 51% of section width. Positioned at section
    level so it's independent of any inner padding. */
 .divider {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 60%;
+  left: 51%;
   width: 1px;
   background: #9F9DA0;
   pointer-events: none;
@@ -45,7 +46,7 @@
 .pin {
   position: absolute;
   top: clamp(16px, 1.6vw, 28px);
-  left: 60%;
+  left: 51%;
   width: 10px;
   height: 10px;
   background: #0C0B11;
@@ -54,17 +55,17 @@
 }
 
 /* ─── Header band ───
-   60/40 flex split: left 60% holds the eyebrow + title, right
-   40% holds the crosshair stage. Padding-inline is applied
+   51/49 flex split: left 51% holds the eyebrow + title, right
+   49% holds the crosshair stage. Padding-inline is applied
    inside each half so the gutter is respected without breaking
-   the 60% alignment. */
+   the 51% alignment. */
 .headerStage {
   display: flex;
   align-items: stretch;
 }
 
 .headerLeft {
-  width: 60%;
+  width: 51%;
   display: flex;
   flex-direction: column;
   gap: clamp(28px, 4vw, 56px);
@@ -98,7 +99,7 @@
 
 .headerRight {
   position: relative;
-  width: 40%;
+  width: 49%;
   padding-left: clamp(28px, 3vw, 48px);
   padding-right: var(--gutter);
   min-height: clamp(240px, 24vw, 360px);
@@ -177,11 +178,11 @@
 
 /* ─── Solution rows ───
    Three independent columns in a flex row, each with its own
-   fixed width: number (12%), image cell (48%), text (40%). The
+   fixed width: number (18%), image cell (33%), text (49%). The
    image cell sits in the middle with uniform padding so the
-   photo reads as its own framed thing — not jammed against the
-   number. The 12+48=60% boundary lands exactly on the section's
-   60% divider, which serves as the line between image and text. */
+   photo reads as its own framed thing, not jammed against the
+   number. The 18+33=51% boundary lands exactly on the section's
+   51% divider, which serves as the line between image and text. */
 
 .row {
   display: flex;
@@ -193,7 +194,7 @@
    "01 /" text. Wide on purpose so the number reads as its own
    labelled cell, not a thin sliver against the gutter. */
 .rowNumber {
-  flex: 0 0 25%;
+  flex: 0 0 18%;
   display: flex;
   gap: 6px;
   font-family: var(--mono);
@@ -213,13 +214,12 @@
   opacity: 0.55;
 }
 
-/* Image — middle cell from 25% to 60%, with uniform padding so
+/* Image — middle cell from 18% to 51%, with uniform padding so
    the photo reads as framed inside the cell. Image inside is
-   larger now that the row is taller, but still capped so it
-   stays a sensible portrait. Border-left draws the hairline
-   between number and image. */
+   capped so it stays a sensible portrait. Border-left draws
+   the hairline between number and image. */
 .rowImage {
-  flex: 0 0 35%;
+  flex: 0 0 33%;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -242,10 +242,10 @@
   display: block;
 }
 
-/* Text — right 40% (25% number + 35% image = 60%), so the left
-   edge of the text column lands exactly on the 60% divider. */
+/* Text — right 49% (18% number + 33% image = 51%), so the left
+   edge of the text column lands exactly on the 51% divider. */
 .rowRight {
-  flex: 0 0 40%;
+  flex: 0 0 49%;
   display: flex;
   flex-direction: column;
   padding-left: clamp(28px, 3vw, 48px);
