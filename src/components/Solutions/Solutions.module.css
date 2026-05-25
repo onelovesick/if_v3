@@ -232,9 +232,14 @@
   padding: clamp(40px, 4vw, 60px);
 }
 
+/* width:100% + max-width caps the photo at 480px on wide
+   viewports without ever exceeding the cell's content width,
+   so the image stays inside its cell and never spills into the
+   right text column. */
 .rowImageFrame {
   margin: 0;
-  width: clamp(320px, 30vw, 480px);
+  width: 100%;
+  max-width: 480px;
   aspect-ratio: 4 / 5;
   overflow: hidden;
   background: rgba(12, 11, 17, 0.05);
