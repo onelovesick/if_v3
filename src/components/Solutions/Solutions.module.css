@@ -178,11 +178,12 @@
 
 /* ─── Solution rows ───
    Three independent columns in a flex row, each with its own
-   fixed width: number (18%), image cell (33%), text (49%). The
-   image cell sits in the middle with uniform padding so the
-   photo reads as its own framed thing, not jammed against the
-   number. The 18+33=51% boundary lands exactly on the section's
-   51% divider, which serves as the line between image and text. */
+   fixed width: number (25%), image cell (26%), text (49%). The
+   image cell sits in the middle with uniform padding and the
+   photo centered both axes, so it reads as its own framed
+   thing with equivalent whitespace on every side. The 25+26=51%
+   boundary lands exactly on the section's 51% divider, which
+   serves as the line between image and text. */
 
 .row {
   display: flex;
@@ -195,7 +196,7 @@
    "01 /" text. Wide on purpose so the number reads as its own
    labelled cell, not a thin sliver against the gutter. */
 .rowNumber {
-  flex: 0 0 18%;
+  flex: 0 0 25%;
   display: flex;
   gap: 6px;
   font-family: var(--mono);
@@ -215,17 +216,18 @@
   opacity: 0.55;
 }
 
-/* Image — middle cell from 18% to 51%, with uniform padding so
-   the photo reads as framed inside the cell. Image inside is
-   capped so it stays a sensible portrait. Border-left draws
+/* Image — middle cell from 25% to 51%, with uniform padding so
+   the photo reads as framed inside the cell. Centered both
+   axes so the photo sits with equivalent visible whitespace on
+   all four sides inside the tall 700px row. Border-left draws
    the hairline between number and image. */
 .rowImage {
-  flex: 0 0 33%;
+  flex: 0 0 26%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   border-left: 1px solid #9F9DA0;
-  padding: clamp(32px, 3.5vw, 48px);
+  padding: clamp(40px, 4vw, 60px);
 }
 
 .rowImageFrame {
@@ -317,91 +319,75 @@
   padding-top: clamp(40px, 5vw, 80px);
 }
 
-/* CTA — Enerblock ghost-black spec.
-   Tight inline-flex pill (~42px tall): text cell + arrow cell
-   divided by a hairline. Transparent ground with a 1px ink
-   border; hover fills with ink, inverts text/arrow to paper.
-   The label is duplicated and "rolls" on hover — visible copy
-   exits the bottom while a duplicate rolls in from above. */
+/* CTA — matches PositionBrief's .cellCta exactly.
+   Bordered rectangle with a label + circular arrow. On hover a
+   ::before pseudo-element slides up from below to fill the
+   button with ink, the text inverts to paper, and the circular
+   arrow translates right. */
 .rowCta {
   align-self: flex-start;
   margin-top: clamp(28px, 2.6vw, 44px);
-  display: inline-flex;
-  align-items: center;
-  height: 42px;
-  font-family: var(--display);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  color: #0C0B11;
-  text-decoration: none;
-  background: transparent;
-  border: 1px solid #0C0B11;
-  border-radius: 0;
-  overflow: hidden;
-  cursor: pointer;
-  transition:
-    background 250ms ease,
-    color 250ms ease;
-}
-
-/* Text cell — holds two stacked copies of the label for the
-   roll-on-hover effect. overflow:hidden clips the duplicate. */
-.rowCtaText {
-  display: block;
   position: relative;
-  margin: 2px 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 26px;
+  background: transparent;
+  color: #0C0B11;
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  border: 1px solid #0C0B11;
   overflow: hidden;
+  transition: color 380ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.rowCtaTextSp {
-  display: block;
-  padding-bottom: 2px;
-  transition: transform 600ms cubic-bezier(0.76, 0, 0.24, 1);
-}
-
-/* Duplicate copy sits one full cell-height above the original
-   so it can roll in from the top on hover. */
-.rowCtaTextSp2 {
+.rowCta::before {
+  content: "";
   position: absolute;
-  left: 0;
-  top: -100%;
+  inset: 0;
+  background: #0C0B11;
+  transform: translateY(101%);
+  transition: transform 460ms cubic-bezier(0.65, 0.05, 0.36, 1);
+  z-index: 0;
 }
 
-/* Arrow cell — square, divided from the text by a left
-   hairline. 41px wide square as per spec. */
+.rowCta > * {
+  position: relative;
+  z-index: 1;
+}
+
 .rowCtaArrow {
-  flex: 0 0 41px;
-  width: 41px;
-  height: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
-  border-left: 1px solid #0C0B11;
+  width: 30px;
+  height: 30px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
   transition:
-    background-color 300ms ease,
-    border-color 300ms ease;
+    transform 320ms cubic-bezier(0.65, 0.05, 0.36, 1),
+    border-color 380ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Hover: fill the ghost, invert text/arrow, and roll the label
-   copies down by 100% so the visible copy exits the bottom
-   and the duplicate slides in from the top. */
+.rowCta:hover::before,
+.rowCta:focus-visible::before {
+  transform: translateY(0);
+}
+
 .rowCta:hover,
 .rowCta:focus-visible {
-  background: #0C0B11;
   color: #F5F7FA;
 }
 
 .rowCta:hover .rowCtaArrow,
 .rowCta:focus-visible .rowCtaArrow {
-  border-left-color: #F5F7FA;
-}
-
-.rowCta:hover .rowCtaTextSp,
-.rowCta:focus-visible .rowCtaTextSp {
-  transform: translateY(100%);
+  transform: translateX(6px);
 }
 
 /* ─── Responsive ───
@@ -467,12 +453,8 @@
     display: none;
   }
   .rowCta,
-  .rowCtaArrow,
-  .rowCtaTextSp {
+  .rowCta::before,
+  .rowCtaArrow {
     transition: none;
-  }
-  .rowCta:hover .rowCtaTextSp,
-  .rowCta:focus-visible .rowCtaTextSp {
-    transform: none;
   }
 }
