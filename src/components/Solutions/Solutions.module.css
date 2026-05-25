@@ -62,6 +62,7 @@
 .headerStage {
   display: flex;
   align-items: stretch;
+  min-height: 450px;
 }
 
 .headerLeft {
