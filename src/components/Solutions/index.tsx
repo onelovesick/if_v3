@@ -10,13 +10,17 @@ import styles from "./Solutions.module.css";
  *
  * Cream ground #F0EFEB, ink #0C0B11, grey hairline dividers
  * #9F9DA0. Page-wide --gutter so this section aligns edge-for-edge
- * with PositionBrief above and the dark Layers band below. A
- * section-level vertical hairline at left:60% visually continues
- * the divider line in the Problem section above. Header: eyebrow
- * + section H2 on the left of the divider, crosshair stage on the
- * right. Below, each row is a 12-col grid with number(span 3) /
- * image 4:5 framed(span 3) / text(span 6). Titles reveal
- * line-by-line on scroll. The crosshair tracks the pointer
+ * with PositionBrief above and the dark Layers band below.
+ *
+ * A single section-level vertical hairline sits at left:60% and
+ * spans the whole section, continuing Problem's own 60% line
+ * straight down through the header AND every row. Header and
+ * rows both use a direct 60/40 flex split so the text column on
+ * the right starts exactly at the divider's X. Within the left
+ * 60%, a narrow number column sits at the gutter and the framed
+ * image fills the remaining space up to the divider, so the image
+ * reads as expanded with minimal dead space on the left. Titles
+ * reveal line-by-line on scroll. The crosshair tracks the pointer
  * inside the header right zone only.
  */
 
@@ -145,9 +149,7 @@ export default function Solutions() {
     return () => ctx.revert();
   }, [ready]);
 
-  // Crosshair tracker — only inside the header right half.
-  // Lives outside GSAP so it stays responsive even before the
-  // loader lifts. Disabled on touch / no-hover devices.
+  // Crosshair tracker — only inside the header right zone.
   useEffect(() => {
     const host = crossHostRef.current;
     const overlay = crossRef.current;
@@ -207,114 +209,108 @@ export default function Solutions() {
       className={styles.section}
       aria-labelledby="solutions-title"
     >
-      {/* ─── Header stage ───
-          Wraps the header so the 60% divider can span exactly
-          its vertical extent. The divider + pin sit at left:60%
-          to continue Problem's 60% line straight down into this
-          section, independent of inner wrp gutters. */}
+      {/* Single section-level vertical hairline + pin at left:60%.
+          Spans top-to-bottom of the section so the header and
+          every row share one continuous vertical line, continuing
+          Problem's 60% divider straight through. */}
+      <span className={styles.divider} aria-hidden="true" />
+      <span className={styles.pin} aria-hidden="true" />
+
+      {/* ─── Header band — 60/40 flex split ─── */}
       <div className={styles.headerStage}>
-        <span className={styles.headerDivider} aria-hidden="true" />
-        <span className={styles.headerPin} aria-hidden="true" />
+        <div className={styles.headerLeft}>
+          <span data-reveal className={styles.eyebrow}>
+            Solutions
+          </span>
+          <h2
+            id="solutions-title"
+            data-reveal
+            className={styles.headTitle}
+          >
+            Three layers, one practice.
+          </h2>
+        </div>
 
-        <div className={styles.wrp}>
-          <div className={styles.grid}>
-            <div className={styles.headerLeft}>
-              <span data-reveal className={styles.eyebrow}>
-                Solutions
-              </span>
-              <h2
-                id="solutions-title"
-                data-reveal
-                className={styles.headTitle}
-              >
-                Three layers, one practice.
-              </h2>
-            </div>
-
-            <div ref={crossHostRef} className={styles.headerRight}>
-              {/* Crosshair overlay — fills the right zone. */}
-              <div
-                ref={crossRef}
-                className={styles.crossOverlay}
-                aria-hidden="true"
-              >
-                <span
-                  className={`${styles.crossLine} ${styles.crossLineV}`}
-                />
-                <span
-                  className={`${styles.crossLine} ${styles.crossLineH}`}
-                />
-                <span className={styles.crossPoint} />
-                <span
-                  ref={coordXRef}
-                  className={`${styles.coordItem} ${styles.coordX}`}
-                >
-                  X: 0000
-                </span>
-                <span
-                  ref={coordYRef}
-                  className={`${styles.coordItem} ${styles.coordY}`}
-                >
-                  Y: 0000
-                </span>
-              </div>
-            </div>
+        <div ref={crossHostRef} className={styles.headerRight}>
+          <div
+            ref={crossRef}
+            className={styles.crossOverlay}
+            aria-hidden="true"
+          >
+            <span
+              className={`${styles.crossLine} ${styles.crossLineV}`}
+            />
+            <span
+              className={`${styles.crossLine} ${styles.crossLineH}`}
+            />
+            <span className={styles.crossPoint} />
+            <span
+              ref={coordXRef}
+              className={`${styles.coordItem} ${styles.coordX}`}
+            >
+              X: 0000
+            </span>
+            <span
+              ref={coordYRef}
+              className={`${styles.coordItem} ${styles.coordY}`}
+            >
+              Y: 0000
+            </span>
           </div>
         </div>
       </div>
 
-      {/* ─── Solution rows ─── */}
+      {/* ─── Solution rows — 60/40 flex split mirrors the header
+              so the text column starts exactly at the 60% divider. */}
       {SOLUTIONS.map((s) => (
         <article key={s.number} className={styles.row}>
-          <div className={styles.wrp}>
-            <div className={`${styles.grid} ${styles.rowGrid}`}>
-              <div className={styles.rowNumber}>
-                <span>{s.number}</span>
+          <div className={styles.rowLeft}>
+            <div className={styles.rowNumber}>
+              <span>{s.number}</span>
+              <span
+                className={styles.rowNumberSep}
+                aria-hidden="true"
+              >
+                /
+              </span>
+            </div>
+
+            <div className={styles.rowImage}>
+              <figure className={styles.rowImageFrame}>
+                <img src={s.image} alt={s.alt} loading="lazy" />
+              </figure>
+            </div>
+          </div>
+
+          <div className={styles.rowRight}>
+            <span data-reveal className={styles.rowLabel}>
+              {s.label}
+            </span>
+            <h3 className={styles.rowTitle}>
+              {s.titleLines.map((line, li) => (
+                <span key={li} className={styles.titleLine}>
+                  <span className={styles.titleLineText}>{line}</span>
+                  <span
+                    className={styles.titleLineSweep}
+                    aria-hidden="true"
+                  />
+                </span>
+              ))}
+            </h3>
+            <p data-reveal className={styles.rowBody}>
+              {s.body}
+            </p>
+            <a data-reveal className={styles.rowCta} href={s.href}>
+              <span className={styles.rowCtaInner}>
+                <span className={styles.rowCtaLabel}>Learn more</span>
                 <span
-                  className={styles.rowNumberSep}
+                  className={styles.rowCtaArrow}
                   aria-hidden="true"
                 >
-                  /
+                  &rarr;
                 </span>
-              </div>
-
-              <div className={styles.rowImage}>
-                <figure className={styles.rowImageFrame}>
-                  <img src={s.image} alt={s.alt} loading="lazy" />
-                </figure>
-              </div>
-
-              <div className={styles.rowContent}>
-                <span data-reveal className={styles.rowLabel}>
-                  {s.label}
-                </span>
-                <h3 className={styles.rowTitle}>
-                  {s.titleLines.map((line, li) => (
-                    <span key={li} className={styles.titleLine}>
-                      <span className={styles.titleLineText}>{line}</span>
-                      <span
-                        className={styles.titleLineSweep}
-                        aria-hidden="true"
-                      />
-                    </span>
-                  ))}
-                </h3>
-                <p data-reveal className={styles.rowBody}>
-                  {s.body}
-                </p>
-                <a data-reveal className={styles.rowCta} href={s.href}>
-                  <span className={styles.rowCtaInner}>
-                    <span className={styles.rowCtaLabel}>Learn more</span>
-                    <span
-                      className={styles.rowCtaArrow}
-                      aria-hidden="true"
-                    >
-                      &rarr;
-                    </span>
-                  </span>
-                </a>
-              </div>
-            </div>
+              </span>
+            </a>
           </div>
         </article>
       ))}

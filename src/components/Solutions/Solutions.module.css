@@ -1,21 +1,18 @@
 /* ═══════════════════════════════════════════════════════
    SOLUTIONS (S4) — Enerblock reconstruction
    Cream ground #F0EFEB, ink #0C0B11, grey hairline dividers
-   #9F9DA0. Page-wide --gutter so this section aligns
-   edge-for-edge with PositionBrief above and the dark Layers
-   band below.
+   #9F9DA0.
 
-   Top hairline runs full-width as a continuation of the line
-   that closes the dark Problem section above it. A vertical
-   hairline at left:60% (section-level) continues Problem's
-   own 60% line straight down into this section, splitting
-   the header into title-left / crosshair-right. A small
-   black pin sits at the top of that divider as a section
-   marker.
+   A single section-level vertical hairline sits at left:60%
+   and spans the whole section, continuing Problem's own 60%
+   line straight down through the header AND every row. Header
+   and rows both use a direct 60/40 flex split so the text
+   column on the right starts exactly at the divider's X.
 
-   Below, each row is a 12-col grid with vertical hairlines
-   between number / image / text. Image has uniform padding
-   inside its cell so it reads as framed.
+   Within the left 60%, a narrow number column sits at the
+   gutter and the framed image fills the remaining space up to
+   the divider, so the image reads as expanded with minimal
+   dead space on the left.
    ═══════════════════════════════════════════════════════ */
 
 .section {
@@ -29,17 +26,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Header stage wraps the header so the 60% divider can span
-   exactly the header's vertical extent (top of section to top of
-   first row), no more, no less. */
-.headerStage {
-  position: relative;
-}
-
-/* Vertical divider at left:60% so it continues Problem's own
-   60% line straight down into this section. Lives outside the
-   grid so its position is independent of the wrp padding. */
-.headerDivider {
+/* The single 60% divider — spans top to bottom of the section
+   so the header and every row share one continuous vertical
+   line at exactly 60% of section width. Positioned at section
+   level so it's independent of any inner padding. */
+.divider {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -50,7 +41,7 @@
   z-index: 2;
 }
 
-.headerPin {
+.pin {
   position: absolute;
   top: clamp(16px, 1.6vw, 28px);
   left: 60%;
@@ -61,31 +52,26 @@
   z-index: 3;
 }
 
-/* ─── Wrapper + 12-col grid ─── */
-.wrp {
-  position: relative;
-  width: 100%;
-  padding-inline: var(--gutter);
+/* ─── Header band ───
+   60/40 flex split: left 60% holds the eyebrow + title, right
+   40% holds the crosshair stage. Padding-inline is applied
+   inside each half so the gutter is respected without breaking
+   the 60% alignment. */
+.headerStage {
+  display: flex;
+  align-items: stretch;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 1.4vw;
-}
-
-/* ─── Header band ─── */
 .headerLeft {
-  grid-column: 1 / span 7;
+  width: 60%;
   display: flex;
   flex-direction: column;
   gap: clamp(28px, 4vw, 56px);
-  padding-block: clamp(12px, 1.4vw, 24px) clamp(56px, 7vw, 112px);
+  padding-left: var(--gutter);
   padding-right: clamp(24px, 3vw, 48px);
+  padding-block: clamp(12px, 1.4vw, 24px) clamp(56px, 7vw, 112px);
 }
 
-/* Eyebrow at label scale — sits high on the page so SOLUTIONS
-   reads as a clear section opener, not a caption. */
 .eyebrow {
   font-family: var(--display);
   font-size: clamp(1.1rem, 1.7vw, 1.6rem);
@@ -109,16 +95,16 @@
   text-wrap: balance;
 }
 
-/* Right side of the header — pure crosshair stage. No spec
-   plate. Lives in the grid so the crosshair JS has a clean
-   rect to track inside. */
 .headerRight {
   position: relative;
-  grid-column: 8 / span 5;
+  width: 40%;
+  padding-left: clamp(28px, 3vw, 48px);
+  padding-right: var(--gutter);
   min-height: clamp(240px, 24vw, 360px);
 }
 
-/* Crosshair overlay fills the right half. Cursor-tracked. */
+/* Crosshair overlay — cursor-tracked, confined to the right
+   half via JS rect on .headerRight. */
 .crossOverlay {
   --cx: -100px;
   --cy: -100px;
@@ -189,17 +175,29 @@
 }
 
 /* ─── Solution rows ───
-   Each row is a 12-col grid. Per-column padding lives on the
-   cells (not the row) so border-left dividers extend the full
-   padded height. Image cell carries uniform padding on all
-   four sides so the photo reads as evenly framed. */
+   60/40 flex split mirrors the header so the text column on
+   the right starts exactly at the 60% divider. Left half
+   holds a narrow number column + the framed image; right half
+   holds label + title + body + CTA. */
 
 .row {
+  display: flex;
+  align-items: stretch;
   border-top: 1px solid #9F9DA0;
 }
 
+.rowLeft {
+  width: 60%;
+  display: flex;
+  gap: clamp(20px, 2vw, 36px);
+  padding-left: var(--gutter);
+  padding-right: clamp(20px, 2vw, 36px);
+  padding-block: clamp(28px, 3vw, 40px);
+}
+
 .rowNumber {
-  grid-column: 1 / span 3;
+  flex: 0 0 auto;
+  min-width: 56px;
   display: flex;
   gap: 6px;
   font-family: var(--mono);
@@ -210,7 +208,6 @@
   text-transform: uppercase;
   color: #0C0B11;
   font-variant-numeric: tabular-nums;
-  padding: clamp(28px, 3vw, 40px) 0;
   align-items: flex-start;
 }
 
@@ -218,15 +215,15 @@
   opacity: 0.55;
 }
 
-/* Uniform padding on all four sides so the image sits evenly
-   inset inside its cell, with the dividers reading as frame
-   edges rather than the photo crashing into them. */
+/* Image fills the remaining space inside the left 60% zone.
+   No internal padding: the gutter (left) and the divider-side
+   padding (right) on .rowLeft already give the breathing
+   room, and we want the image to read as expanded. */
 .rowImage {
-  grid-column: 4 / span 3;
-  border-left: 1px solid #9F9DA0;
-  padding: clamp(28px, 3vw, 40px);
+  flex: 1 1 auto;
   display: flex;
   align-items: flex-start;
+  min-width: 0;
 }
 
 .rowImageFrame {
@@ -244,13 +241,13 @@
   display: block;
 }
 
-.rowContent {
-  grid-column: 7 / span 6;
-  border-left: 1px solid #9F9DA0;
-  padding: clamp(28px, 3vw, 40px) 0 clamp(28px, 3vw, 40px)
-    clamp(20px, 2vw, 36px);
+.rowRight {
+  width: 40%;
   display: flex;
   flex-direction: column;
+  padding-left: clamp(28px, 3vw, 48px);
+  padding-right: var(--gutter);
+  padding-block: clamp(28px, 3vw, 40px);
 }
 
 .rowLabel {
@@ -265,8 +262,7 @@
 }
 
 /* Row title sits a notch below the section H2 — generous but
-   not as massive, so the H2 stays the lead voice and the row
-   titles read as subordinate practice statements. */
+   not as massive, so the H2 stays the lead voice. */
 .rowTitle {
   margin: 0;
   font-family: var(--display);
@@ -301,10 +297,8 @@
   will-change: transform;
 }
 
-/* Body pushed well below the title — large gap so the text
-   sits near the bottom of the column, matching the reference
-   where the title anchors the top and the body + CTA cluster
-   anchor the bottom. */
+/* Body pushed well below the title so it anchors the bottom
+   of the column alongside the CTA. */
 .rowBody {
   margin: clamp(72px, 9vw, 144px) 0 0;
   font-family: var(--display);
@@ -316,9 +310,7 @@
   max-width: 46ch;
 }
 
-/* CTA — chunkier than the spec default. Two cells, hairline
-   border, square corners, generous padding so the button has
-   real presence in the column. */
+/* CTA — chunky, square corners, hairline border, two cells. */
 .rowCta {
   align-self: flex-start;
   margin-top: clamp(24px, 2.4vw, 40px);
@@ -373,36 +365,40 @@
   transform: translateX(3px);
 }
 
-/* ─── Responsive ─── */
+/* ─── Responsive ───
+   Below 1024px the 60/40 split breaks down. Drop the divider
+   and the pin, stack header + each row into a single column. */
 @media (max-width: 1023px) {
-  .headerDivider,
-  .headerPin {
+  .divider,
+  .pin {
     display: none;
   }
-  .headerLeft {
-    grid-column: 1 / -1;
-    padding-right: 0;
-    border-bottom: 1px solid #9F9DA0;
-    padding-bottom: clamp(32px, 4vw, 56px);
+  .headerStage,
+  .row {
+    flex-direction: column;
+  }
+  .headerLeft,
+  .rowLeft,
+  .rowRight {
+    width: 100%;
   }
   .headerRight {
     display: none;
   }
-  .rowNumber {
-    grid-column: 1 / span 2;
-    padding-bottom: 0;
+  .headerLeft {
+    padding-right: var(--gutter);
+    border-bottom: 1px solid #9F9DA0;
+    padding-bottom: clamp(32px, 4vw, 56px);
   }
-  .rowImage {
-    grid-column: 3 / span 10;
-    padding: clamp(20px, 2.5vw, 32px);
+  .rowLeft {
+    padding-right: var(--gutter);
   }
   .rowImageFrame {
     aspect-ratio: 16 / 10;
   }
-  .rowContent {
-    grid-column: 1 / -1;
-    border-left: 0;
-    padding: clamp(24px, 4vw, 48px) 0 clamp(48px, 6vw, 96px);
+  .rowRight {
+    padding-left: var(--gutter);
+    padding-block: clamp(24px, 4vw, 48px) clamp(48px, 6vw, 96px);
   }
   .rowBody {
     margin-top: clamp(24px, 4vw, 56px);
@@ -410,14 +406,9 @@
 }
 
 @media (max-width: 640px) {
-  .rowNumber {
-    grid-column: 1 / -1;
-    padding-bottom: 0;
-  }
-  .rowImage {
-    grid-column: 1 / -1;
-    border-left: 0;
-    padding-inline: 0;
+  .rowLeft {
+    flex-direction: column;
+    gap: clamp(20px, 3vw, 32px);
   }
 }
 
