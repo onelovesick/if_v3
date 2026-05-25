@@ -319,13 +319,13 @@
   padding-top: clamp(40px, 5vw, 80px);
 }
 
-/* CTA — matches PositionBrief's .cellCta exactly.
-   Bordered rectangle with a label + circular arrow. On hover a
-   ::before pseudo-element slides up from below to fill the
-   button with ink, the text inverts to paper, and the circular
-   arrow translates right. */
+/* CTA — matches PositionBrief's .cellCta exactly. Stretches to
+   fill the text column width (no align-self), so it reads as a
+   substantial bordered slab, not a tiny pill. On hover a
+   ::before pseudo-element slides up from below to fill with
+   ink, the text inverts to paper, and the circular arrow
+   translates right. */
 .rowCta {
-  align-self: flex-start;
   margin-top: clamp(28px, 2.6vw, 44px);
   position: relative;
   display: flex;
