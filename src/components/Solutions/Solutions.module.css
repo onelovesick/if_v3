@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════
    SOLUTIONS (S4) — Enerblock reconstruction
-   Cream ground #F0EFEB, ink #0C0B11, grey hairline dividers
+   Paper ground #F5F7FA matching PositionBrief, ink #0C0B11,
+   grey hairline dividers
    #9F9DA0.
 
    A single section-level vertical hairline sits at left:60%
@@ -17,7 +18,7 @@
 
 .section {
   position: relative;
-  background: #F0EFEB;
+  background: #F5F7FA;
   color: #0C0B11;
   font-family: var(--display);
   border-top: 1px solid #9F9DA0;
@@ -293,7 +294,7 @@
 .titleLineSweep {
   position: absolute;
   inset: -0.1em -0.05em;
-  background: #F0EFEB;
+  background: #F5F7FA;
   z-index: 2;
   pointer-events: none;
   will-change: transform;
@@ -301,14 +302,15 @@
 
 /* Body + CTA anchor to the bottom of the column while label +
    title stay at the top. margin-top:auto on the body absorbs all
-   the free space above it so the cluster sits at the bottom. */
+   the free space above it so the cluster sits at the bottom.
+   Font scale matches PositionBrief's .cellBody so paragraphs
+   read at one weight across both light sections. */
 .rowBody {
   margin: auto 0 0;
   font-family: var(--display);
-  font-size: clamp(1rem, 1.3vw, 1.2rem);
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: -0.013em;
+  font-size: clamp(17px, 1.25vw, 20px);
+  font-weight: 400;
+  line-height: 1.45;
   color: #0C0B11;
   max-width: 64ch;
   padding-top: clamp(40px, 5vw, 80px);
@@ -334,6 +336,7 @@
 .rowCtaInner {
   display: inline-flex;
   align-items: stretch;
+  min-width: clamp(280px, 28vw, 380px);
   border: 1px solid #0C0B11;
   transition:
     background 240ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1)),
@@ -341,14 +344,16 @@
 }
 
 .rowCtaLabel {
-  padding: clamp(22px, 2vw, 32px) clamp(44px, 4.4vw, 72px);
+  flex: 1 1 auto;
+  padding: clamp(22px, 2vw, 32px) clamp(48px, 5vw, 80px);
   display: inline-flex;
   align-items: center;
 }
 
 .rowCtaArrow {
+  flex: 0 0 auto;
   border-left: 1px solid #0C0B11;
-  padding: clamp(22px, 2vw, 32px) clamp(28px, 2.6vw, 40px);
+  padding: clamp(22px, 2vw, 32px) clamp(32px, 3vw, 48px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -361,12 +366,12 @@
 .rowCta:hover .rowCtaInner,
 .rowCta:focus-visible .rowCtaInner {
   background: #0C0B11;
-  color: #F0EFEB;
+  color: #F5F7FA;
 }
 
 .rowCta:hover .rowCtaArrow,
 .rowCta:focus-visible .rowCtaArrow {
-  border-left-color: #F0EFEB;
+  border-left-color: #F5F7FA;
   transform: translateX(3px);
 }
 
