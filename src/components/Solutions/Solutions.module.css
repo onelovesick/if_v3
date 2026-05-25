@@ -192,7 +192,7 @@
   gap: clamp(20px, 2vw, 36px);
   padding-left: var(--gutter);
   padding-right: clamp(20px, 2vw, 36px);
-  padding-block: clamp(28px, 3vw, 40px);
+  padding-block: clamp(24px, 2.4vw, 36px);
 }
 
 .rowNumber {
@@ -215,20 +215,19 @@
   opacity: 0.55;
 }
 
-/* Image fills the remaining space inside the left 60% zone.
-   No internal padding: the gutter (left) and the divider-side
-   padding (right) on .rowLeft already give the breathing
-   room, and we want the image to read as expanded. */
+/* Image sits next to the number column with a capped width so
+   it stays a sensible portrait — no growing to fill the entire
+   60% zone at wide viewports. Any remaining horizontal space in
+   .rowLeft is empty breathing room before the 60% divider. */
 .rowImage {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   display: flex;
   align-items: flex-start;
-  min-width: 0;
 }
 
 .rowImageFrame {
   margin: 0;
-  width: 100%;
+  width: clamp(240px, 22vw, 360px);
   aspect-ratio: 4 / 5;
   overflow: hidden;
   background: rgba(12, 11, 17, 0.05);
@@ -297,10 +296,11 @@
   will-change: transform;
 }
 
-/* Body pushed well below the title so it anchors the bottom
-   of the column alongside the CTA. */
+/* Body sits below the title with a moderate gap so the title
+   stays the lead voice but body + CTA still cluster towards
+   the bottom of the column. */
 .rowBody {
-  margin: clamp(72px, 9vw, 144px) 0 0;
+  margin: clamp(40px, 5vw, 80px) 0 0;
   font-family: var(--display);
   font-size: clamp(1rem, 1.3vw, 1.2rem);
   font-weight: 500;
