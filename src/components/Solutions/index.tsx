@@ -260,26 +260,25 @@ export default function Solutions() {
         </div>
       </div>
 
-      {/* ─── Solution rows — 60/40 flex split mirrors the header
-              so the text column starts exactly at the 60% divider. */}
+      {/* ─── Solution rows — three columns: number, image, text.
+              Text uses margin-left:auto + width:40% so its left
+              edge lands exactly on the 60% divider. */}
       {SOLUTIONS.map((s) => (
         <article key={s.number} className={styles.row}>
-          <div className={styles.rowLeft}>
-            <div className={styles.rowNumber}>
-              <span>{s.number}</span>
-              <span
-                className={styles.rowNumberSep}
-                aria-hidden="true"
-              >
-                /
-              </span>
-            </div>
+          <div className={styles.rowNumber}>
+            <span>{s.number}</span>
+            <span
+              className={styles.rowNumberSep}
+              aria-hidden="true"
+            >
+              /
+            </span>
+          </div>
 
-            <div className={styles.rowImage}>
-              <figure className={styles.rowImageFrame}>
-                <img src={s.image} alt={s.alt} loading="lazy" />
-              </figure>
-            </div>
+          <div className={styles.rowImage}>
+            <figure className={styles.rowImageFrame}>
+              <img src={s.image} alt={s.alt} loading="lazy" />
+            </figure>
           </div>
 
           <div className={styles.rowRight}>

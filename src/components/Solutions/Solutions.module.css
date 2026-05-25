@@ -175,24 +175,15 @@
 }
 
 /* ─── Solution rows ───
-   60/40 flex split mirrors the header so the text column on
-   the right starts exactly at the 60% divider. Left half
-   holds a narrow number column + the framed image; right half
-   holds label + title + body + CTA. */
+   Three independent columns in a flex row: number, image,
+   text. Number and image sit on the left, sized by content.
+   Text column pushes to the right with width:40% so its left
+   edge lands exactly on the 60% divider. */
 
 .row {
   display: flex;
   align-items: stretch;
   border-top: 1px solid #9F9DA0;
-}
-
-.rowLeft {
-  width: 60%;
-  display: flex;
-  gap: clamp(20px, 2vw, 36px);
-  padding-left: var(--gutter);
-  padding-right: clamp(20px, 2vw, 36px);
-  padding-block: clamp(24px, 2.4vw, 36px);
 }
 
 .rowNumber {
@@ -209,6 +200,9 @@
   color: #0C0B11;
   font-variant-numeric: tabular-nums;
   align-items: flex-start;
+  padding-left: var(--gutter);
+  padding-right: clamp(20px, 2vw, 36px);
+  padding-block: clamp(24px, 2.4vw, 36px);
 }
 
 .rowNumberSep {
@@ -223,6 +217,7 @@
   flex: 0 0 auto;
   display: flex;
   align-items: flex-start;
+  padding-block: clamp(24px, 2.4vw, 36px);
 }
 
 .rowImageFrame {
@@ -240,13 +235,16 @@
   display: block;
 }
 
+/* Text column pushes to the right edge with margin-left:auto +
+   width:40%, so its left edge lands exactly on the 60% divider. */
 .rowRight {
+  margin-left: auto;
   width: 40%;
   display: flex;
   flex-direction: column;
   padding-left: clamp(28px, 3vw, 48px);
   padding-right: var(--gutter);
-  padding-block: clamp(28px, 3vw, 40px);
+  padding-block: clamp(24px, 2.4vw, 36px);
 }
 
 .rowLabel {
@@ -378,9 +376,11 @@
     flex-direction: column;
   }
   .headerLeft,
-  .rowLeft,
+  .rowNumber,
+  .rowImage,
   .rowRight {
     width: 100%;
+    margin-left: 0;
   }
   .headerRight {
     display: none;
@@ -390,10 +390,11 @@
     border-bottom: 1px solid #9F9DA0;
     padding-bottom: clamp(32px, 4vw, 56px);
   }
-  .rowLeft {
-    padding-right: var(--gutter);
+  .rowImage {
+    padding-inline: var(--gutter);
   }
   .rowImageFrame {
+    width: 100%;
     aspect-ratio: 16 / 10;
   }
   .rowRight {
@@ -406,9 +407,8 @@
 }
 
 @media (max-width: 640px) {
-  .rowLeft {
-    flex-direction: column;
-    gap: clamp(20px, 3vw, 32px);
+  .rowNumber {
+    padding-bottom: 0;
   }
 }
 
