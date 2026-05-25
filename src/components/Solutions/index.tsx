@@ -300,14 +300,17 @@ export default function Solutions() {
               {s.body}
             </p>
             <a data-reveal className={styles.rowCta} href={s.href}>
-              <span className={styles.rowCtaInner}>
-                <span className={styles.rowCtaLabel}>Learn more</span>
+              <span className={styles.rowCtaText}>
+                <span className={styles.rowCtaTextSp}>Learn more</span>
                 <span
-                  className={styles.rowCtaArrow}
+                  className={`${styles.rowCtaTextSp} ${styles.rowCtaTextSp2}`}
                   aria-hidden="true"
                 >
-                  &rarr;
+                  Learn more
                 </span>
+              </span>
+              <span className={styles.rowCtaArrow} aria-hidden="true">
+                &rarr;
               </span>
             </a>
           </div>

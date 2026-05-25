@@ -188,6 +188,7 @@
   display: flex;
   align-items: stretch;
   border-top: 1px solid #9F9DA0;
+  min-height: 700px;
 }
 
 /* Number — left column with generous whitespace around the
@@ -316,55 +317,79 @@
   padding-top: clamp(40px, 5vw, 80px);
 }
 
-/* CTA sits right below the body so the body + CTA pair anchors
-   the bottom of the column together. */
+/* CTA — Enerblock ghost-black spec.
+   Tight inline-flex pill (~42px tall): text cell + arrow cell
+   divided by a hairline. Transparent ground with a 1px ink
+   border; hover fills with ink, inverts text/arrow to paper.
+   The label is duplicated and "rolls" on hover — visible copy
+   exits the bottom while a duplicate rolls in from above. */
 .rowCta {
   align-self: flex-start;
   margin-top: clamp(28px, 2.6vw, 44px);
   display: inline-flex;
-  align-items: stretch;
-  text-decoration: none;
-  color: #0C0B11;
-  font-family: var(--display);
-  font-size: clamp(1rem, 1.15vw, 1.125rem);
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1;
-  background: transparent;
-}
-
-.rowCtaInner {
-  display: inline-flex;
-  align-items: stretch;
-  min-width: clamp(280px, 28vw, 380px);
-  border: 1px solid #0C0B11;
-  transition:
-    background 240ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1)),
-    color 240ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
-}
-
-.rowCtaLabel {
-  flex: 1 1 auto;
-  padding: clamp(22px, 2vw, 32px) clamp(48px, 5vw, 80px);
-  display: inline-flex;
   align-items: center;
+  height: 42px;
+  font-family: var(--display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: #0C0B11;
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid #0C0B11;
+  border-radius: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    background 250ms ease,
+    color 250ms ease;
 }
 
+/* Text cell — holds two stacked copies of the label for the
+   roll-on-hover effect. overflow:hidden clips the duplicate. */
+.rowCtaText {
+  display: block;
+  position: relative;
+  margin: 2px 12px 0;
+  overflow: hidden;
+}
+
+.rowCtaTextSp {
+  display: block;
+  padding-bottom: 2px;
+  transition: transform 600ms cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* Duplicate copy sits one full cell-height above the original
+   so it can roll in from the top on hover. */
+.rowCtaTextSp2 {
+  position: absolute;
+  left: 0;
+  top: -100%;
+}
+
+/* Arrow cell — square, divided from the text by a left
+   hairline. 41px wide square as per spec. */
 .rowCtaArrow {
-  flex: 0 0 auto;
-  border-left: 1px solid #0C0B11;
-  padding: clamp(22px, 2vw, 32px) clamp(32px, 3vw, 48px);
+  flex: 0 0 41px;
+  width: 41px;
+  height: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25em;
+  font-size: 1rem;
+  border-left: 1px solid #0C0B11;
   transition:
-    border-color 240ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1)),
-    transform 240ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
+    background-color 300ms ease,
+    border-color 300ms ease;
 }
 
-.rowCta:hover .rowCtaInner,
-.rowCta:focus-visible .rowCtaInner {
+/* Hover: fill the ghost, invert text/arrow, and roll the label
+   copies down by 100% so the visible copy exits the bottom
+   and the duplicate slides in from the top. */
+.rowCta:hover,
+.rowCta:focus-visible {
   background: #0C0B11;
   color: #F5F7FA;
 }
@@ -372,7 +397,11 @@
 .rowCta:hover .rowCtaArrow,
 .rowCta:focus-visible .rowCtaArrow {
   border-left-color: #F5F7FA;
-  transform: translateX(3px);
+}
+
+.rowCta:hover .rowCtaTextSp,
+.rowCta:focus-visible .rowCtaTextSp {
+  transform: translateY(100%);
 }
 
 /* ─── Responsive ───
@@ -437,8 +466,13 @@
   .crossOverlay {
     display: none;
   }
-  .rowCtaInner,
-  .rowCtaArrow {
+  .rowCta,
+  .rowCtaArrow,
+  .rowCtaTextSp {
     transition: none;
+  }
+  .rowCta:hover .rowCtaTextSp,
+  .rowCta:focus-visible .rowCtaTextSp {
+    transform: none;
   }
 }
