@@ -179,10 +179,11 @@
 
 /* ─── Solution rows ───
    Three independent columns in a flex row, each with its own
-   fixed width: number (25%), image cell (26%), text (49%). The
-   image cell sits in the middle with uniform padding and the
-   photo centered both axes, so it reads as its own framed
-   thing with equivalent whitespace on every side. The 25+26=51%
+   fixed width: number (12%), image cell (39%), text (49%).
+   Number is narrow at the gutter; the image cell takes the
+   bulk of the left zone and the photo fills its content area
+   completely, so the row reads as visually complete with a
+   uniform small padding showing on all four sides. The 12+39=51%
    boundary lands exactly on the section's 51% divider, which
    serves as the line between image and text. */
 
@@ -190,14 +191,13 @@
   display: flex;
   align-items: stretch;
   border-top: 1px solid #9F9DA0;
-  min-height: 700px;
+  min-height: 520px;
 }
 
-/* Number — left column with generous whitespace around the
-   "01 /" text. Wide on purpose so the number reads as its own
-   labelled cell, not a thin sliver against the gutter. */
+/* Number — narrow left column anchored at the gutter so the
+   image cell to its right gets the bulk of the left zone. */
 .rowNumber {
-  flex: 0 0 25%;
+  flex: 0 0 12%;
   display: flex;
   gap: 6px;
   font-family: var(--mono);
@@ -217,31 +217,28 @@
   opacity: 0.55;
 }
 
-/* Image — middle cell from 25% to 51%, with uniform padding so
-   the photo reads as framed inside the cell. Centered both
-   axes so the photo sits with equivalent visible whitespace on
-   all four sides inside the tall 700px row. Border-left draws
-   the hairline between number and image. */
+/* Image — middle cell from 12% to 51%, takes the bulk of the
+   left zone. The photo fills the cell content area completely
+   so the row reads as visually complete, with a uniform small
+   padding showing on all four sides. Border-left draws the
+   hairline between number and image. */
 .rowImage {
-  flex: 0 0 26%;
+  flex: 0 0 39%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
   border-left: 1px solid #9F9DA0;
-  padding: clamp(40px, 4vw, 60px);
+  padding: clamp(24px, 2.4vw, 36px);
 }
 
-/* width:100% + max-width caps the photo at 480px on wide
-   viewports without ever exceeding the cell's content width,
-   so the image stays inside its cell and never spills into the
-   right text column. Aspect 16/9 matches the source photos
-   (~1.9:1 cinematic landscape) so the image displays close to
-   its natural crop instead of being squeezed into a portrait. */
+/* Frame fills the cell's content area completely (no aspect
+   ratio, no max-width). The photo inside uses object-fit:cover
+   so it scales to fill the frame and crops as needed. The
+   cell's uniform padding becomes the visible breathing room
+   on all four sides. */
 .rowImageFrame {
   margin: 0;
   width: 100%;
-  max-width: 480px;
-  aspect-ratio: 16 / 9;
+  height: 100%;
   overflow: hidden;
   background: rgba(12, 11, 17, 0.05);
 }
