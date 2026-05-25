@@ -227,7 +227,7 @@ export default function Solutions() {
             data-reveal
             className={styles.headTitle}
           >
-            Three layers, one practice.
+            The Digital Thread Between Design, Construction And Operations
           </h2>
         </div>
 
