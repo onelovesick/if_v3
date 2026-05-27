@@ -23,6 +23,10 @@
   color: #0C0B11;
   font-family: var(--display);
   border-top: 1px solid #9F9DA0;
+  /* Settle room after the last row sticks. Holds the completed
+     stack in place for a moment before the section ends and the
+     next section enters. */
+  padding-bottom: clamp(96px, 20vh, 320px);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -200,11 +204,18 @@
 }
 
 /* Number — narrow left column anchored at the gutter so the
-   image cell to its right gets the bulk of the left zone. */
+   image cell to its right gets the bulk of the left zone.
+   Pinned to the top 90px of the row (matches the sticky offset)
+   and centred vertically inside that strip, so when the row
+   collapses under the next sticky row, the number reads as
+   centred in the visible band. */
 .rowNumber {
   flex: 0 0 12%;
+  align-self: flex-start;
   display: flex;
+  align-items: center;
   gap: 6px;
+  height: 90px;
   font-family: var(--mono);
   font-size: clamp(1rem, 1.3vw, 1.2rem);
   font-weight: 600;
@@ -213,9 +224,7 @@
   text-transform: uppercase;
   color: #0C0B11;
   font-variant-numeric: tabular-nums;
-  align-items: flex-start;
   padding-left: var(--gutter);
-  padding-block: clamp(40px, 5vw, 72px);
 }
 
 .rowNumberSep {
@@ -256,25 +265,36 @@
 }
 
 /* Text — right 49% (18% number + 33% image = 51%), so the left
-   edge of the text column lands exactly on the 51% divider. */
+   edge of the text column lands exactly on the 51% divider.
+   Top padding is zero because the rowLabel below owns the
+   first 90px of the column (matches the sticky offset between
+   rows so the label centres in the collapsed strip). */
 .rowRight {
   flex: 0 0 49%;
   display: flex;
   flex-direction: column;
   padding-left: clamp(28px, 3vw, 48px);
   padding-right: var(--gutter);
-  padding-block: clamp(40px, 5vw, 72px);
+  padding-block: 0 clamp(40px, 5vw, 72px);
 }
 
+/* Label is the row's "title" — bigger, lighter weight than
+   before to match the reference. Owns the top 90px of the
+   text column and centres vertically inside it, so when the
+   row collapses under the next sticky row, the label reads
+   as centred in the visible band. */
 .rowLabel {
+  display: flex;
+  align-items: center;
+  height: 90px;
+  margin: 0;
   font-family: var(--display);
-  font-size: clamp(1rem, 1.3vw, 1.2rem);
-  font-weight: 600;
+  font-size: clamp(1.2rem, 1.6vw, 1.5rem);
+  font-weight: 500;
   line-height: 1;
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: #0C0B11;
-  margin-bottom: clamp(16px, 1.6vw, 24px);
 }
 
 /* Row title sits a notch below the section H2 — generous but

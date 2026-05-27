@@ -1,27 +1,25 @@
 /* ═══════════════════════════════════════════════════════
    PARALLAX — bridge section between Solutions and Layers
-   Tall section carrying one big infrastructure image. The
-   image parallaxes against the scroll; a left-anchored text
-   block sits sticky inside the viewport and descends from
-   the top of the screen to the bottom as the user scrolls
-   through this section only.
+   100vh tall. Full-bleed photo with subtle vertical parallax.
+   One left-anchored title that spans the section width and
+   descends with scroll, stopping short of the section bottom
+   so an image margin always reads below it.
    ═══════════════════════════════════════════════════════ */
 
 .section {
   position: relative;
   width: 100%;
-  height: 220vh;
+  height: 100vh;
   overflow: hidden;
   background: #0a0e16;
   color: #FFFFFF;
 }
 
 /* Background image wrapper. Image is taller than the section
-   on both axes so the GSAP parallax shift never reveals an
-   edge during scroll. */
+   so the GSAP parallax shift never reveals an edge. */
 .bgWrap {
   position: absolute;
-  inset: -10% 0;
+  inset: -6% 0;
   pointer-events: none;
   z-index: 0;
 }
@@ -35,8 +33,9 @@
   will-change: transform;
 }
 
-/* Dark wash to keep the text legible regardless of the photo.
-   Lifted slightly on the left where the text sits. */
+/* Dark wash for legibility under the title — heaviest near
+   the left where the text sits, plus a soft top and bottom
+   vignette. */
 .scrim {
   position: absolute;
   inset: 0;
@@ -45,103 +44,67 @@
   background:
     linear-gradient(
       90deg,
-      rgba(10, 14, 22, 0.78) 0%,
-      rgba(10, 14, 22, 0.45) 45%,
-      rgba(10, 14, 22, 0.25) 100%
+      rgba(10, 14, 22, 0.62) 0%,
+      rgba(10, 14, 22, 0.38) 55%,
+      rgba(10, 14, 22, 0.22) 100%
     ),
     linear-gradient(
       180deg,
       rgba(10, 14, 22, 0.35) 0%,
-      rgba(10, 14, 22, 0) 30%,
-      rgba(10, 14, 22, 0) 70%,
-      rgba(10, 14, 22, 0.35) 100%
+      rgba(10, 14, 22, 0) 25%,
+      rgba(10, 14, 22, 0) 75%,
+      rgba(10, 14, 22, 0.4) 100%
     );
 }
 
-/* Sticky frame: pinned to the viewport while the section
-   scrolls past. Holds the text block, which GSAP then
-   translates downward inside this frame. */
+/* Sticky host fills the viewport while the section scrolls.
+   Title lives inside and gets GSAP-translated downward as the
+   user scrolls through the section. */
 .stickyHost {
   position: sticky;
   top: 0;
   z-index: 2;
   height: 100vh;
   width: 100%;
-  display: flex;
-  align-items: flex-start;
-  padding: clamp(64px, 10vh, 140px) clamp(20px, 4vw, 88px) 0;
+  padding: 12vh clamp(20px, 4vw, 88px);
   pointer-events: none;
 }
 
-.textBlock {
-  max-width: min(620px, 48vw);
-  display: flex;
-  flex-direction: column;
-  gap: clamp(20px, 2.6vw, 36px);
+/* Big display title. Single line on desktop via white-space
+   nowrap; falls back to balanced wrapping below the lg
+   breakpoint. */
+.title {
+  margin: 0;
+  width: 100%;
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 6.4vw, 8rem);
+  font-weight: 500;
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  color: #FFFFFF;
+  white-space: nowrap;
   will-change: transform;
 }
 
-.eyebrow {
-  font-family: var(--display);
-  font-size: clamp(1.1rem, 1.7vw, 1.6rem);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: #FFFFFF;
-  line-height: 1;
-}
-
-.title {
-  margin: 0;
-  font-family: var(--display);
-  font-size: clamp(2.5rem, 5.4vw, 6rem);
-  font-weight: 500;
-  line-height: 0.96;
-  letter-spacing: -0.025em;
-  color: #FFFFFF;
-  text-wrap: balance;
-}
-
-.body {
-  margin: 0;
-  font-family: var(--display);
-  font-size: clamp(17px, 1.35vw, 22px);
-  font-weight: 400;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.78);
-  max-width: 44ch;
-}
-
-/* ─── Mobile / tablet ───
-   Drop the parallax descent on small screens. Section becomes
-   a normal-height hero with the text anchored to the top-left
-   and the image filling the frame. */
+/* ─── Tablet / mobile ───
+   Drop the scroll-descent and let the title wrap. Section
+   becomes a tall hero with the title near the top. */
 @media (max-width: 1023px) {
-  .section {
-    height: auto;
-    min-height: 90vh;
-  }
-  .stickyHost {
-    position: relative;
-    top: auto;
-    height: auto;
-    min-height: 90vh;
-    padding: clamp(80px, 14vh, 160px) var(--gutter)
-      clamp(80px, 14vh, 160px);
-  }
-  .textBlock {
-    max-width: 100%;
+  .title {
+    white-space: normal;
+    text-wrap: balance;
+    font-size: clamp(2.25rem, 7.5vw, 4.5rem);
     transform: none !important;
   }
-  .bgWrap {
-    inset: 0;
+  .stickyHost {
+    padding: clamp(80px, 14vh, 160px) var(--gutter);
   }
 }
 
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   .bg,
-  .textBlock {
+  .title {
     transform: none !important;
   }
 }
