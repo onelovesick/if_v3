@@ -276,19 +276,24 @@ export default function Solutions() {
               Text uses margin-left:auto + width:40% so its left
               edge lands exactly on the 60% divider. */}
       {SOLUTIONS.map((s, i) => {
-        // All four rows are sticky at ascending offsets
-        // (90/180/270/360). Row 04 sticks at 360, just below
-        // row 03's strip, so it never rises THROUGH the strips
-        // for rows 01-03 — no more "row 02 getting pushed".
-        // Solutions' 100vh padding-bottom + Parallax's -100vh
-        // margin-top mean Parallax slides up over the whole
-        // pinned stack as the rest of the website scrolls,
-        // and rows 01-04 release silently behind Parallax.
+        // Rows 01-03 are sticky at top:90/180/270 and stay
+        // pinned (the 100vh section padding-bottom prevents
+        // them from releasing during the handoff). Row 04 is
+        // NOT in the sticky stack — it scrolls naturally with
+        // z-index above the stack so it covers everything as
+        // it rises, just like Parallax and any later section
+        // does (those slide up over Solutions via the matching
+        // -100vh margin + high z-index).
+        const isLast = i === SOLUTIONS.length - 1;
         return (
         <article
           key={s.number}
           className={styles.row}
-          style={{ top: `${90 * (i + 1)}px`, zIndex: i + 3 }}
+          style={
+            isLast
+              ? { position: "relative", top: "auto", zIndex: i + 3 }
+              : { top: `${90 * (i + 1)}px`, zIndex: i + 3 }
+          }
         >
           <div className={styles.rowNumber}>
             <span>{s.number}</span>
