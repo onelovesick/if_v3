@@ -155,14 +155,26 @@ export default function Solutions() {
         }
       });
 
-      // Pin rows 01-03 at staggered top positions for the duration
-      // of the section's scroll range. Done via GSAP rather than CSS
-      // position:sticky because sticky was failing for row 02 in this
-      // particular DOM (likely an interaction with body's overflow-x
-      // hidden and Lenis smooth scroll). GSAP uses position:fixed
-      // and is deterministic. Row 04 ([data-last]) is excluded so it
-      // continues to scroll naturally and cover rows 01-03 as it
-      // rises, matching the Enerblock reference behaviour.
+      // Pin rows 01-03 at staggered top positions. Done via GSAP
+      // rather than CSS position:sticky because sticky was failing
+      // for row 02 in this particular DOM (likely an interaction
+      // with body's overflow-x hidden and Lenis smooth scroll).
+      // GSAP uses position:fixed and is deterministic. Row 04
+      // ([data-last]) is excluded so it continues to scroll
+      // naturally and cover rows 01-03 as it rises, matching the
+      // Enerblock reference behaviour.
+      //
+      // pinSpacing:false avoids the section's scroll length being
+      // tripled (each pin would otherwise add its full scroll
+      // duration as padding). endTrigger is the LAST row (not the
+      // whole section) so the pins release exactly when row 04
+      // finishes scrolling off the top, rather than continuing
+      // through the section's 100vh padding tail and bleeding into
+      // Parallax/Layers below.
+      const allRows = section.querySelectorAll<HTMLElement>(
+        `.${CSS.escape(styles.row)}`,
+      );
+      const lastRowEl = allRows[allRows.length - 1];
       const pinRows = section.querySelectorAll<HTMLElement>(
         `.${CSS.escape(styles.row)}:not([data-last])`,
       );
@@ -170,19 +182,9 @@ export default function Solutions() {
         ScrollTrigger.create({
           trigger: row,
           start: `top top+=${90 * (idx + 1)}`,
-          endTrigger: section,
+          endTrigger: lastRowEl,
           end: "bottom top",
           pin: true,
-          // pinSpacing:false is critical here. With pinSpacing:true
-          // (default), GSAP adds padding equal to the pin's scroll
-          // duration to push other content away — with 3 stacked
-          // pins each lasting most of the section, that triples the
-          // section's scroll length and turns it into scrollytelling.
-          // With pinSpacing:false the row becomes position:fixed for
-          // the pin duration but no extra scroll is added; the
-          // wrapper still occupies the row's 520px of layout, so
-          // subsequent rows stay at their natural document positions.
-          // Net effect matches CSS-sticky semantics exactly.
           pinSpacing: false,
           anticipatePin: 1,
         });
