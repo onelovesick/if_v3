@@ -283,17 +283,17 @@ export default function Solutions() {
         // z-index above the stack so it covers everything as
         // it rises, just like Parallax and any later section
         // does (those slide up over Solutions via the matching
-        // -100vh margin + high z-index).
+        // -100vh margin + high z-index). Positioning lives in
+        // the stylesheet via [data-row]/[data-last] selectors
+        // so it survives any inline-style precedence weirdness
+        // with the position:sticky declaration on .row.
         const isLast = i === SOLUTIONS.length - 1;
         return (
         <article
           key={s.number}
           className={styles.row}
-          style={
-            isLast
-              ? { position: "relative", top: "auto", zIndex: i + 3 }
-              : { top: `${90 * (i + 1)}px`, zIndex: i + 3 }
-          }
+          data-row={i}
+          data-last={isLast ? "" : undefined}
         >
           <div className={styles.rowNumber}>
             <span>{s.number}</span>
