@@ -173,11 +173,17 @@ export default function Solutions() {
           endTrigger: section,
           end: "bottom top",
           pin: true,
-          // pinSpacing:true (default) keeps the row's layout space
-          // occupied by a spacer while it's position:fixed, so
-          // rows 02/03/04 stay at their natural document positions
-          // and don't collapse upward when row 01 pins. This matches
-          // CSS-sticky semantics.
+          // pinSpacing:false is critical here. With pinSpacing:true
+          // (default), GSAP adds padding equal to the pin's scroll
+          // duration to push other content away — with 3 stacked
+          // pins each lasting most of the section, that triples the
+          // section's scroll length and turns it into scrollytelling.
+          // With pinSpacing:false the row becomes position:fixed for
+          // the pin duration but no extra scroll is added; the
+          // wrapper still occupies the row's 520px of layout, so
+          // subsequent rows stay at their natural document positions.
+          // Net effect matches CSS-sticky semantics exactly.
+          pinSpacing: false,
           anticipatePin: 1,
         });
       });
