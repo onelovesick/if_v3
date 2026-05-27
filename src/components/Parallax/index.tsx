@@ -109,6 +109,7 @@ export default function Parallax() {
         />
       </div>
       <div className={styles.scrim} aria-hidden="true" />
+      <div className={styles.grain} aria-hidden="true" />
 
       <div className={styles.stickyHost}>
         <h2 ref={titleRef} id="field-title" className={styles.title}>

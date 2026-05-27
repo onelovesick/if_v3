@@ -65,13 +65,41 @@
     );
 }
 
+/* Filmic grain overlay — mirrors Hero's heroGrain so the
+   Parallax bridge reads as captured-on-film, not rendered.
+   Sits above the scrim and image but below the title content
+   so it textures the image without obscuring the headline. */
+.grain {
+  position: absolute;
+  inset: -25%;
+  width: 150%;
+  height: 150%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+  animation: parallaxGrain 4.2s steps(6) infinite;
+}
+
+@keyframes parallaxGrain {
+  0%   { transform: translate(0, 0); }
+  17%  { transform: translate(-3%, -7%); }
+  34%  { transform: translate(-10%, 3%); }
+  51%  { transform: translate(5%, -15%); }
+  68%  { transform: translate(-3%, 15%); }
+  85%  { transform: translate(-9%, 6%); }
+  100% { transform: translate(0, 0); }
+}
+
 /* Sticky host fills the viewport while the section scrolls.
    Title lives inside and gets GSAP-translated downward as the
    user scrolls through the section. */
 .stickyHost {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 3;
   height: 100vh;
   width: 100%;
   padding: 12vh clamp(20px, 4vw, 88px);
@@ -85,7 +113,7 @@
   margin: 0;
   width: 100%;
   font-family: var(--display);
-  font-size: clamp(2.5rem, 6.4vw, 8rem);
+  font-size: clamp(2rem, 4.4vw, 5rem);
   font-weight: 500;
   line-height: 0.96;
   letter-spacing: -0.03em;
@@ -107,7 +135,7 @@
   .title {
     white-space: normal;
     text-wrap: balance;
-    font-size: clamp(2.25rem, 7.5vw, 4.5rem);
+    font-size: clamp(1.75rem, 5.5vw, 3rem);
     transform: none !important;
   }
   .stickyHost {
@@ -120,5 +148,8 @@
   .bg,
   .title {
     transform: none !important;
+  }
+  .grain {
+    animation: none;
   }
 }
