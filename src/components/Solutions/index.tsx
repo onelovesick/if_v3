@@ -155,6 +155,33 @@ export default function Solutions() {
         }
       });
 
+      // Pin rows 01-03 at staggered top positions for the duration
+      // of the section's scroll range. Done via GSAP rather than CSS
+      // position:sticky because sticky was failing for row 02 in this
+      // particular DOM (likely an interaction with body's overflow-x
+      // hidden and Lenis smooth scroll). GSAP uses position:fixed
+      // and is deterministic. Row 04 ([data-last]) is excluded so it
+      // continues to scroll naturally and cover rows 01-03 as it
+      // rises, matching the Enerblock reference behaviour.
+      const pinRows = section.querySelectorAll<HTMLElement>(
+        `.${CSS.escape(styles.row)}:not([data-last])`,
+      );
+      pinRows.forEach((row, idx) => {
+        ScrollTrigger.create({
+          trigger: row,
+          start: `top top+=${90 * (idx + 1)}`,
+          endTrigger: section,
+          end: "bottom top",
+          pin: true,
+          // pinSpacing:true (default) keeps the row's layout space
+          // occupied by a spacer while it's position:fixed, so
+          // rows 02/03/04 stay at their natural document positions
+          // and don't collapse upward when row 01 pins. This matches
+          // CSS-sticky semantics.
+          anticipatePin: 1,
+        });
+      });
+
       ScrollTrigger.refresh();
     }, sectionRef);
 

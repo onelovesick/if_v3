@@ -203,35 +203,20 @@
   align-items: stretch;
   border-top: 1px solid #9F9DA0;
   min-height: 520px;
-  position: sticky;
+  position: relative;
   background: #F5F7FA;
 }
 
-/* Per-row sticky positioning. Each row pins 90px below the previous
-   so 01/02/03 stack as collapsible strips while row 04 rises through
-   them. Kept in CSS (not inline style) so the position:sticky on
-   .row above is reliably paired with the corresponding top value
-   in the cascade. */
-.row[data-row="0"] {
-  top: 90px;
-  z-index: 3;
-}
-.row[data-row="1"] {
-  top: 180px;
-  z-index: 4;
-}
-.row[data-row="2"] {
-  top: 270px;
-  z-index: 5;
-}
-/* Row 04 is NOT in the sticky stack — it scrolls naturally on top
-   of the pinned rows. !important guards the override against any
-   stylesheet ordering issue with the .row sticky declaration. */
-.row[data-last] {
-  position: relative !important;
-  top: auto !important;
-  z-index: 6;
-}
+/* Per-row z-index. Pinning at top:90/180/270 is handled by GSAP
+   ScrollTrigger in Solutions/index.tsx — CSS position:sticky was
+   failing silently for row 02 (likely interaction with the body's
+   overflow-x hidden and Lenis smooth scroll), so we use explicit
+   JS pinning instead. z-index here controls the visual stacking:
+   row 04 (last) sits on top so it covers rows 01-03 as it rises. */
+.row[data-row="0"] { z-index: 3; }
+.row[data-row="1"] { z-index: 4; }
+.row[data-row="2"] { z-index: 5; }
+.row[data-last] { z-index: 6; }
 
 /* Number — narrow left column anchored at the gutter so the
    image cell to its right gets the bulk of the left zone.
