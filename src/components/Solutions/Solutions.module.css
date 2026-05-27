@@ -23,13 +23,12 @@
   color: #0C0B11;
   font-family: var(--display);
   border-top: 1px solid #9F9DA0;
-  /* Long settle tail so rows 01-03 remain stuck for the ENTIRE
-     time row 04 is rising up over them, covering them, and
-     exiting the viewport. Without enough tail, the section ends
-     before row 04 has fully left, which makes rows 02/03 unstick
-     mid-transition and visibly scroll up. ~100vh past the rows
-     keeps the pinned stack locked through row 04's full traverse. */
-  padding-bottom: max(820px, 100vh);
+  /* No bottom padding: section ends exactly where row 04 ends.
+     That keeps rows 01-03's after-unstick position aligned with
+     row 04's natural position (both follow section bottom), so
+     row 04 (z:6) stays glued on top of them and they never peek
+     out as visibly scrolling rows. Parallax follows immediately
+     for a continuous handoff. */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
