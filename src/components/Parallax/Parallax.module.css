@@ -13,6 +13,14 @@
   overflow: hidden;
   background: #0a0e16;
   color: #FFFFFF;
+  /* Pull this section UP into the tail of Solutions (which has a
+     100vh padding-bottom to keep its sticky rows 01-03 pinned
+     during the handoff). The negative margin makes Parallax slide
+     INTO that tail so the user sees Parallax covering Solutions'
+     pinned rows instead of an empty cream gap. Higher z-index so
+     Parallax sits on top of the still-pinned rows. */
+  margin-top: -100vh;
+  z-index: 10;
 }
 
 /* Background image wrapper. Image is taller than the section
@@ -88,8 +96,14 @@
 
 /* ─── Tablet / mobile ───
    Drop the scroll-descent and let the title wrap. Section
-   becomes a tall hero with the title near the top. */
+   becomes a tall hero with the title near the top. Also drop
+   the negative margin / z-index overlap with Solutions because
+   Solutions removes its tail at this breakpoint. */
 @media (max-width: 1023px) {
+  .section {
+    margin-top: 0;
+    z-index: auto;
+  }
   .title {
     white-space: normal;
     text-wrap: balance;

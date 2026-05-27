@@ -23,12 +23,14 @@
   color: #0C0B11;
   font-family: var(--display);
   border-top: 1px solid #9F9DA0;
-  /* No bottom padding: section ends exactly where row 04 ends.
-     That keeps rows 01-03's after-unstick position aligned with
-     row 04's natural position (both follow section bottom), so
-     row 04 (z:6) stays glued on top of them and they never peek
-     out as visibly scrolling rows. Parallax follows immediately
-     for a continuous handoff. */
+  /* Long invisible tail so rows 01-03 stay pinned by CSS sticky
+     while row 04, then Parallax, scroll up over them. Parallax
+     uses a matching negative margin-top to slide INTO this tail,
+     so the user never sees empty cream space - they see Parallax
+     covering the area the moment row 04 has finished crossing.
+     Rows 01-03 unstick only after Parallax has fully passed,
+     hidden behind it the whole time. */
+  padding-bottom: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -425,6 +427,9 @@
    Below 1024px the 60/40 split breaks down. Drop the divider
    and the pin, stack header + each row into a single column. */
 @media (max-width: 1023px) {
+  .section {
+    padding-bottom: 0;
+  }
   .divider,
   .pin {
     display: none;
