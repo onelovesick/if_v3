@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./Parallax.module.css";
@@ -12,7 +12,63 @@ import styles from "./Parallax.module.css";
  * parallax. One left-anchored title that spans the section
  * width, descends with scroll, and stops just short of the
  * section bottom so a margin of image is always visible below.
+ *
+ * The title resolves character-by-character from random scramble
+ * to final text when the section enters the viewport, mirroring
+ * the effect used on "Process" / "Company" in PositionBrief.
  */
+
+const useIsoLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+const SCRAMBLE_CHARS =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+function randomScramble(text: string) {
+  let out = "";
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === " " || ch === "\n") {
+      out += ch;
+    } else {
+      out +=
+        SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+    }
+  }
+  return out;
+}
+
+function scrambleResolve(
+  el: HTMLElement,
+  finalText: string,
+  duration: number,
+) {
+  const start = performance.now();
+  const len = finalText.length;
+
+  function step(now: number) {
+    const t = Math.min((now - start) / duration, 1);
+    const resolved = Math.floor(t * (len + 4));
+    let out = "";
+    for (let i = 0; i < len; i++) {
+      const ch = finalText[i];
+      if (i < resolved || ch === " " || ch === "\n") {
+        out += ch;
+      } else {
+        out +=
+          SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+      }
+    }
+    el.textContent = out;
+    if (t < 1) {
+      requestAnimationFrame(step);
+    } else {
+      el.textContent = finalText;
+    }
+  }
+
+  requestAnimationFrame(step);
+}
 
 export default function Parallax() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -20,12 +76,49 @@ export default function Parallax() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const { ready } = useMotionReady();
 
+  // Pre-scramble the title synchronously on mount, before first
+  // paint, so by the time the section ever appears in view the
+  // user sees random characters and never the final text.
+  useIsoLayoutEffect(() => {
+    const el = titleRef.current;
+    if (!el) return;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduce) return;
+    if (!el.hasAttribute("data-final")) {
+      el.setAttribute("data-final", el.textContent ?? "");
+    }
+    el.textContent = randomScramble(el.getAttribute("data-final") ?? "");
+  }, []);
+
   useEffect(() => {
     if (!ready || !sectionRef.current) return;
     const section = sectionRef.current;
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+
+    // Trigger the scramble resolve the moment the section first
+    // intersects the viewport. Title is pre-scrambled by the
+    // useIsoLayoutEffect above so the user sees random chars and
+    // then watches them resolve left-to-right into the headline.
+    let scrambleFired = false;
+    const titleEl = titleRef.current;
+    const scrambleObserver =
+      titleEl && !reduce
+        ? new IntersectionObserver(
+            ([entry]) => {
+              if (!entry.isIntersecting || scrambleFired) return;
+              scrambleFired = true;
+              const final = titleEl.getAttribute("data-final") ?? "";
+              scrambleResolve(titleEl, final, 1800);
+              scrambleObserver?.disconnect();
+            },
+            { threshold: 0.05 },
+          )
+        : null;
+    if (scrambleObserver) scrambleObserver.observe(section);
 
     const ctx = gsap.context(() => {
       if (reduce) return;
@@ -88,7 +181,10 @@ export default function Parallax() {
       ScrollTrigger.refresh();
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      scrambleObserver?.disconnect();
+      ctx.revert();
+    };
   }, [ready]);
 
   return (
