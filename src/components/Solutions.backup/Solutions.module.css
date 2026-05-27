@@ -23,6 +23,7 @@
   color: #0C0B11;
   font-family: var(--display);
   border-top: 1px solid #9F9DA0;
+  padding-bottom: clamp(48px, 6vw, 96px);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -39,7 +40,7 @@
   width: 1px;
   background: #9F9DA0;
   pointer-events: none;
-  z-index: 10;
+  z-index: 2;
 }
 
 .pin {
@@ -50,7 +51,7 @@
   height: 10px;
   background: #0C0B11;
   transform: translateX(-5px);
-  z-index: 11;
+  z-index: 3;
 }
 
 /* ─── Header band ───
@@ -62,10 +63,6 @@
   display: flex;
   align-items: stretch;
   min-height: 450px;
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: #F5F7FA;
 }
 
 .headerLeft {
@@ -195,8 +192,6 @@
   align-items: stretch;
   border-top: 1px solid #9F9DA0;
   min-height: 520px;
-  position: sticky;
-  background: #F5F7FA;
 }
 
 /* Number — narrow left column anchored at the gutter so the
@@ -406,16 +401,6 @@
   .divider,
   .pin {
     display: none;
-  }
-  .headerStage {
-    position: relative;
-    top: auto;
-    z-index: auto;
-  }
-  .row {
-    position: relative !important;
-    top: auto !important;
-    z-index: auto !important;
   }
   .headerStage,
   .row {

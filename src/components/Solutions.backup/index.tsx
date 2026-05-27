@@ -263,12 +263,8 @@ export default function Solutions() {
       {/* ─── Solution rows — three columns: number, image, text.
               Text uses margin-left:auto + width:40% so its left
               edge lands exactly on the 60% divider. */}
-      {SOLUTIONS.map((s, i) => (
-        <article
-          key={s.number}
-          className={styles.row}
-          style={{ top: `${90 * (i + 1)}px`, zIndex: i + 3 }}
-        >
+      {SOLUTIONS.map((s) => (
+        <article key={s.number} className={styles.row}>
           <div className={styles.rowNumber}>
             <span>{s.number}</span>
             <span
