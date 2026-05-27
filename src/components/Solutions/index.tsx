@@ -44,7 +44,7 @@ const SOLUTIONS: Solution[] = [
     ],
     body: "We design the structure that makes every drawing, model, and document findable, governed, and trusted. ISO 19650, naming conventions, CDE setup, and the workflows that keep them honest under deadline.",
     href: "#layers",
-    image: "/solutions-1.jpg",
+    image: "/solutions-1-1600.jpg",
     alt: "Information management on a live infrastructure program",
   },
   {
@@ -56,7 +56,7 @@ const SOLUTIONS: Solution[] = [
     ],
     body: "4D scheduling, scan-to-BIM, progress capture, field BIM. We bring construction reality back into the digital record so issues surface as variances, not as claims.",
     href: "#layers",
-    image: "/solutions-2.jpg",
+    image: "/solutions-2-1600.jpg",
     alt: "Reality-capture survey on a construction site",
   },
   {
@@ -68,7 +68,7 @@ const SOLUTIONS: Solution[] = [
     ],
     body: "COBie handover, asset information modelling, twin foundations, operational dashboards. The model becomes a working tool for the operator, not a folder of legacy files.",
     href: "#layers",
-    image: "/solutions-3.jpg",
+    image: "/solutions-3-1600.jpg",
     alt: "Operations dashboard for a major civil asset",
   },
 ];
