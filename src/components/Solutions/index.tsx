@@ -276,20 +276,19 @@ export default function Solutions() {
               Text uses margin-left:auto + width:40% so its left
               edge lands exactly on the 60% divider. */}
       {SOLUTIONS.map((s, i) => {
-        // The last row is non-sticky on purpose: it scrolls
-        // naturally up over the stack of pinned rows and exits
-        // the viewport while rows 01-03 stay locked. Gives the
-        // "the last solution leaves, the others hold" feel.
-        const isLast = i === SOLUTIONS.length - 1;
+        // All four rows are sticky at ascending offsets
+        // (90/180/270/360). Row 04 sticks at 360, just below
+        // row 03's strip, so it never rises THROUGH the strips
+        // for rows 01-03 — no more "row 02 getting pushed".
+        // Solutions' 100vh padding-bottom + Parallax's -100vh
+        // margin-top mean Parallax slides up over the whole
+        // pinned stack as the rest of the website scrolls,
+        // and rows 01-04 release silently behind Parallax.
         return (
         <article
           key={s.number}
           className={styles.row}
-          style={
-            isLast
-              ? { position: "relative", top: "auto", zIndex: i + 3 }
-              : { top: `${90 * (i + 1)}px`, zIndex: i + 3 }
-          }
+          style={{ top: `${90 * (i + 1)}px`, zIndex: i + 3 }}
         >
           <div className={styles.rowNumber}>
             <span>{s.number}</span>
