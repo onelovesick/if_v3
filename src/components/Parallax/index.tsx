@@ -73,7 +73,11 @@ export default function Parallax() {
             scrollTrigger: {
               trigger: section,
               start: "top top",
-              end: "bottom top",
+              // Descent completes in ~50vh of scroll (the first
+              // half of the section's sticky window) so the title
+              // sits at the bottom while the section finishes
+              // exiting, instead of racing the section out.
+              end: () => "+=" + window.innerHeight * 0.5,
               scrub: true,
               invalidateOnRefresh: true,
             },

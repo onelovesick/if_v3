@@ -71,6 +71,18 @@ const SOLUTIONS: Solution[] = [
     image: "/solutions-3-1600.jpg",
     alt: "Operations dashboard for a major civil asset",
   },
+  {
+    number: "04",
+    label: "Advisory",
+    titleLines: [
+      "Independent counsel on",
+      "the work that matters.",
+    ],
+    body: "Audits, governance reviews, training, and one-off engagements. We come in clean and leave you with a plan you can act on. Placeholder copy, to be refined.",
+    href: "#field",
+    image: "/solutions-4-1600.jpg",
+    alt: "Advisory work on a major infrastructure program",
+  },
 ];
 
 const pad = (n: number) => String(Math.max(0, Math.round(n))).padStart(4, "0");
@@ -263,11 +275,21 @@ export default function Solutions() {
       {/* ─── Solution rows — three columns: number, image, text.
               Text uses margin-left:auto + width:40% so its left
               edge lands exactly on the 60% divider. */}
-      {SOLUTIONS.map((s, i) => (
+      {SOLUTIONS.map((s, i) => {
+        // The last row is non-sticky on purpose: it scrolls
+        // naturally up over the stack of pinned rows and exits
+        // the viewport while rows 01-03 stay locked. Gives the
+        // "the last solution leaves, the others hold" feel.
+        const isLast = i === SOLUTIONS.length - 1;
+        return (
         <article
           key={s.number}
           className={styles.row}
-          style={{ top: `${90 * (i + 1)}px`, zIndex: i + 3 }}
+          style={
+            isLast
+              ? { position: "relative", top: "auto", zIndex: i + 3 }
+              : { top: `${90 * (i + 1)}px`, zIndex: i + 3 }
+          }
         >
           <div className={styles.rowNumber}>
             <span>{s.number}</span>
@@ -311,7 +333,8 @@ export default function Solutions() {
             </a>
           </div>
         </article>
-      ))}
+        );
+      })}
     </section>
   );
 }
