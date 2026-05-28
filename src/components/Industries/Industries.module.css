@@ -179,6 +179,11 @@
   flex-direction: column;
   gap: clamp(10px, 1.4vh, 18px);
   min-height: clamp(170px, 22vh, 230px);
+  /* Grid items default to min-width:auto (= min-content), which lets
+     single long words like "Transportation" stretch the column past
+     1fr and push the row off-screen. Lock to 0 so each tile honours
+     its 1fr share and long words wrap. */
+  min-width: 0;
   cursor: pointer;
   position: relative;
   transition:
@@ -212,6 +217,7 @@
   letter-spacing: -0.02em;
   color: #0C0B11;
   margin-top: 4px;
+  overflow-wrap: anywhere;
   transition: color 0.5s var(--ease);
 }
 
@@ -265,6 +271,7 @@
   justify-content: space-between;
   gap: clamp(10px, 1.4vh, 18px);
   min-height: clamp(170px, 22vh, 230px);
+  min-width: 0;
 }
 
 .tileSummaryLabel {
