@@ -1,0 +1,518 @@
+/* ═══════════════════════════════════════════════════════
+   INDUSTRIES — light section after Parallax.
+   Paper ground #F5F7FA matching PositionBrief and Solutions,
+   ink #0C0B11, grey hairlines #9F9DA0. Continues the 51%
+   vertical divider that runs through Problem and Solutions.
+
+   Layout: 51/49 split.
+     Left  51% — 3x2 tile grid (5 industries + 1 summary cell)
+     Right 49% — shared photo + project-type list
+   Tiles use a hover-active model: hovering any tile lifts it,
+   dims the others, and swaps the shared photo + list on the
+   right rail.
+   ═══════════════════════════════════════════════════════ */
+
+.section {
+  position: relative;
+  background: #F5F7FA;
+  color: #0C0B11;
+  font-family: var(--display);
+  border-top: 1px solid #9F9DA0;
+  padding-top: clamp(96px, 12vh, 180px);
+  padding-bottom: clamp(120px, 16vh, 200px);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+/* Continuous 51% divider — matches Solutions exactly so the
+   line reads as one unbroken hairline carried down the page. */
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 51%;
+  width: 1px;
+  background: #9F9DA0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.pin {
+  position: absolute;
+  top: clamp(16px, 1.6vw, 28px);
+  left: 51%;
+  width: 10px;
+  height: 10px;
+  background: #0C0B11;
+  transform: translateX(-5px);
+  z-index: 11;
+}
+
+/* ─── Header band — 51/49 split ─── */
+.headerStage {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+  margin-bottom: clamp(48px, 7vh, 96px);
+}
+
+.headerLeft {
+  width: 51%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.6vw, 36px);
+  padding-left: var(--gutter);
+  padding-right: clamp(24px, 3vw, 48px);
+}
+
+.headerRight {
+  width: 49%;
+  padding-left: clamp(28px, 3vw, 48px);
+  padding-right: var(--gutter);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.eyebrow {
+  font-family: var(--display);
+  font-size: clamp(1.1rem, 1.7vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #0C0B11;
+  line-height: 1;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 4.6vw, 5.25rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: #0C0B11;
+  text-wrap: balance;
+}
+
+.titleLine {
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+.titleLineText {
+  display: block;
+}
+
+.titleLineSweep {
+  position: absolute;
+  inset: 0;
+  background: #0C0B11;
+  transform: translateX(0%);
+  will-change: transform;
+}
+
+.lead {
+  font-family: var(--display);
+  font-size: clamp(1rem, 1.2vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: #4D4B53;
+  max-width: 36ch;
+  margin: 0;
+}
+
+.counter {
+  font-family: var(--mono);
+  font-size: clamp(11px, 0.85vw, 13px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #737074;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.counter::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: #9F9DA0;
+}
+
+/* ─── Body — 51/49 split: tile grid + shared photo rail ─── */
+.body {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  z-index: 2;
+}
+
+.gridCol {
+  width: 51%;
+  padding-left: var(--gutter);
+  padding-right: clamp(24px, 3vw, 48px);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid #9F9DA0;
+  border-left: 1px solid #9F9DA0;
+}
+
+.tile {
+  appearance: none;
+  border: 0;
+  background: #F5F7FA;
+  border-right: 1px solid #9F9DA0;
+  border-bottom: 1px solid #9F9DA0;
+  text-align: left;
+  font-family: var(--display);
+  color: #0C0B11;
+  padding: clamp(20px, 2.2vw, 32px) clamp(18px, 2vw, 28px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.4vh, 18px);
+  min-height: clamp(170px, 22vh, 230px);
+  cursor: pointer;
+  position: relative;
+  transition:
+    background 0.5s var(--ease),
+    color 0.5s var(--ease),
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease);
+}
+
+.tile:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+}
+
+.tileNumber {
+  font-family: var(--mono);
+  font-size: clamp(11px, 0.85vw, 13px);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #737074;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.5s var(--ease);
+}
+
+.tileName {
+  font-family: var(--display);
+  font-size: clamp(1.4rem, 1.7vw, 1.85rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: #0C0B11;
+  margin-top: 4px;
+  transition: color 0.5s var(--ease);
+}
+
+.tileOneLine {
+  font-family: var(--display);
+  font-size: clamp(0.85rem, 0.95vw, 1rem);
+  font-weight: 400;
+  line-height: 1.4;
+  color: #4D4B53;
+  margin-top: auto;
+  transition: color 0.5s var(--ease);
+}
+
+.tileArrow {
+  position: absolute;
+  right: clamp(18px, 2vw, 28px);
+  top: clamp(20px, 2.2vw, 32px);
+  font-family: var(--mono);
+  font-size: 14px;
+  color: #B5BCC4;
+  transform: translateX(0);
+  transition: transform 0.5s var(--ease), color 0.5s var(--ease);
+}
+
+/* Active tile — ink fill, light text, arrow nudges right */
+.tileActive {
+  background: #0C0B11;
+  color: #F5F7FA;
+}
+.tileActive .tileNumber { color: rgba(245, 247, 250, 0.55); }
+.tileActive .tileName { color: #F5F7FA; }
+.tileActive .tileOneLine { color: rgba(245, 247, 250, 0.7); }
+.tileActive .tileArrow {
+  color: #F5F7FA;
+  transform: translateX(6px);
+}
+
+.tileDim {
+  opacity: 0.35;
+}
+
+/* Sixth cell — small architectural summary so the 3x2 grid
+   reads as intentional rather than a missing tile. */
+.tileSummary {
+  background: #F5F7FA;
+  border-right: 1px solid #9F9DA0;
+  border-bottom: 1px solid #9F9DA0;
+  padding: clamp(20px, 2.2vw, 32px) clamp(18px, 2vw, 28px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(10px, 1.4vh, 18px);
+  min-height: clamp(170px, 22vh, 230px);
+}
+
+.tileSummaryLabel {
+  font-family: var(--mono);
+  font-size: clamp(11px, 0.85vw, 13px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #737074;
+}
+
+.tileSummaryNote {
+  font-family: var(--display);
+  font-size: clamp(0.9rem, 1.05vw, 1.1rem);
+  font-weight: 400;
+  line-height: 1.4;
+  color: #4D4B53;
+}
+
+.tileSummaryMark {
+  width: 10px;
+  height: 10px;
+  border: 1px solid #0C0B11;
+  border-radius: 50%;
+}
+
+/* ─── Rail — right 49%: shared photo + detail list ─── */
+.rail {
+  width: 49%;
+  padding-left: clamp(28px, 3vw, 48px);
+  padding-right: var(--gutter);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 4vh, 48px);
+}
+
+.photoFrame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 6;
+  overflow: hidden;
+  background: rgba(12, 11, 17, 0.06);
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 0.8s var(--ease),
+    transform 8s linear;
+  will-change: opacity, transform;
+}
+
+.photoActive {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Crosshair overlay — confined to the photo frame */
+.crossOverlay {
+  --cx: -100px;
+  --cy: -100px;
+  --crossActive: 0;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--crossActive);
+  transition: opacity 200ms ease;
+  z-index: 3;
+}
+
+.crossLine {
+  position: absolute;
+  background: rgba(245, 247, 250, 0.55);
+  pointer-events: none;
+  will-change: top, left;
+}
+
+.crossLineV {
+  top: 0;
+  bottom: 0;
+  left: var(--cx);
+  width: 1px;
+  transform: translateX(-0.5px);
+}
+
+.crossLineH {
+  left: 0;
+  right: 0;
+  top: var(--cy);
+  height: 1px;
+  transform: translateY(-0.5px);
+}
+
+.crossPoint {
+  position: absolute;
+  left: var(--cx);
+  top: var(--cy);
+  width: 6px;
+  height: 6px;
+  background: var(--blue);
+  transform: translate(-3px, -3px);
+}
+
+.coordItem {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: clamp(10px, 0.8vw, 12px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: rgba(245, 247, 250, 0.75);
+  white-space: nowrap;
+}
+
+.coordX {
+  bottom: 12px;
+  left: 12px;
+}
+
+.coordY {
+  top: 12px;
+  right: 12px;
+}
+
+/* Caption strip below the photo — name + region pin */
+.caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid #9F9DA0;
+  font-family: var(--mono);
+  font-size: clamp(11px, 0.85vw, 13px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #737074;
+}
+
+.captionName {
+  color: #0C0B11;
+  font-weight: 400;
+}
+
+/* Detail block — eyebrow + project list */
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2vh, 22px);
+}
+
+.detailLabel {
+  font-family: var(--mono);
+  font-size: clamp(11px, 0.85vw, 13px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #737074;
+}
+
+.detailList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.detailItem {
+  font-family: var(--display);
+  font-size: clamp(0.95rem, 1.1vw, 1.15rem);
+  font-weight: 400;
+  line-height: 1.4;
+  color: #0C0B11;
+  padding: 14px 0;
+  border-top: 1px solid #D6DDE3;
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  animation: industriesItemIn 0.7s var(--ease) both;
+}
+
+.detailItem:last-child {
+  border-bottom: 1px solid #D6DDE3;
+}
+
+.detailItem::before {
+  content: "";
+  width: 10px;
+  height: 1px;
+  background: var(--blue);
+  flex-shrink: 0;
+  transform: translateY(-4px);
+}
+
+.detailItem:nth-child(1) { animation-delay: 0ms; }
+.detailItem:nth-child(2) { animation-delay: 70ms; }
+.detailItem:nth-child(3) { animation-delay: 140ms; }
+.detailItem:nth-child(4) { animation-delay: 210ms; }
+.detailItem:nth-child(5) { animation-delay: 280ms; }
+
+@keyframes industriesItemIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .divider,
+  .pin {
+    display: none;
+  }
+  .headerStage,
+  .body {
+    flex-direction: column;
+  }
+  .headerLeft,
+  .headerRight,
+  .gridCol,
+  .rail {
+    width: 100%;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+  .headerRight {
+    justify-content: flex-start;
+    margin-top: clamp(20px, 3vh, 32px);
+  }
+  .rail {
+    margin-top: clamp(40px, 6vh, 64px);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tileSummary {
+    grid-column: span 2;
+  }
+}
