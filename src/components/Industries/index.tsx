@@ -20,7 +20,7 @@ interface Industry {
   name: string;
   region: string;
   oneLine: string;
-  projects: string[];
+  scope: string[];
   image: string;
   alt: string;
 }
@@ -30,13 +30,8 @@ const INDUSTRIES: Industry[] = [
     number: "01",
     name: "Transportation",
     region: "QC · CA",
-    oneLine: "Highways, transit, rail, airports, ports.",
-    projects: [
-      "Light rail and metro extensions",
-      "Highway corridors and interchanges",
-      "Airport terminal renewal",
-      "Port and intermodal terminals",
-    ],
+    oneLine: "Rail, transit, highways, airports, ports.",
+    scope: ["Rail", "Transit", "Highways", "Airports", "Ports"],
     image: "/solutions-1-1600.jpg",
     alt: "Transportation infrastructure program",
   },
@@ -44,55 +39,35 @@ const INDUSTRIES: Industry[] = [
     number: "02",
     name: "Energy",
     region: "QC · CA",
-    oneLine: "Generation, transmission, renewables.",
-    projects: [
-      "Hydroelectric refurbishment",
-      "Wind and solar farms",
-      "Transmission corridors",
-      "Substations and switchyards",
-    ],
+    oneLine: "Hydro, nuclear, transmission, renewables.",
+    scope: ["Hydro", "Nuclear", "Transmission", "Wind & solar"],
     image: "/solutions-2-1600.jpg",
     alt: "Energy infrastructure program",
   },
   {
     number: "03",
-    name: "Civil infrastructure",
+    name: "Heavy Civil & Water",
     region: "QC · CA",
-    oneLine: "Bridges, water, dams, flood works.",
-    projects: [
-      "Cable-stayed and arch bridges",
-      "Water treatment and conveyance",
-      "Dam safety upgrades",
-      "Coastal and flood protection",
-    ],
+    oneLine: "Dams, flood works, water, earthworks.",
+    scope: ["Dams", "Flood works", "Water / wastewater", "Earthworks"],
     image: "/solutions-3-1600.jpg",
-    alt: "Civil infrastructure program",
+    alt: "Heavy civil and water program",
   },
   {
     number: "04",
-    name: "Buildings",
+    name: "Buildings & Facilities",
     region: "QC · CA",
     oneLine: "Hospitals, campuses, civic, transit hubs.",
-    projects: [
-      "Hospital expansions",
-      "University campus master plans",
-      "Government and civic buildings",
-      "Transit-oriented developments",
-    ],
+    scope: ["Hospitals", "Campuses", "Civic", "Transit hubs"],
     image: "/solutions-4-1600.jpg",
-    alt: "Major building program",
+    alt: "Major building and facilities program",
   },
   {
     number: "05",
     name: "Industrial",
     region: "QC · CA",
     oneLine: "Mining, processing, manufacturing plants.",
-    projects: [
-      "Mineral processing facilities",
-      "Heavy industrial campuses",
-      "LNG and chemical plants",
-      "Logistics and distribution centres",
-    ],
+    scope: ["Mining", "Processing", "Manufacturing plants"],
     image: "/parallax-hero.jpg",
     alt: "Industrial facility program",
   },
@@ -312,9 +287,9 @@ export default function Industries() {
             ))}
           </h2>
           <p data-reveal className={styles.lead}>
-            Transportation, energy, civil, buildings, industrial. The
-            information layer that holds these programs together is the
-            same.
+            Five sectors, one operating system. The information layer
+            that carries a program from brief to operations is the same
+            across all of them.
           </p>
         </div>
         <div className={styles.headerRight}>
@@ -371,6 +346,14 @@ export default function Industries() {
         </div>
 
         <div className={styles.rail}>
+          <div className={styles.railHead} key={activeIdx}>
+            <span className={styles.railIndex} aria-hidden="true">
+              {active.number}
+            </span>
+            <span className={styles.railName}>{active.name}</span>
+            <span className={styles.railRegion}>{active.region}</span>
+          </div>
+
           <div ref={photoHostRef} className={styles.photoFrame}>
             {INDUSTRIES.map((ind, i) => (
               <img
@@ -413,17 +396,10 @@ export default function Industries() {
             </div>
           </div>
 
-          <div className={styles.caption}>
-            <span className={styles.captionName}>
-              {active.number} / {active.name}
-            </span>
-            <span>{active.region}</span>
-          </div>
-
           <div className={styles.detail}>
-            <span className={styles.detailLabel}>Typical work</span>
+            <span className={styles.detailLabel}>Scope</span>
             <ul key={activeIdx} className={styles.detailList}>
-              {active.projects.map((p, i) => (
+              {active.scope.map((p, i) => (
                 <li key={i} className={styles.detailItem}>
                   <span>{p}</span>
                 </li>
