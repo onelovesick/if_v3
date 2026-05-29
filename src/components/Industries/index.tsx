@@ -6,17 +6,19 @@ import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./Industries.module.css";
 
 /**
- * Industries — "B+" full-width carousel, after the Parallax section.
+ * Industries — Solutions-style header + scroll-driven horizontal carousel.
  *
- * A light sheet rises over the dark parallax above it (negative top
- * margin + lift shadow), carrying an editorial intro (eyebrow +
- * headline left; lead + credential stats right) and a control bar
- * (swipe cue + prev/next + progress track) on the content grid, then
- * flows into an edge-to-edge horizontal scroll-snap carousel of the
- * five sectors. Wireframe sketch styling is dropped; this uses the
- * brand system (PP Neue Corp / PP Fraktion Mono, hard edges, blue
- * accent). Native horizontal scroll drives the progress bar; prev/next
- * nudge by one card.
+ * Header mirrors Solutions: a 51/49 split with the page's 51% vertical
+ * hairline. Left holds the big uppercase eyebrow + display headline;
+ * the right zone (where Solutions has its cursor crosshair) instead
+ * holds the lead paragraph + credential stats, with no mouse tracker.
+ *
+ * The carousel pins for a moderate distance and the five large cards
+ * translate left as the user scrolls vertically, so the sectors pass
+ * through one set at a time (GSAP pin + scrub, desktop only). On
+ * tablet/mobile and under reduced motion it falls back to a native
+ * horizontal scroll-snap row. The progress bar reflects either the
+ * pin progress (desktop) or the native scrollLeft (mobile).
  */
 
 interface Industry {
@@ -71,79 +73,59 @@ const INDUSTRIES: Industry[] = [
   },
 ];
 
-// Only confirmed numbers. A projects count goes here once the client
-// provides a real figure; do not invent one.
+// Only confirmed numbers. Add a projects count once the client gives a
+// real figure; do not invent one.
 const STATS = [
   { no: "5", label: "Core sectors" },
   { no: "55", label: "Years of senior practice" },
 ];
 
-const HEADLINE_LINES = [
-  "We build across the systems",
-  "that move, power & shelter",
-  "modern life.",
-];
-
 export default function Industries() {
   const sectionRef = useRef<HTMLElement>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
+
   const { ready } = useMotionReady();
 
+  // Native-scroll progress (mobile / reduced motion, where the track
+  // is a real scroll container). No-op on desktop where the track is
+  // transform-driven and never scrolls.
   const updateProgress = useCallback(() => {
     const track = trackRef.current;
     const bar = barRef.current;
     if (!track || !bar) return;
     const max = track.scrollWidth - track.clientWidth;
-    const pct = max > 0 ? track.scrollLeft / max : 0;
+    if (max <= 0) return;
+    const pct = track.scrollLeft / max;
     bar.style.transform = `scaleX(${Math.max(0.05, pct).toFixed(4)})`;
   }, []);
 
-  const nudge = useCallback((dir: number) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    const card = track.querySelector<HTMLElement>(
-      `.${CSS.escape(styles.card)}`,
-    );
-    const step = card ? card.offsetWidth + 20 : 400;
-    track.scrollBy({ left: dir * step, behavior: reduce ? "auto" : "smooth" });
-  }, []);
-
-  // Progress bar tracks horizontal scroll.
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-    updateProgress();
     track.addEventListener("scroll", updateProgress, { passive: true });
-    window.addEventListener("resize", updateProgress);
-    return () => {
-      track.removeEventListener("scroll", updateProgress);
-      window.removeEventListener("resize", updateProgress);
-    };
+    return () => track.removeEventListener("scroll", updateProgress);
   }, [updateProgress]);
 
-  // Entrance reveals (gated on loader-ready, reduced-motion safe).
   useEffect(() => {
     const root = sectionRef.current;
-    if (!root || !ready) return;
+    const pinEl = pinRef.current;
+    const track = trackRef.current;
+    const bar = barRef.current;
+    if (!root || !pinEl || !track || !ready) return;
+
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
     const ctx = gsap.context(() => {
-      const sweeps = root.querySelectorAll<HTMLElement>(
-        `.${CSS.escape(styles.titleLineSweep)}`,
-      );
       const cards = root.querySelectorAll<HTMLElement>(
         `.${CSS.escape(styles.card)}`,
       );
 
       if (reduce) {
         gsap.set(root.querySelectorAll("[data-reveal]"), { opacity: 1, y: 0 });
-        gsap.set(sweeps, { xPercent: 101 });
         gsap.set(cards, { opacity: 1, y: 0 });
         return;
       }
@@ -161,38 +143,54 @@ export default function Industries() {
         },
       });
 
-      if (sweeps.length) {
-        gsap.fromTo(
-          sweeps,
-          { xPercent: 0 },
-          {
-            xPercent: 101,
-            duration: 1.1,
-            ease: "power3.inOut",
-            stagger: 0.16,
-            scrollTrigger: {
-              trigger: root,
-              start: "top 70%",
-              toggleActions: "play none none none",
-            },
-          },
-        );
-      }
-
       if (cards.length) {
         gsap.from(cards, {
           opacity: 0,
-          y: 28,
-          duration: 0.95,
+          duration: 0.9,
           ease: "expo.out",
-          stagger: 0.1,
+          stagger: 0.08,
           scrollTrigger: {
-            trigger: trackRef.current ?? root,
+            trigger: pinEl,
             start: "top 85%",
             toggleActions: "play none none none",
           },
         });
       }
+
+      // Desktop, motion allowed: pin the carousel and translate the
+      // track horizontally as the user scrolls. Distance is just the
+      // horizontal overflow, so it scrolls through the cards once and
+      // releases (no eternal pin).
+      const mm = gsap.matchMedia();
+      mm.add(
+        "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
+        () => {
+          const distance = () => Math.max(0, track.scrollWidth - pinEl.clientWidth);
+          ScrollTrigger.create({
+            trigger: pinEl,
+            start: "top top",
+            end: () => "+=" + distance(),
+            pin: true,
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              track.style.transform = `translate3d(${(
+                -distance() * self.progress
+              ).toFixed(2)}px,0,0)`;
+              if (bar) {
+                bar.style.transform = `scaleX(${Math.max(
+                  0.05,
+                  self.progress,
+                ).toFixed(4)})`;
+              }
+            },
+          });
+          return () => {
+            track.style.transform = "";
+            if (bar) bar.style.transform = "scaleX(0.05)";
+          };
+        },
+      );
 
       ScrollTrigger.refresh();
     }, sectionRef);
@@ -209,92 +207,70 @@ export default function Industries() {
       className={styles.section}
       aria-labelledby="industries-title"
     >
-      <div className={styles.sheet}>
-        <div className={styles.intro}>
-          <div className={styles.introLead}>
-            <span data-reveal className={styles.eyebrow}>
-              Industries · 01 / 05
-            </span>
-            <h2 id="industries-title" className={styles.title}>
-              {HEADLINE_LINES.map((line, i) => (
-                <span key={i} className={styles.titleLine}>
-                  <span className={styles.titleLineText}>{line}</span>
-                  <span
-                    className={styles.titleLineSweep}
-                    aria-hidden="true"
-                  />
-                </span>
-              ))}
-            </h2>
-          </div>
+      <div className={styles.headerStage}>
+        <span className={styles.divider} aria-hidden="true" />
+        <span className={styles.pin} aria-hidden="true" />
 
-          <div className={styles.introSupport}>
-            <p data-reveal className={styles.lead}>
-              From the rail lines and runways that connect regions to the
-              plants that power them, our teams take on complex work in
-              five core sectors, delivered to a single standard.
-            </p>
-            <div data-reveal className={styles.creds}>
-              {STATS.map((s) => (
-                <div key={s.label} className={styles.cred}>
-                  <span className={styles.credNo}>{s.no}</span>
-                  <span className={styles.credLbl}>{s.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className={styles.headerLeft}>
+          <span data-reveal className={styles.eyebrow}>
+            Industries
+          </span>
+          <h2 id="industries-title" data-reveal className={styles.headTitle}>
+            We build across the systems that move, power &amp; shelter
+            modern life.
+          </h2>
         </div>
 
-        <div className={styles.bar}>
-          <span data-reveal className={styles.swipeCue}>
-            Swipe the sectors <span aria-hidden="true">&rarr;</span>
-          </span>
-          <div className={styles.nav}>
-            <button
-              type="button"
-              className={styles.navBtn}
-              aria-label="Previous sectors"
-              onClick={() => nudge(-1)}
-            >
-              &lsaquo;
-            </button>
-            <button
-              type="button"
-              className={styles.navBtn}
-              aria-label="Next sectors"
-              onClick={() => nudge(1)}
-            >
-              &rsaquo;
-            </button>
-            <div className={styles.progress}>
-              <span ref={barRef} className={styles.progressBar} />
-            </div>
+        <div className={styles.headerRight}>
+          <p data-reveal className={styles.lead}>
+            From the rail lines and runways that connect regions to the
+            plants that power them, our teams take on complex work in
+            five core sectors, delivered to a single standard.
+          </p>
+          <div data-reveal className={styles.creds}>
+            {STATS.map((s) => (
+              <div key={s.label} className={styles.cred}>
+                <span className={styles.credNo}>{s.no}</span>
+                <span className={styles.credLbl}>{s.label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      <div ref={trackRef} className={styles.track}>
-        {INDUSTRIES.map((ind) => (
-          <article key={ind.number} className={styles.card}>
-            <div className={styles.cardPhoto}>
-              <img src={ind.image} alt={ind.alt} loading="lazy" />
-            </div>
-            <div className={styles.cardBody}>
-              <div className={styles.cardHead}>
-                <span className={styles.cardNum}>{ind.number}</span>
-                <h3 className={styles.cardName}>{ind.name}</h3>
+      <div ref={pinRef} className={styles.caroPin}>
+        <div className={styles.bar}>
+          <span data-reveal className={styles.swipeCue}>
+            Scroll through the sectors <span aria-hidden="true">&rarr;</span>
+          </span>
+          <div className={styles.progress}>
+            <span ref={barRef} className={styles.progressBar} />
+          </div>
+        </div>
+
+        <div ref={trackRef} className={styles.track}>
+          {INDUSTRIES.map((ind) => (
+            <article key={ind.number} className={styles.card}>
+              <div className={styles.cardPhoto}>
+                <img src={ind.image} alt={ind.alt} loading="lazy" />
               </div>
-              <p className={styles.cardDisc}>{ind.disc}</p>
-              <p className={styles.cardDesc}>{ind.desc}</p>
-              <a className={styles.cardCta} href="#contact">
-                <span>Explore</span>
-                <span className={styles.cardArrow} aria-hidden="true">
-                  &rarr;
-                </span>
-              </a>
-            </div>
-          </article>
-        ))}
+              <div className={styles.cardBody}>
+                <div className={styles.cardHead}>
+                  <span className={styles.cardNum}>{ind.number}</span>
+                  <h3 className={styles.cardName}>{ind.name}</h3>
+                </div>
+                <p className={styles.cardDisc}>{ind.disc}</p>
+                <p className={styles.cardDesc}>{ind.desc}</p>
+                <a className={styles.cardCta} href="#contact">
+                  <span>Explore</span>
+                  <span className={styles.cardArrow} aria-hidden="true">
+                    &rarr;
+                  </span>
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

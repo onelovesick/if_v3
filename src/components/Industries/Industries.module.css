@@ -1,96 +1,102 @@
 /* ═══════════════════════════════════════════════════════
-   INDUSTRIES — "B+" full-width carousel.
-   A light sheet (#F5F7FA) rises over the dark Parallax section
-   above (negative top margin + lift shadow). Editorial intro and
-   control bar sit on the content grid; the carousel runs edge to
-   edge. Ink #0C0B11, hairline #9F9DA0, blue accent var(--blue).
-   Hard edges (brand); the only rounding is the circular CTA arrow.
+   INDUSTRIES — Solutions-style header + scroll-driven carousel.
+   Paper #F5F7FA, ink #0C0B11, hairline #9F9DA0, blue accent.
+   Header is a 51/49 split with the 51% vertical hairline, matching
+   Solutions: eyebrow + display headline left; lead paragraph +
+   credential stats in the right zone where Solutions' crosshair
+   sits (no mouse tracker here). The carousel below pins and its
+   large cards translate left as the user scrolls; on tablet/mobile
+   and reduced motion it is a native horizontal scroll-snap row.
    ═══════════════════════════════════════════════════════ */
 
 .section {
   position: relative;
-  z-index: 11; /* rise above Parallax (.section z-index:10) */
-  margin-top: -56px; /* overlap the bottom of the parallax */
   background: #F5F7FA;
   color: #0C0B11;
   font-family: var(--display);
-  padding: clamp(52px, 8vh, 104px) 0 clamp(80px, 12vh, 140px);
-  box-shadow: 0 -26px 60px rgba(10, 14, 22, 0.22);
+  border-top: 1px solid #9F9DA0;
+  padding-bottom: clamp(64px, 9vh, 120px);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* content gutter that aligns full-bleed children to the centered
-     content edge, matching the other sections' --max container */
-  --gut: max(var(--gutter), calc((100vw - var(--max)) / 2));
 }
 
-/* content-grid container for intro + control bar */
-.sheet {
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 0 var(--gutter);
+/* ─── Header — 51/49 split (Solutions) ─── */
+.headerStage {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-height: clamp(320px, 34vw, 460px);
 }
 
-/* ─── Editorial intro ─── */
-.intro {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: clamp(28px, 3.6vw, 56px);
-  align-items: end;
-  margin-bottom: clamp(30px, 4.5vh, 52px);
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 51%;
+  width: 1px;
+  background: #9F9DA0;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.introLead {
+.pin {
+  position: absolute;
+  top: clamp(16px, 1.6vw, 28px);
+  left: 51%;
+  width: 10px;
+  height: 10px;
+  background: #0C0B11;
+  transform: translateX(-5px);
+  z-index: 2;
+}
+
+.headerLeft {
+  width: 51%;
   display: flex;
   flex-direction: column;
+  gap: clamp(20px, 3vw, 40px);
+  padding-left: var(--gutter);
+  padding-right: clamp(24px, 3vw, 48px);
+  padding-block: clamp(40px, 5vw, 80px);
 }
 
 .eyebrow {
-  font-family: var(--mono);
-  font-size: clamp(11px, 0.85vw, 12px);
-  letter-spacing: 0.22em;
+  font-family: var(--display);
+  font-size: clamp(1.1rem, 1.7vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
-  font-weight: 500;
-  color: var(--blue);
-  margin-bottom: clamp(14px, 1.6vw, 20px);
+  color: #0C0B11;
+  line-height: 1;
 }
 
-.title {
+.headTitle {
   margin: 0;
   font-family: var(--display);
-  font-weight: 500;
-  font-size: clamp(1.9rem, 3.2vw, 3.15rem);
+  font-size: clamp(2.5rem, 4.6vw, 5.25rem);
+  font-weight: 400;
   line-height: 1.02;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
   color: #0C0B11;
+  text-wrap: balance;
 }
 
-.titleLine {
-  display: block;
+.headerRight {
   position: relative;
-  overflow: hidden;
-}
-
-.titleLineText {
-  display: block;
-}
-
-.titleLineSweep {
-  position: absolute;
-  inset: 0;
-  background: #0C0B11;
-  transform: translateX(0%);
-  will-change: transform;
-}
-
-.introSupport {
+  width: 49%;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
+  gap: clamp(20px, 2.4vw, 30px);
+  padding-left: clamp(28px, 3vw, 48px);
+  padding-right: var(--gutter);
+  padding-block: clamp(40px, 5vw, 80px);
 }
 
 .lead {
-  margin: 0 0 clamp(20px, 2.2vw, 26px);
+  margin: 0;
   font-family: var(--display);
-  font-size: clamp(1rem, 1.1vw, 1.15rem);
+  font-size: clamp(1.05rem, 1.25vw, 1.35rem);
   font-weight: 400;
   line-height: 1.5;
   color: #4D4B53;
@@ -128,14 +134,21 @@
   color: #737074;
 }
 
-/* ─── Control bar ─── */
+/* ─── Carousel (pinned, transform-driven on desktop) ─── */
+.caroPin {
+  position: relative;
+  overflow: hidden;
+  padding-top: clamp(28px, 3.5vh, 52px);
+}
+
 .bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-  margin-bottom: clamp(22px, 2.6vw, 30px);
+  padding: 0 var(--gutter);
+  margin-bottom: clamp(20px, 2.4vw, 30px);
 }
 
 .swipeCue {
@@ -146,43 +159,8 @@
   color: #737074;
 }
 
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.navBtn {
-  width: 46px;
-  height: 46px;
-  display: grid;
-  place-items: center;
-  border: 1px solid #9F9DA0;
-  background: transparent;
-  color: #0C0B11;
-  font-family: var(--display);
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
-  transition:
-    background 0.2s var(--ease),
-    color 0.2s var(--ease),
-    border-color 0.2s var(--ease);
-}
-
-.navBtn:hover {
-  background: var(--blue);
-  color: #F5F7FA;
-  border-color: var(--blue);
-}
-
-.navBtn:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 2px;
-}
-
 .progress {
-  width: 130px;
+  width: clamp(120px, 16vw, 240px);
   height: 2px;
   background: rgba(42, 41, 38, 0.16);
   position: relative;
@@ -195,36 +173,18 @@
   background: var(--blue);
   transform-origin: left center;
   transform: scaleX(0.05);
-  transition: transform 0.15s var(--ease);
 }
 
-/* ─── Edge-to-edge carousel ─── */
 .track {
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
   display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-padding-left: var(--gut);
-  scroll-behavior: smooth;
-  padding: 6px var(--gut) 26px;
-  -webkit-overflow-scrolling: touch;
-}
-
-.track::-webkit-scrollbar {
-  height: 6px;
-}
-.track::-webkit-scrollbar-thumb {
-  background: #b9b8b2;
-}
-.track::-webkit-scrollbar-track {
-  background: rgba(42, 41, 38, 0.07);
+  gap: clamp(16px, 1.4vw, 24px);
+  width: max-content;
+  padding: 4px var(--gutter) 8px;
+  will-change: transform;
 }
 
 .card {
-  flex: 0 0 380px;
-  scroll-snap-align: start;
+  flex: 0 0 clamp(560px, 50vw, 760px);
   display: flex;
   flex-direction: column;
   background: #ffffff;
@@ -235,7 +195,7 @@
 .cardPhoto {
   position: relative;
   width: 100%;
-  height: 300px;
+  height: clamp(300px, 26vw, 420px);
   overflow: hidden;
   background: #e7e4da;
 }
@@ -256,21 +216,22 @@
 .cardBody {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 20px clamp(18px, 1.4vw, 22px) 22px;
+  gap: clamp(10px, 0.9vw, 14px);
+  padding: clamp(22px, 1.8vw, 30px) clamp(22px, 1.8vw, 30px)
+    clamp(24px, 2vw, 32px);
   flex: 1;
 }
 
 .cardHead {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: 12px;
 }
 
 .cardNum {
   font-family: var(--mono);
   font-weight: 500;
-  font-size: 13px;
+  font-size: clamp(13px, 1vw, 15px);
   letter-spacing: 0.1em;
   color: var(--blue);
   font-variant-numeric: tabular-nums;
@@ -280,8 +241,8 @@
   margin: 0;
   font-family: var(--display);
   font-weight: 500;
-  font-size: clamp(1.3rem, 1.5vw, 1.55rem);
-  line-height: 1.05;
+  font-size: clamp(1.5rem, 1.9vw, 2.1rem);
+  line-height: 1.04;
   letter-spacing: -0.02em;
   color: #0C0B11;
 }
@@ -289,7 +250,7 @@
 .cardDisc {
   margin: 0;
   font-family: var(--mono);
-  font-size: 11.5px;
+  font-size: clamp(11.5px, 0.85vw, 13px);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #737074;
@@ -299,20 +260,21 @@
 .cardDesc {
   margin: 0;
   font-family: var(--display);
-  font-size: 15px;
+  font-size: clamp(15px, 1.1vw, 17px);
   line-height: 1.5;
   color: #4D4B53;
+  max-width: 48ch;
 }
 
 .cardCta {
   margin-top: auto;
-  padding-top: 10px;
+  padding-top: clamp(10px, 1vw, 16px);
   display: inline-flex;
   align-items: center;
   gap: 10px;
   font-family: var(--display);
   font-weight: 500;
-  font-size: 15px;
+  font-size: clamp(15px, 1.05vw, 16px);
   color: #0C0B11;
   text-decoration: none;
 }
@@ -320,12 +282,12 @@
 .cardArrow {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border: 1.5px solid var(--blue);
   border-radius: 50%;
   color: var(--blue);
-  font-size: 14px;
+  font-size: 15px;
   transition:
     transform 0.2s var(--ease),
     background 0.2s var(--ease),
@@ -338,37 +300,67 @@
   color: #ffffff;
 }
 
-/* ─── Responsive ─── */
-@media (max-width: 860px) {
-  .intro {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    align-items: start;
+/* ─── Tablet / mobile: stack header, native horizontal scroll ─── */
+@media (max-width: 1023px) {
+  .divider,
+  .pin {
+    display: none;
   }
-  .creds {
-    flex-wrap: wrap;
-    gap: 22px;
+  .headerStage {
+    flex-direction: column;
+    min-height: 0;
   }
-}
-
-@media (max-width: 600px) {
-  .section {
-    margin-top: -40px;
+  .headerLeft,
+  .headerRight {
+    width: 100%;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+  .headerLeft {
+    padding-block: clamp(40px, 7vw, 72px) clamp(24px, 4vw, 40px);
+  }
+  .headerRight {
+    justify-content: flex-start;
+    border-top: 1px solid #9F9DA0;
+    padding-block: clamp(28px, 4vw, 44px) clamp(8px, 2vw, 20px);
+  }
+  .caroPin {
+    overflow: visible;
+  }
+  .track {
+    width: auto;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: var(--gutter);
+    -webkit-overflow-scrolling: touch;
+    transform: none !important;
   }
   .card {
     flex-basis: 82vw;
+    scroll-snap-align: start;
   }
   .cardPhoto {
-    height: clamp(200px, 56vw, 300px);
+    height: clamp(220px, 56vw, 360px);
   }
 }
 
+/* ─── Reduced motion: no pin, native scroll fallback ─── */
 @media (prefers-reduced-motion: reduce) {
-  .track {
-    scroll-behavior: auto;
+  .caroPin {
+    overflow: visible;
   }
-  .cardPhoto img,
-  .progressBar {
+  .track {
+    width: auto;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: var(--gutter);
+    padding-right: var(--gutter);
+    transform: none !important;
+  }
+  .card {
+    scroll-snap-align: start;
+  }
+  .cardPhoto img {
     transition: none;
   }
 }
