@@ -161,7 +161,9 @@ export default function Industries() {
           const distance = () => Math.max(0, track.scrollWidth - pinEl.clientWidth);
           ScrollTrigger.create({
             trigger: pinEl,
-            start: "top top",
+            // Engage once the carousel is in view (centered), not after
+            // the user scrolls it up to the very top of the viewport.
+            start: "center center",
             end: () => "+=" + distance(),
             pin: true,
             scrub: 0.6,

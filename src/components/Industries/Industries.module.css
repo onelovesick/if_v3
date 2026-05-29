@@ -104,16 +104,10 @@
 }
 
 /* ─── Carousel (pinned, transform-driven on desktop) ─── */
-/* Fills the viewport so the pinned carousel sits centered (no empty
-   space below) and the horizontal scroll runs while the section is at
-   full viewport height. */
 .caroPin {
   position: relative;
   overflow: hidden;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  padding-top: clamp(28px, 3.5vh, 52px);
 }
 
 .bar {
@@ -301,9 +295,6 @@
   }
   .caroPin {
     overflow: visible;
-    min-height: 0;
-    display: block;
-    padding-top: clamp(28px, 4vw, 44px);
   }
   .track {
     width: auto;
@@ -326,9 +317,6 @@
 @media (prefers-reduced-motion: reduce) {
   .caroPin {
     overflow: visible;
-    min-height: 0;
-    display: block;
-    padding-top: clamp(28px, 4vw, 44px);
   }
   .track {
     width: auto;
