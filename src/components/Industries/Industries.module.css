@@ -1,79 +1,67 @@
 /* ═══════════════════════════════════════════════════════
-   INDUSTRIES — light section after Parallax.
-   Paper ground #F5F7FA matching PositionBrief and Solutions,
-   ink #0C0B11, grey hairlines #9F9DA0.
-
-   Layout: header brief over a bento grid. One large feature cell
-   (01, 2x2) sits beside a 2x2 block of the other four sectors.
-   Each cell is a sector image that reveals with the same diagonal
-   clip-path "cube" unwind used in PositionBrief: the image wipes
-   open top-left to bottom-right while a blue point tracks the
-   unwinding corner. Numeral, name, and scope sit over a scrim.
+   INDUSTRIES — "B+" full-width carousel.
+   A light sheet (#F5F7FA) rises over the dark Parallax section
+   above (negative top margin + lift shadow). Editorial intro and
+   control bar sit on the content grid; the carousel runs edge to
+   edge. Ink #0C0B11, hairline #9F9DA0, blue accent var(--blue).
+   Hard edges (brand); the only rounding is the circular CTA arrow.
    ═══════════════════════════════════════════════════════ */
 
 .section {
   position: relative;
+  z-index: 11; /* rise above Parallax (.section z-index:10) */
+  margin-top: -56px; /* overlap the bottom of the parallax */
   background: #F5F7FA;
   color: #0C0B11;
   font-family: var(--display);
-  border-top: 1px solid #9F9DA0;
-  padding: clamp(96px, 12vh, 180px) var(--gutter) clamp(120px, 16vh, 200px);
+  padding: clamp(52px, 8vh, 104px) 0 clamp(80px, 12vh, 140px);
+  box-shadow: 0 -26px 60px rgba(10, 14, 22, 0.22);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
+  /* content gutter that aligns full-bleed children to the centered
+     content edge, matching the other sections' --max container */
+  --gut: max(var(--gutter), calc((100vw - var(--max)) / 2));
 }
 
-/* ─── Header brief ─── */
-.header {
+/* content-grid container for intro + control bar */
+.sheet {
   max-width: var(--max);
-  margin: 0 auto clamp(40px, 6vh, 84px);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ─── Editorial intro ─── */
+.intro {
   display: grid;
-  grid-template-columns: 1.35fr 1fr;
-  gap: clamp(24px, 4vw, 72px);
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(28px, 3.6vw, 56px);
   align-items: end;
+  margin-bottom: clamp(30px, 4.5vh, 52px);
 }
 
-.headerLeft {
+.introLead {
   display: flex;
   flex-direction: column;
-  gap: clamp(18px, 2.4vw, 32px);
-}
-
-.headerRight {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: clamp(18px, 2vw, 28px);
 }
 
 .eyebrow {
   font-family: var(--mono);
-  font-size: clamp(11px, 0.85vw, 13px);
+  font-size: clamp(11px, 0.85vw, 12px);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   font-weight: 500;
   color: var(--blue);
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.eyebrow::before {
-  content: "";
-  width: 28px;
-  height: 1px;
-  background: var(--blue);
+  margin-bottom: clamp(14px, 1.6vw, 20px);
 }
 
 .title {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(2.4rem, 4.4vw, 5rem);
   font-weight: 500;
-  line-height: 1;
+  font-size: clamp(1.9rem, 3.2vw, 3.15rem);
+  line-height: 1.02;
   letter-spacing: -0.03em;
   color: #0C0B11;
-  text-wrap: balance;
 }
 
 .titleLine {
@@ -94,244 +82,293 @@
   will-change: transform;
 }
 
-.lead {
-  margin: 0;
-  font-family: var(--display);
-  font-size: clamp(1rem, 1.15vw, 1.2rem);
-  font-weight: 400;
-  line-height: 1.45;
-  color: #4D4B53;
-  max-width: 42ch;
+.introSupport {
+  display: flex;
+  flex-direction: column;
 }
 
-.counter {
+.lead {
+  margin: 0 0 clamp(20px, 2.2vw, 26px);
+  font-family: var(--display);
+  font-size: clamp(1rem, 1.1vw, 1.15rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: #4D4B53;
+  max-width: 46ch;
+}
+
+.creds {
+  display: flex;
+  gap: clamp(24px, 3vw, 44px);
+  padding-top: clamp(16px, 1.8vw, 22px);
+  border-top: 1px solid #9F9DA0;
+}
+
+.cred {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.credNo {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(1.6rem, 2vw, 2.15rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--blue);
+  font-variant-numeric: tabular-nums;
+}
+
+.credLbl {
   font-family: var(--mono);
-  font-size: clamp(11px, 0.85vw, 13px);
-  letter-spacing: 0.22em;
+  font-size: 11px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #737074;
-  display: inline-flex;
+}
+
+/* ─── Control bar ─── */
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(22px, 2.6vw, 30px);
+}
+
+.swipeCue {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #737074;
+}
+
+.nav {
+  display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.counter::before {
-  content: "";
-  width: 28px;
-  height: 1px;
-  background: #9F9DA0;
-}
-
-/* ─── Bento grid ─── */
-.bento {
-  max-width: var(--max);
-  margin: 0 auto;
+.navBtn {
+  width: 46px;
+  height: 46px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: clamp(148px, 17.5vw, 232px);
-  gap: clamp(10px, 1vw, 18px);
+  place-items: center;
+  border: 1px solid #9F9DA0;
+  background: transparent;
+  color: #0C0B11;
+  font-family: var(--display);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.2s var(--ease),
+    color 0.2s var(--ease),
+    border-color 0.2s var(--ease);
 }
 
-.cell {
+.navBtn:hover {
+  background: var(--blue);
+  color: #F5F7FA;
+  border-color: var(--blue);
+}
+
+.navBtn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.progress {
+  width: 130px;
+  height: 2px;
+  background: rgba(42, 41, 38, 0.16);
   position: relative;
   overflow: hidden;
-  background: var(--dark);
-  grid-column: span 1;
-  grid-row: span 1;
-  isolation: isolate;
 }
 
-.cellFeature {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
-/* clipped image container — JS drives clip-path from inset(0 100% 100% 0) */
-.cellClip {
+.progressBar {
   position: absolute;
   inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  clip-path: inset(0 0% 0% 0);
-  will-change: clip-path;
+  background: var(--blue);
+  transform-origin: left center;
+  transform: scaleX(0.05);
+  transition: transform 0.15s var(--ease);
 }
 
-.cellImg {
+/* ─── Edge-to-edge carousel ─── */
+.track {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--gut);
+  scroll-behavior: smooth;
+  padding: 6px var(--gut) 26px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.track::-webkit-scrollbar {
+  height: 6px;
+}
+.track::-webkit-scrollbar-thumb {
+  background: #b9b8b2;
+}
+.track::-webkit-scrollbar-track {
+  background: rgba(42, 41, 38, 0.07);
+}
+
+.card {
+  flex: 0 0 380px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #9F9DA0;
+  overflow: hidden;
+}
+
+.cardPhoto {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background: #e7e4da;
+}
+
+.cardPhoto img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transform: scale(1.1);
-  will-change: transform;
-  filter: saturate(0.88) contrast(1.03) brightness(0.96);
-  transition: filter 0.6s var(--ease);
+  filter: saturate(0.9) contrast(1.02);
+  transition: transform 0.6s var(--ease);
 }
 
-.cell:hover .cellImg {
-  filter: saturate(1) contrast(1.05) brightness(1.04);
+.card:hover .cardPhoto img {
+  transform: scale(1.04);
 }
 
-.cellScrim {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    to top,
-    rgba(10, 16, 25, 0.82) 0%,
-    rgba(10, 16, 25, 0.5) 26%,
-    rgba(10, 16, 25, 0.08) 56%,
-    rgba(10, 16, 25, 0) 78%
-  );
-}
-
-/* blue point that tracks the unwinding corner during reveal */
-.cellRevealPt {
-  position: absolute;
-  z-index: 4;
-  width: 9px;
-  height: 9px;
-  background: var(--blue);
-  transform: translate(-4.5px, -4.5px);
-  opacity: 0;
-  pointer-events: none;
-  box-shadow:
-    0 0 0 1px rgba(245, 247, 250, 0.6),
-    0 0 14px rgba(0, 80, 255, 0.5);
-}
-
-/* hover accent: a blue top rule draws in */
-.cell::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--blue);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.5s var(--ease);
-  z-index: 3;
-}
-
-.cell:hover::after {
-  transform: scaleX(1);
-}
-
-.cellTop {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 2;
+.cardBody {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: clamp(14px, 1.3vw, 22px);
-  font-family: var(--mono);
-  font-size: clamp(10px, 0.78vw, 12px);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px clamp(18px, 1.4vw, 22px) 22px;
+  flex: 1;
 }
 
-.cellNum {
-  color: #F5F7FA;
+.cardHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.cardNum {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--blue);
   font-variant-numeric: tabular-nums;
 }
 
-.cellRegion {
-  color: rgba(245, 247, 250, 0.68);
-}
-
-.cellFoot {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 2;
-  padding: clamp(16px, 1.5vw, 28px);
-  display: flex;
-  flex-direction: column;
-  gap: clamp(10px, 1.1vh, 16px);
-}
-
-.cellName {
+.cardName {
   margin: 0;
   font-family: var(--display);
   font-weight: 500;
-  font-size: clamp(1.3rem, 1.7vw, 2rem);
-  line-height: 1.04;
+  font-size: clamp(1.3rem, 1.5vw, 1.55rem);
+  line-height: 1.05;
   letter-spacing: -0.02em;
-  color: #F5F7FA;
+  color: #0C0B11;
 }
 
-.cellFeature .cellName {
-  font-size: clamp(1.9rem, 2.8vw, 3.1rem);
-}
-
-.cellScope {
-  list-style: none;
+.cardDisc {
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px 16px;
-}
-
-.cellScope li {
   font-family: var(--mono);
-  font-size: clamp(10px, 0.78vw, 12px);
-  letter-spacing: 0.1em;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(245, 247, 250, 0.82);
-  position: relative;
-  padding-left: 14px;
+  color: #737074;
+  line-height: 1.6;
 }
 
-.cellScope li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.5em;
-  width: 8px;
-  height: 1px;
+.cardDesc {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 15px;
+  line-height: 1.5;
+  color: #4D4B53;
+}
+
+.cardCta {
+  margin-top: auto;
+  padding-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 15px;
+  color: #0C0B11;
+  text-decoration: none;
+}
+
+.cardArrow {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--blue);
+  border-radius: 50%;
+  color: var(--blue);
+  font-size: 14px;
+  transition:
+    transform 0.2s var(--ease),
+    background 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.cardCta:hover .cardArrow {
+  transform: translateX(3px);
   background: var(--blue);
+  color: #ffffff;
 }
 
 /* ─── Responsive ─── */
-@media (max-width: 1024px) {
-  .header {
+@media (max-width: 860px) {
+  .intro {
     grid-template-columns: 1fr;
-    gap: clamp(18px, 3vh, 30px);
+    gap: 24px;
     align-items: start;
   }
-  .bento {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: clamp(160px, 30vw, 250px);
-  }
-  .cellFeature {
-    grid-column: span 2;
-    grid-row: span 2;
+  .creds {
+    flex-wrap: wrap;
+    gap: 22px;
   }
 }
 
 @media (max-width: 600px) {
-  .bento {
-    grid-template-columns: 1fr;
-    grid-auto-rows: clamp(210px, 54vw, 300px);
+  .section {
+    margin-top: -40px;
   }
-  .cellFeature {
-    grid-column: span 1;
-    grid-row: span 1;
+  .card {
+    flex-basis: 82vw;
   }
-  .cellFeature .cellName {
-    font-size: clamp(1.6rem, 8vw, 2.4rem);
+  .cardPhoto {
+    height: clamp(200px, 56vw, 300px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cellImg {
+  .track {
+    scroll-behavior: auto;
+  }
+  .cardPhoto img,
+  .progressBar {
     transition: none;
   }
 }

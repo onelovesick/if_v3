@@ -1,85 +1,131 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useMotionReady } from "@/components/MotionProvider";
 import styles from "./Industries.module.css";
 
 /**
- * Industries — light section after Parallax.
+ * Industries — "B+" full-width carousel, after the Parallax section.
  *
- * Bento grid of five sectors: one large feature cell (01) beside a
- * 2x2 block of the other four. Each cell is a sector image that
- * reveals with the same diagonal clip-path "cube" unwind used in
- * PositionBrief (the section below the hero): clip-path
- * inset(0 100% 100% 0) -> inset(0), a 1.1 -> 1 scale, and a blue
- * point that tracks the unwinding corner. Sector numeral, name, and
- * scope sit over a legibility scrim; cells reveal staggered on scroll.
+ * A light sheet rises over the dark parallax above it (negative top
+ * margin + lift shadow), carrying an editorial intro (eyebrow +
+ * headline left; lead + credential stats right) and a control bar
+ * (swipe cue + prev/next + progress track) on the content grid, then
+ * flows into an edge-to-edge horizontal scroll-snap carousel of the
+ * five sectors. Wireframe sketch styling is dropped; this uses the
+ * brand system (PP Neue Corp / PP Fraktion Mono, hard edges, blue
+ * accent). Native horizontal scroll drives the progress bar; prev/next
+ * nudge by one card.
  */
 
 interface Industry {
   number: string;
   name: string;
-  region: string;
-  scope: string[];
+  disc: string;
+  desc: string;
   image: string;
   alt: string;
-  feature?: boolean;
 }
 
 const INDUSTRIES: Industry[] = [
   {
     number: "01",
     name: "Transportation",
-    region: "QC · CA",
-    scope: ["Rail", "Transit", "Highways", "Airports", "Ports"],
+    disc: "Rail · Transit · Highways · Airports · Ports",
+    desc: "Moving people and goods, from regional rail to international gateways.",
     image: "/solutions-1-1600.jpg",
     alt: "Transportation infrastructure program",
-    feature: true,
   },
   {
     number: "02",
     name: "Energy",
-    region: "QC · CA",
-    scope: ["Hydro", "Nuclear", "Transmission", "Wind & solar"],
+    disc: "Hydro · Nuclear · Transmission · Wind & solar",
+    desc: "Generation and transmission that keep the grid reliable and cleaner.",
     image: "/solutions-2-1600.jpg",
     alt: "Energy infrastructure program",
   },
   {
     number: "03",
     name: "Heavy Civil & Water",
-    region: "QC · CA",
-    scope: ["Dams", "Flood works", "Water / wastewater", "Earthworks"],
+    disc: "Dams · Flood works · Water / wastewater · Earthworks",
+    desc: "Foundational works that manage water and reshape the ground.",
     image: "/solutions-3-1600.jpg",
     alt: "Heavy civil and water program",
   },
   {
     number: "04",
     name: "Buildings & Facilities",
-    region: "QC · CA",
-    scope: ["Hospitals", "Campuses", "Civic", "Transit hubs"],
+    disc: "Hospitals · Campuses · Civic · Transit hubs",
+    desc: "Complex environments where people learn, heal, and gather.",
     image: "/solutions-4-1600.jpg",
     alt: "Major building and facilities program",
   },
   {
     number: "05",
     name: "Industrial",
-    region: "QC · CA",
-    scope: ["Mining", "Processing", "Manufacturing plants"],
+    disc: "Mining · Processing · Manufacturing plants",
+    desc: "Plants and processing built for uptime and throughput.",
     image: "/parallax-hero.jpg",
     alt: "Industrial facility program",
   },
 ];
 
+// Only confirmed numbers. A projects count goes here once the client
+// provides a real figure; do not invent one.
+const STATS = [
+  { no: "5", label: "Core sectors" },
+  { no: "55", label: "Years of senior practice" },
+];
+
 const HEADLINE_LINES = [
-  "We work where the country's",
-  "flagship programs get built.",
+  "We build across the systems",
+  "that move, power & shelter",
+  "modern life.",
 ];
 
 export default function Industries() {
   const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLSpanElement>(null);
   const { ready } = useMotionReady();
 
+  const updateProgress = useCallback(() => {
+    const track = trackRef.current;
+    const bar = barRef.current;
+    if (!track || !bar) return;
+    const max = track.scrollWidth - track.clientWidth;
+    const pct = max > 0 ? track.scrollLeft / max : 0;
+    bar.style.transform = `scaleX(${Math.max(0.05, pct).toFixed(4)})`;
+  }, []);
+
+  const nudge = useCallback((dir: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const card = track.querySelector<HTMLElement>(
+      `.${CSS.escape(styles.card)}`,
+    );
+    const step = card ? card.offsetWidth + 20 : 400;
+    track.scrollBy({ left: dir * step, behavior: reduce ? "auto" : "smooth" });
+  }, []);
+
+  // Progress bar tracks horizontal scroll.
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    updateProgress();
+    track.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress);
+    return () => {
+      track.removeEventListener("scroll", updateProgress);
+      window.removeEventListener("resize", updateProgress);
+    };
+  }, [updateProgress]);
+
+  // Entrance reveals (gated on loader-ready, reduced-motion safe).
   useEffect(() => {
     const root = sectionRef.current;
     if (!root || !ready) return;
@@ -88,34 +134,20 @@ export default function Industries() {
     ).matches;
 
     const ctx = gsap.context(() => {
-      const cells = gsap.utils.toArray<HTMLElement>(
-        `.${CSS.escape(styles.cell)}`,
-      );
       const sweeps = root.querySelectorAll<HTMLElement>(
         `.${CSS.escape(styles.titleLineSweep)}`,
       );
+      const cards = root.querySelectorAll<HTMLElement>(
+        `.${CSS.escape(styles.card)}`,
+      );
 
-      // Reduced motion: everything resolves to its final, visible state.
       if (reduce) {
-        cells.forEach((cell) => {
-          const clip = cell.querySelector<HTMLElement>(
-            `.${CSS.escape(styles.cellClip)}`,
-          );
-          const img = cell.querySelector<HTMLElement>(
-            `.${CSS.escape(styles.cellImg)}`,
-          );
-          if (clip) clip.style.clipPath = "inset(0 0% 0% 0)";
-          if (img) img.style.transform = "scale(1)";
-        });
+        gsap.set(root.querySelectorAll("[data-reveal]"), { opacity: 1, y: 0 });
         gsap.set(sweeps, { xPercent: 101 });
-        gsap.set(root.querySelectorAll("[data-reveal]"), {
-          opacity: 1,
-          y: 0,
-        });
+        gsap.set(cards, { opacity: 1, y: 0 });
         return;
       }
 
-      // Header reveals.
       gsap.from(root.querySelectorAll<HTMLElement>("[data-reveal]"), {
         opacity: 0,
         y: 22,
@@ -124,7 +156,7 @@ export default function Industries() {
         stagger: 0.06,
         scrollTrigger: {
           trigger: root,
-          start: "top 78%",
+          start: "top 75%",
           toggleActions: "play none none none",
         },
       });
@@ -140,58 +172,27 @@ export default function Industries() {
             stagger: 0.16,
             scrollTrigger: {
               trigger: root,
-              start: "top 72%",
+              start: "top 70%",
               toggleActions: "play none none none",
             },
           },
         );
       }
 
-      // Per-cell diagonal clip-path "cube" reveal, matching PositionBrief:
-      // the image unwinds from top-left to bottom-right while a blue
-      // point tracks the unwinding corner and the image settles from a
-      // slight overscale.
-      cells.forEach((cell, i) => {
-        const clip = cell.querySelector<HTMLElement>(
-          `.${CSS.escape(styles.cellClip)}`,
-        );
-        const img = cell.querySelector<HTMLElement>(
-          `.${CSS.escape(styles.cellImg)}`,
-        );
-        const pt = cell.querySelector<HTMLElement>(
-          `.${CSS.escape(styles.cellRevealPt)}`,
-        );
-        if (!clip || !img) return;
-
-        gsap.set(clip, { clipPath: "inset(0 100% 100% 0)" });
-        gsap.set(img, { scale: 1.1 });
-        if (pt) gsap.set(pt, { opacity: 0, left: "0%", top: "0%" });
-
-        const state = { p: 0 };
-        gsap.to(state, {
-          p: 1,
-          duration: 1.15,
-          ease: "power3.inOut",
-          delay: i * 0.12,
+      if (cards.length) {
+        gsap.from(cards, {
+          opacity: 0,
+          y: 28,
+          duration: 0.95,
+          ease: "expo.out",
+          stagger: 0.1,
           scrollTrigger: {
-            trigger: cell,
-            start: "top 88%",
+            trigger: trackRef.current ?? root,
+            start: "top 85%",
             toggleActions: "play none none none",
           },
-          onUpdate: () => {
-            const p = state.p;
-            const inset = (100 * (1 - p)).toFixed(3);
-            clip.style.clipPath = `inset(0 ${inset}% ${inset}% 0)`;
-            img.style.transform = `scale(${(1.1 - 0.1 * p).toFixed(4)})`;
-            if (pt) {
-              const pos = (p * 100).toFixed(2);
-              pt.style.left = `${pos}%`;
-              pt.style.top = `${pos}%`;
-              pt.style.opacity = p > 0.02 && p < 0.98 ? "1" : "0";
-            }
-          },
         });
-      });
+      }
 
       ScrollTrigger.refresh();
     }, sectionRef);
@@ -208,69 +209,89 @@ export default function Industries() {
       className={styles.section}
       aria-labelledby="industries-title"
     >
-      <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <span data-reveal className={styles.eyebrow}>
-            Industries
-          </span>
-          <h2 id="industries-title" className={styles.title}>
-            {HEADLINE_LINES.map((line, i) => (
-              <span key={i} className={styles.titleLine}>
-                <span className={styles.titleLineText}>{line}</span>
-                <span
-                  className={styles.titleLineSweep}
-                  aria-hidden="true"
-                />
-              </span>
-            ))}
-          </h2>
+      <div className={styles.sheet}>
+        <div className={styles.intro}>
+          <div className={styles.introLead}>
+            <span data-reveal className={styles.eyebrow}>
+              Industries · 01 / 05
+            </span>
+            <h2 id="industries-title" className={styles.title}>
+              {HEADLINE_LINES.map((line, i) => (
+                <span key={i} className={styles.titleLine}>
+                  <span className={styles.titleLineText}>{line}</span>
+                  <span
+                    className={styles.titleLineSweep}
+                    aria-hidden="true"
+                  />
+                </span>
+              ))}
+            </h2>
+          </div>
+
+          <div className={styles.introSupport}>
+            <p data-reveal className={styles.lead}>
+              From the rail lines and runways that connect regions to the
+              plants that power them, our teams take on complex work in
+              five core sectors, delivered to a single standard.
+            </p>
+            <div data-reveal className={styles.creds}>
+              {STATS.map((s) => (
+                <div key={s.label} className={styles.cred}>
+                  <span className={styles.credNo}>{s.no}</span>
+                  <span className={styles.credLbl}>{s.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className={styles.headerRight}>
-          <p data-reveal className={styles.lead}>
-            Five sectors, one operating system. The information layer
-            that carries a program from brief to operations is the same
-            across all of them.
-          </p>
-          <span data-reveal className={styles.counter}>
-            n = 5 sectors
+
+        <div className={styles.bar}>
+          <span data-reveal className={styles.swipeCue}>
+            Swipe the sectors <span aria-hidden="true">&rarr;</span>
           </span>
+          <div className={styles.nav}>
+            <button
+              type="button"
+              className={styles.navBtn}
+              aria-label="Previous sectors"
+              onClick={() => nudge(-1)}
+            >
+              &lsaquo;
+            </button>
+            <button
+              type="button"
+              className={styles.navBtn}
+              aria-label="Next sectors"
+              onClick={() => nudge(1)}
+            >
+              &rsaquo;
+            </button>
+            <div className={styles.progress}>
+              <span ref={barRef} className={styles.progressBar} />
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className={styles.bento}>
+      <div ref={trackRef} className={styles.track}>
         {INDUSTRIES.map((ind) => (
-          <article
-            key={ind.number}
-            className={[
-              styles.cell,
-              ind.feature ? styles.cellFeature : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
-          >
-            <div className={styles.cellClip}>
-              <img
-                className={styles.cellImg}
-                src={ind.image}
-                alt={ind.alt}
-                loading="lazy"
-              />
+          <article key={ind.number} className={styles.card}>
+            <div className={styles.cardPhoto}>
+              <img src={ind.image} alt={ind.alt} loading="lazy" />
             </div>
-            <span className={styles.cellScrim} aria-hidden="true" />
-            <span className={styles.cellRevealPt} aria-hidden="true" />
-
-            <div className={styles.cellTop}>
-              <span className={styles.cellNum}>{ind.number}</span>
-              <span className={styles.cellRegion}>{ind.region}</span>
-            </div>
-
-            <div className={styles.cellFoot}>
-              <h3 className={styles.cellName}>{ind.name}</h3>
-              <ul className={styles.cellScope}>
-                {ind.scope.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ul>
+            <div className={styles.cardBody}>
+              <div className={styles.cardHead}>
+                <span className={styles.cardNum}>{ind.number}</span>
+                <h3 className={styles.cardName}>{ind.name}</h3>
+              </div>
+              <p className={styles.cardDisc}>{ind.disc}</p>
+              <p className={styles.cardDesc}>{ind.desc}</p>
+              <a className={styles.cardCta} href="#contact">
+                <span>Explore</span>
+                <span className={styles.cardArrow} aria-hidden="true">
+                  &rarr;
+                </span>
+              </a>
             </div>
           </article>
         ))}
