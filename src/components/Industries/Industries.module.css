@@ -103,42 +103,17 @@
   max-width: 46ch;
 }
 
-.creds {
-  display: flex;
-  gap: clamp(24px, 3vw, 44px);
-  padding-top: clamp(16px, 1.8vw, 22px);
-  border-top: 1px solid #9F9DA0;
-}
-
-.cred {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.credNo {
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: clamp(1.6rem, 2vw, 2.15rem);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: var(--blue);
-  font-variant-numeric: tabular-nums;
-}
-
-.credLbl {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #737074;
-}
-
 /* ─── Carousel (pinned, transform-driven on desktop) ─── */
+/* Fills the viewport so the pinned carousel sits centered (no empty
+   space below) and the horizontal scroll runs while the section is at
+   full viewport height. */
 .caroPin {
   position: relative;
   overflow: hidden;
-  padding-top: clamp(28px, 3.5vh, 52px);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .bar {
@@ -326,6 +301,9 @@
   }
   .caroPin {
     overflow: visible;
+    min-height: 0;
+    display: block;
+    padding-top: clamp(28px, 4vw, 44px);
   }
   .track {
     width: auto;
@@ -348,6 +326,9 @@
 @media (prefers-reduced-motion: reduce) {
   .caroPin {
     overflow: visible;
+    min-height: 0;
+    display: block;
+    padding-top: clamp(28px, 4vw, 44px);
   }
   .track {
     width: auto;

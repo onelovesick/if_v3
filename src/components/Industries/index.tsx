@@ -73,13 +73,6 @@ const INDUSTRIES: Industry[] = [
   },
 ];
 
-// Only confirmed numbers. Add a projects count once the client gives a
-// real figure; do not invent one.
-const STATS = [
-  { no: "5", label: "Core sectors" },
-  { no: "55", label: "Years of senior practice" },
-];
-
 export default function Industries() {
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
@@ -227,14 +220,6 @@ export default function Industries() {
             plants that power them, our teams take on complex work in
             five core sectors, delivered to a single standard.
           </p>
-          <div data-reveal className={styles.creds}>
-            {STATS.map((s) => (
-              <div key={s.label} className={styles.cred}>
-                <span className={styles.credNo}>{s.no}</span>
-                <span className={styles.credLbl}>{s.label}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 
