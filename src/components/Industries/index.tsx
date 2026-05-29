@@ -160,12 +160,15 @@ export default function Industries() {
         () => {
           const distance = () => Math.max(0, track.scrollWidth - pinEl.clientWidth);
           ScrollTrigger.create({
-            trigger: pinEl,
-            // Engage once the carousel is in view (centered), not after
-            // the user scrolls it up to the very top of the viewport.
-            start: "center center",
+            // Pin the WHOLE section once its top reaches the top of the
+            // viewport, so the header and the cards are all in view
+            // together (per the reference), then run the horizontal
+            // scroll. Pinning the carousel alone scrolled the header out
+            // of view before the effect started.
+            trigger: root,
+            start: "top top",
             end: () => "+=" + distance(),
-            pin: true,
+            pin: root,
             scrub: 0.6,
             invalidateOnRefresh: true,
             onUpdate: (self) => {
