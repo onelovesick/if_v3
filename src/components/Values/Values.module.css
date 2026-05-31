@@ -131,12 +131,14 @@
   font: inherit;
 }
 
+/* Title sized to match the Solutions row title ("asset intelligence
+   that outlasts the build"). */
 .itemTitle {
   font-family: var(--display);
-  font-size: clamp(1.4rem, 2.1vw, 2.1rem);
+  font-size: clamp(1.75rem, 3vw, 2.85rem);
   font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
+  letter-spacing: -0.018em;
+  line-height: 1.02;
   color: #FFFFFF;
   transition: color 240ms var(--ease);
 }
@@ -213,7 +215,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(200px, 38%, 340px);
   gap: clamp(24px, 2.6vw, 44px);
-  align-items: start;
+  align-items: center;
   padding-bottom: clamp(32px, 3.6vw, 56px);
 }
 
@@ -234,16 +236,28 @@
   color: rgba(255, 255, 255, 0.62);
 }
 
+/* CTA cloned from the Solutions row CTA (itself PositionBrief's
+   cellCta): bordered rectangle, label left, circular arrow right,
+   fill-up on hover. Same sizing (18px / 600, 22x26 padding, max
+   450px), inverted for the dark ground. */
 .panelCta {
-  align-self: flex-start;
   position: relative;
   overflow: hidden;
-  display: inline-flex;
-  align-items: stretch;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  max-width: 450px;
+  padding: 22px 26px;
+  background: transparent;
   color: #FFFFFF;
-  text-decoration: none;
   font-family: var(--display);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.45);
   transition: color 380ms var(--ease);
 }
 
@@ -257,6 +271,11 @@
   z-index: 0;
 }
 
+.panelCta > * {
+  position: relative;
+  z-index: 1;
+}
+
 .panelCta:hover::before,
 .panelCta:focus-visible::before {
   transform: translateY(0);
@@ -267,41 +286,24 @@
   color: #0C0B11;
 }
 
-.panelCtaLabel {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  padding: clamp(13px, 1.1vw, 17px) clamp(20px, 1.8vw, 30px);
-  font-size: clamp(15px, 1.05vw, 17px);
-  font-weight: 600;
-  letter-spacing: -0.005em;
-}
-
 .panelCtaArrow {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  padding: 0 clamp(14px, 1.4vw, 20px);
-  border-left: 1px solid rgba(255, 255, 255, 0.35);
-  font-size: 16px;
-  transition: border-color 380ms var(--ease);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
+  transition:
+    transform 320ms var(--ease-snap),
+    border-color 380ms var(--ease);
 }
 
 .panelCta:hover .panelCtaArrow,
 .panelCta:focus-visible .panelCtaArrow {
-  border-left-color: rgba(12, 11, 17, 0.25);
-}
-
-.panelCtaArrowGlyph {
-  display: inline-block;
-  transition: transform 320ms var(--ease-snap);
-}
-
-.panelCta:hover .panelCtaArrowGlyph,
-.panelCta:focus-visible .panelCtaArrowGlyph {
-  transform: translateX(4px);
+  transform: translateX(6px);
 }
 
 .panelMedia {
@@ -359,8 +361,8 @@
   .itemTitle,
   .titleWord,
   .panelCta,
-  .panelCtaArrow,
-  .panelCtaArrowGlyph {
+  .panelCta::before,
+  .panelCtaArrow {
     transition: none;
   }
 }

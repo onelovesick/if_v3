@@ -172,16 +172,12 @@ export default function Values() {
                         <div className={styles.panelText}>
                           <p className={styles.itemBody}>{v.body}</p>
                           <a className={styles.panelCta} href="#">
-                            <span className={styles.panelCtaLabel}>
-                              Learn more
-                            </span>
+                            <span>Learn more</span>
                             <span
-                              className={styles.panelCtaArrow}
                               aria-hidden="true"
+                              className={styles.panelCtaArrow}
                             >
-                              <span className={styles.panelCtaArrowGlyph}>
-                                &rarr;
-                              </span>
+                              &rarr;
                             </span>
                           </a>
                         </div>
