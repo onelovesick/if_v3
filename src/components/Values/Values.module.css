@@ -1,0 +1,233 @@
+/* ═══════════════════════════════════════════════════════
+   VALUES — dark closing section.
+   Left 51% holds the eyebrow, square marker, and display
+   headline; right 49% is a three-item accordion (one value open
+   by default, +/- toggles, hairline rules). Background, divider,
+   and type match the Problem dark band (#0C0B11) so the dark tone
+   and the page's 51% vertical line read as continuous.
+   ═══════════════════════════════════════════════════════ */
+
+.section {
+  position: relative;
+  background: #0C0B11;
+  color: #FFFFFF;
+  font-family: var(--display);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 51%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  min-height: clamp(420px, 56vh, 680px);
+  padding-block: clamp(96px, 14vh, 200px);
+}
+
+/* ─── Left: eyebrow + marker + headline ─── */
+.left {
+  width: 51%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 4vw, 56px);
+  padding-left: var(--gutter);
+  padding-right: clamp(24px, 3vw, 56px);
+}
+
+.leftHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.eyebrow {
+  font-family: var(--display);
+  font-size: clamp(1.1rem, 1.7vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.marker {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  background: #FFFFFF;
+  margin-top: 2px;
+}
+
+.headTitle {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(2.25rem, 4.2vw, 4.75rem);
+  font-weight: 400;
+  line-height: 1.03;
+  letter-spacing: -0.025em;
+  color: #FFFFFF;
+  text-wrap: balance;
+}
+
+/* ─── Right: accordion ─── */
+.right {
+  width: 49%;
+  padding-left: clamp(28px, 4vw, 72px);
+  padding-right: var(--gutter);
+}
+
+.accordion {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item + .item {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.itemHead {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: clamp(22px, 2.4vw, 34px) 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+}
+
+.itemTitle {
+  font-family: var(--display);
+  font-size: clamp(1.4rem, 2.1vw, 2.1rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: #FFFFFF;
+  transition: color 240ms var(--ease);
+}
+
+.itemHead:hover .itemTitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* +/- toggle drawn from two hairlines. Open hides the vertical
+   bar so the mark reads as a minus. */
+.itemToggle {
+  position: relative;
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
+
+.itemToggle::before,
+.itemToggle::after {
+  content: "";
+  position: absolute;
+  background: #FFFFFF;
+}
+
+.itemToggle::before {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1.5px;
+  transform: translateY(-50%);
+}
+
+.itemToggle::after {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1.5px;
+  transform: translateX(-50%);
+  transition:
+    opacity 300ms var(--ease),
+    transform 300ms var(--ease);
+}
+
+.item[data-open="true"] .itemToggle::after {
+  opacity: 0;
+  transform: translateX(-50%) scaleY(0);
+}
+
+/* Panel height animates via grid-template-rows 0fr -> 1fr. */
+.itemPanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 480ms var(--ease);
+}
+
+.item[data-open="true"] .itemPanel {
+  grid-template-rows: 1fr;
+}
+
+.itemPanelInner {
+  overflow: hidden;
+  min-height: 0;
+  opacity: 0;
+  transition: opacity 360ms var(--ease);
+}
+
+.item[data-open="true"] .itemPanelInner {
+  opacity: 1;
+}
+
+.itemBody {
+  margin: 0;
+  padding-bottom: clamp(28px, 3vw, 44px);
+  max-width: 46ch;
+  font-family: var(--display);
+  font-size: clamp(1rem, 1.15vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* ─── Responsive: stack below the divider break ─── */
+@media (max-width: 1023px) {
+  .divider {
+    display: none;
+  }
+  .inner {
+    flex-direction: column;
+    gap: clamp(40px, 7vw, 64px);
+    min-height: 0;
+    padding-block: clamp(72px, 12vh, 128px);
+  }
+  .left,
+  .right {
+    width: 100%;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .itemPanel,
+  .itemPanelInner,
+  .itemToggle::before,
+  .itemToggle::after,
+  .itemTitle {
+    transition: none;
+  }
+}
