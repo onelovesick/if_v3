@@ -197,7 +197,6 @@
   height: clamp(300px, 26vw, 420px);
   overflow: hidden;
   background: #e7e4da;
-  will-change: clip-path;
 }
 
 .cardPhoto img {
@@ -206,15 +205,11 @@
   object-fit: cover;
   display: block;
   filter: saturate(0.9) contrast(1.02);
-  /* --rs is the reveal scale, driven from JS during the clip-path
-     unwind (1.08 -> 1.0). Hover multiplies it for the lift. */
-  transform: scale(var(--rs, 1));
-  transition: transform 0.35s var(--ease);
-  will-change: transform;
+  transition: transform 0.6s var(--ease);
 }
 
 .card:hover .cardPhoto img {
-  transform: scale(calc(var(--rs, 1) * 1.04));
+  transform: scale(1.04);
 }
 
 .cardBody {

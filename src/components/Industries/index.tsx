@@ -160,89 +160,18 @@ export default function Industries() {
         () => {
           const distance = () =>
             Math.max(0, track.scrollWidth - pinEl.clientWidth);
-
-          // ── Per-card image reveal ──
-          // Mirrors PositionBrief's clip-path "expand from the top-left
-          // corner" reveal. A card's photo unwinds as the card enters
-          // the viewport, whether that is the vertical approach (the
-          // cards already on screen) or the horizontal pinned scroll
-          // (each new card sliding in from the right). reveal =
-          // horizontal entry (how far the card has come in from the
-          // right, measured against its own width so it stays accurate
-          // at any viewport size) gated by vertical entry (how far the
-          // section has scrolled up). So the first cards animate in on
-          // arrival and every later card animates in the same way as it
-          // crosses.
-          const clamp01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
-          const REVEAL_FACTOR = 0.85; // photo is unwound once 85% in
-
-          const cardEls = Array.from(
-            root.querySelectorAll<HTMLElement>(`.${CSS.escape(styles.card)}`),
-          );
-          const photoEls = cardEls.map((c) =>
-            c.querySelector<HTMLElement>(`.${CSS.escape(styles.cardPhoto)}`),
-          );
-          const imgEls = cardEls.map((c) =>
-            c.querySelector<HTMLImageElement>(
-              `.${CSS.escape(styles.cardPhoto)} img`,
-            ),
-          );
-
-          // Start fully clipped; updateReveals corrects to scroll.
-          photoEls.forEach((el) => {
-            if (el) el.style.clipPath = "inset(0 100% 100% 0)";
-          });
-
-          const verticalGate = () => {
-            const r = root.getBoundingClientRect();
-            const vh = window.innerHeight || 1;
-            return clamp01((vh - r.top) / (vh * 0.6));
-          };
-
-          const updateReveals = () => {
-            const vw = window.innerWidth || 1;
-            const gate = verticalGate();
-            cardEls.forEach((card, i) => {
-              const photo = photoEls[i];
-              if (!photo) return;
-              const rect = card.getBoundingClientRect();
-              const w = rect.width || 1;
-              const hp = clamp01((vw - rect.left) / (w * REVEAL_FACTOR));
-              const reveal = hp * gate;
-              const inset = (100 * (1 - reveal)).toFixed(2);
-              photo.style.clipPath = `inset(0 ${inset}% ${inset}% 0)`;
-              const img = imgEls[i];
-              if (img) {
-                img.style.setProperty(
-                  "--rs",
-                  (1.08 - 0.08 * reveal).toFixed(4),
-                );
-              }
-            });
-          };
-
-          // Vertical approach: section travels up into view, before pin.
           ScrollTrigger.create({
-            trigger: root,
-            start: "top bottom",
-            end: "top top",
-            onUpdate: updateReveals,
-            onRefresh: updateReveals,
-          });
-
-          // Pin the WHOLE section once its top reaches the top of the
-          // viewport, so the header and the cards are all in view
-          // together (per the reference), then run the horizontal
-          // scroll. The cards reveal as they slide across: updateReveals
-          // reads their live positions each frame.
-          ScrollTrigger.create({
+            // Pin the WHOLE section once its top reaches the top of the
+            // viewport, so the header and the cards are all in view
+            // together (per the reference), then run the horizontal
+            // scroll. Pinning the carousel alone scrolled the header out
+            // of view before the effect started.
             trigger: root,
             start: "top top",
             end: () => "+=" + distance(),
             pin: root,
             scrub: 0.6,
             invalidateOnRefresh: true,
-            onRefresh: updateReveals,
             onUpdate: (self) => {
               track.style.transform = `translate3d(${(
                 -distance() * self.progress
@@ -253,21 +182,11 @@ export default function Industries() {
                   self.progress,
                 ).toFixed(4)})`;
               }
-              updateReveals();
             },
           });
-
-          updateReveals();
-
           return () => {
             track.style.transform = "";
             if (bar) bar.style.transform = "scaleX(0.05)";
-            photoEls.forEach((el) => {
-              if (el) el.style.clipPath = "";
-            });
-            imgEls.forEach((el) => {
-              if (el) el.style.removeProperty("--rs");
-            });
           };
         },
       );
