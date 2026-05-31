@@ -41,13 +41,13 @@
 
 .pin {
   position: absolute;
-  top: clamp(16px, 1.6vw, 28px);
+  top: 50%;
   left: 51%;
   width: 10px;
   height: 10px;
   background: #0C0B11;
-  transform: translateX(-5px);
-  z-index: 2;
+  transform: translate(-50%, -50%);
+  z-index: 3;
 }
 
 .headerLeft {
@@ -85,12 +85,50 @@
   position: relative;
   width: 49%;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: clamp(20px, 2.4vw, 30px);
-  padding-left: clamp(28px, 3vw, 48px);
+  align-items: center;
+  justify-content: center;
+  padding-left: var(--gutter);
   padding-right: var(--gutter);
   padding-block: clamp(40px, 5vw, 80px);
+}
+
+/* Crosshair framing the lead paragraph. A hairline runs from the
+   midpoint of each side of the right column toward the centred,
+   bordered box. The two arms cross at the column centre; the opaque
+   box hides the crossing, so only the four outer segments read, like
+   a registration mark around the paragraph. The left arm meets the
+   51% divider where the pin sits. */
+.crossArm {
+  position: absolute;
+  background: #9F9DA0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.crossArmV {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-0.5px);
+}
+
+.crossArmH {
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  transform: translateY(-0.5px);
+}
+
+.leadFrame {
+  position: relative;
+  z-index: 2;
+  width: clamp(280px, 26vw, 420px);
+  max-width: 100%;
+  background: #F5F7FA;
+  border: 1px solid #9F9DA0;
+  padding: clamp(26px, 2.6vw, 40px) clamp(28px, 2.8vw, 44px);
 }
 
 .lead {
@@ -100,7 +138,8 @@
   font-weight: 400;
   line-height: 1.5;
   color: #4D4B53;
-  max-width: 46ch;
+  text-align: center;
+  text-wrap: balance;
 }
 
 /* ─── Carousel (pinned, transform-driven on desktop) ─── */
@@ -113,19 +152,10 @@
 .bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 20px;
-  flex-wrap: wrap;
   padding: 0 var(--gutter);
   margin-bottom: clamp(20px, 2.4vw, 30px);
-}
-
-.swipeCue {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #737074;
 }
 
 .progress {
@@ -167,6 +197,7 @@
   height: clamp(300px, 26vw, 420px);
   overflow: hidden;
   background: #e7e4da;
+  will-change: clip-path;
 }
 
 .cardPhoto img {
@@ -175,11 +206,15 @@
   object-fit: cover;
   display: block;
   filter: saturate(0.9) contrast(1.02);
-  transition: transform 0.6s var(--ease);
+  /* --rs is the reveal scale, driven from JS during the clip-path
+     unwind (1.08 -> 1.0). Hover multiplies it for the lift. */
+  transform: scale(var(--rs, 1));
+  transition: transform 0.35s var(--ease);
+  will-change: transform;
 }
 
 .card:hover .cardPhoto img {
-  transform: scale(1.04);
+  transform: scale(calc(var(--rs, 1) * 1.04));
 }
 
 .cardBody {
@@ -289,9 +324,26 @@
     padding-block: clamp(40px, 7vw, 72px) clamp(24px, 4vw, 40px);
   }
   .headerRight {
+    align-items: stretch;
     justify-content: flex-start;
     border-top: 1px solid #9F9DA0;
     padding-block: clamp(28px, 4vw, 44px) clamp(8px, 2vw, 20px);
+  }
+  /* Crosshair is a desktop motif; below the stack break the paragraph
+     reads as a plain lead. */
+  .crossArmV,
+  .crossArmH {
+    display: none;
+  }
+  .leadFrame {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+  .lead {
+    text-align: left;
+    max-width: 46ch;
   }
   .caroPin {
     overflow: visible;
